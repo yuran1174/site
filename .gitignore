@@ -1,0 +1,14 @@
+# База данных
+db/*.sqlite
+db/*.sqlite3
+
+# Логи
+logs/
+
+# PHPStorm
+.idea/
+
+# OSPanel / системное
+.DS_Store
+Thumbs.db
+*.log

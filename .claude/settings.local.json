@@ -4,7 +4,8 @@
       "Bash(ls -la \"D:/OSPanel/site/\"*.php \"D:/OSPanel/site/ajax/\"*.php \"D:/OSPanel/site/css/\"*.css 2>/dev/null)",
       "Bash(php -l \"D:/OSPanel/site/db.php\" && php -l \"D:/OSPanel/site/auth.php\" && php -l \"D:/OSPanel/site/ajax/auth.php\" && php -l \"D:/OSPanel/site/ajax/save.php\" && php -l \"D:/OSPanel/site/leaderboard.php\" && php -l \"D:/OSPanel/site/profile.php\" && php -l \"D:/OSPanel/site/minigame.php\" && php -l \"D:/OSPanel/site/idle.php\" 2>&1)",
       "Bash(node -e \"\nconst fs = require\\('fs'\\);\nconst code = fs.readFileSync\\('D:/OSPanel/site/js/idle.js', 'utf8'\\);\ntry { new Function\\(code\\); console.log\\('OK — синтаксических ошибок нет'\\); } catch\\(e\\) { console.error\\('ОШИБКА:', e.message\\); }\n\")",
-      "Bash(cd \"D:/OSPanel/site\" && bash .claude/push.sh \"init: инициализация проекта, правила разработки и структура\")"
+      "Bash(cd \"D:/OSPanel/site\" && bash .claude/push.sh \"init: инициализация проекта, правила разработки и структура\")",
+      "Bash(cd \"D:/OSPanel/site\" && bash .claude/push.sh \"chore: добавлен .gitignore, убраны db/sqlite, logs, .idea из репо\")"
     ]
   }
 }

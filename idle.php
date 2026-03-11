@@ -33,16 +33,10 @@ else                                 $greeting = 'Ещё не спишь, кол
     <span class="ub-user">👤 <?= htmlspecialchars($username) ?></span>
     <a href="profile.php" class="ub-link">🏪 Магазин престижа</a>
     <a href="leaderboard.php" class="ub-link">🏆 Таблица</a>
-    <a href="minigame.php" class="ub-link">🐛 Охота на баги</a>
-    <a href="dungeon.php" class="ub-link">🏰 Подземелье</a>
-    <a href="pvp.php" class="ub-link">⚔️ Арена</a>
     <a href="ajax/auth.php?action=logout" class="ub-link ub-logout" id="logoutBtn">Выйти</a>
   <?php else: ?>
     <span class="ub-guest">👤 Гость — <a href="auth.php" class="ub-guest-link">войди</a> чтобы сохранять прогресс</span>
     <a href="leaderboard.php" class="ub-link">🏆 Таблица лидеров</a>
-    <a href="minigame.php" class="ub-link">🐛 Охота на баги</a>
-    <a href="dungeon.php" class="ub-link">🏰 Подземелье</a>
-    <a href="pvp.php" class="ub-link">⚔️ Арена</a>
   <?php endif; ?>
 </div>
 

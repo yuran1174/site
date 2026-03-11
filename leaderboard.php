@@ -61,11 +61,9 @@ $rows = $stmt->fetchAll();
   <a href="idle.php" class="nav-link">← Игра</a>
   <?php if ($isLoggedIn): ?>
     <a href="profile.php" class="nav-link">👤 Профиль</a>
-    <a href="minigame.php" class="nav-link">🐛 Охота на баги</a>
     <a href="ajax/auth.php?action=logout" class="nav-link nav-link-dim">Выйти</a>
   <?php else: ?>
     <a href="auth.php" class="nav-link">Войти</a>
-    <a href="minigame.php" class="nav-link">🐛 Охота на баги</a>
   <?php endif; ?>
 </div>
 

@@ -40,5 +40,11 @@ class DB {
                 updated_at INTEGER DEFAULT (strftime('%s','now'))
             );
         ");
+
+        // Migrations: add columns if they don't exist yet
+        $cols = array_column($db->query("PRAGMA table_info(leaderboard)")->fetchAll(), 'name');
+        if (!in_array('account_level', $cols)) {
+            $db->exec("ALTER TABLE leaderboard ADD COLUMN account_level INTEGER DEFAULT 1");
+        }
     }
 }

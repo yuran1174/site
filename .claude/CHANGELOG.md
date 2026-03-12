@@ -1,3 +1,17 @@
+## 2026-03-12 — Подключён Composer и базовый PSR-4 autoload
+
+**Что сделано:**
+- Добавлен `composer.json` с требованием `php ^8.3` и PSR-4 namespace `App\\` для каталога `src/`
+- Добавлен `autoload-dev` для namespace `Tests\\`
+- Создан минимальный smoke-класс `App\\Support\\ApplicationIdentity` в `src/` для проверки автозагрузки
+
+**Файлы затронуты:**
+- `composer.json` (создан)
+- `src/Support/ApplicationIdentity.php` (создан)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
 ## 2026-03-12 — Зафиксирована продуктовая модель и baseline-метрики
 
 **Что сделано:**

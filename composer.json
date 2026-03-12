@@ -1,0 +1,23 @@
+{
+  "name": "yuran/programmer-life-site",
+  "description": "Humorous PHP game project 'Zhizn Programmista'",
+  "type": "project",
+  "require": {
+    "php": "^8.3"
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true
+}

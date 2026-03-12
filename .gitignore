@@ -12,3 +12,7 @@ logs/
 .DS_Store
 Thumbs.db
 *.log
+
+# Composer / временные файлы
+vendor/
+.tmp/

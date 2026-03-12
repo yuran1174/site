@@ -2,6 +2,9 @@
 declare(strict_types=1);
 require_once __DIR__ . '/bootstrap/app.php';
 
+use App\Infrastructure\Database\DatabaseManager;
+use App\Infrastructure\Persistence\LeaderboardRepository;
+
 \App\Bootstrap\AppBootstrap::bootWeb();
 
 $currentUserId = (int) ($_SESSION['user_id'] ?? 0);
@@ -77,16 +80,8 @@ function accountLevelTitle(int $lvl): string
     return 'Стажёр';
 }
 
-$db = DB::get();
-$stmt = $db->query('
-    SELECT l.user_id, l.username, l.total_loc, l.prestige_count,
-           COALESCE(l.account_level, 1) AS account_level, u.last_seen
-    FROM leaderboard l
-    JOIN users u ON u.id = l.user_id
-    ORDER BY l.total_loc DESC
-    LIMIT 10
-');
-$rows = $stmt->fetchAll();
+$leaderboard = new LeaderboardRepository(DatabaseManager::connection());
+$rows = $leaderboard->findTopWithLastSeen(10);
 ?>
 <!DOCTYPE html>
 <html lang="ru">

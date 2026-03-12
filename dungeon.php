@@ -2,6 +2,9 @@
 declare(strict_types=1);
 require_once __DIR__ . '/bootstrap/app.php';
 
+use App\Infrastructure\Database\DatabaseManager;
+use App\Infrastructure\Persistence\LeaderboardRepository;
+
 \App\Bootstrap\AppBootstrap::bootWeb();
 
 $isLoggedIn   = isset($_SESSION['user_id']);
@@ -9,14 +12,9 @@ $accountLevel = 1;
 
 if ($isLoggedIn) {
     try {
-        $db   = DB::get();
-        $stmt = $db->prepare('SELECT save_data FROM game_saves WHERE user_id = ?');
-        $stmt->execute([$_SESSION['user_id']]);
-        $row = $stmt->fetch();
-        if ($row) {
-            $sd = json_decode($row['save_data'], true);
-            $accountLevel = max(1, (int) ($sd['accountLevel'] ?? 1));
-        }
+        $leaderboard = new LeaderboardRepository(DatabaseManager::connection());
+        $record = $leaderboard->findByUserId((int) $_SESSION['user_id']);
+        $accountLevel = $record?->accountLevel ?? 1;
     } catch (Exception $e) {
     }
 }

@@ -50,7 +50,6 @@ final class AppBootstrap
         Config::load(self::$projectRoot);
 
         require_once self::$projectRoot . '/security.php';
-        require_once self::$projectRoot . '/db.php';
 
         error_reporting(E_ALL);
         ini_set('display_errors', Config::get('app.display_errors', false) ? '1' : '0');

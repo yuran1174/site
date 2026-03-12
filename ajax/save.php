@@ -6,6 +6,7 @@ require_once __DIR__ . '/../bootstrap/app.php';
 use App\Application\GameSave\GameSaveController;
 use App\Application\GameSave\GameSaveService;
 use App\Http\ApiResponse;
+use App\Infrastructure\Database\DatabaseManager;
 use App\Infrastructure\Persistence\GameSaveRepository;
 use App\Infrastructure\Persistence\LeaderboardRepository;
 use App\Infrastructure\Persistence\UserRepository;
@@ -16,10 +17,11 @@ if (!isset($_SESSION['user_id'])) {
     ApiResponse::error('Not authenticated', 401);
 }
 
+$connection = DatabaseManager::connection();
 $service = new GameSaveService(
-    new GameSaveRepository(DB::get()),
-    new LeaderboardRepository(DB::get()),
-    new UserRepository(DB::get()),
+    new GameSaveRepository($connection),
+    new LeaderboardRepository($connection),
+    new UserRepository($connection),
 );
 
 $controller = new GameSaveController($service);

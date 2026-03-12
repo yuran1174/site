@@ -1,3 +1,24 @@
+## 2026-03-13 — Убран direct DB access из оставшихся страниц и endpoint'ов
+
+**Что сделано:**
+- `ajax/auth.php` и `ajax/save.php` переведены с `DB::get()` на `DatabaseManager::connection()`
+- `profile.php`, `leaderboard.php` и `dungeon.php` переведены на репозитории вместо прямого SQL из страницы
+- В `UserRepository` и `LeaderboardRepository` добавлены read-методы для page-level сценариев
+- `AppBootstrap` больше не подтягивает legacy `db.php` как обязательную зависимость
+
+**Файлы затронуты:**
+- `ajax/auth.php` (обновлён)
+- `ajax/save.php` (обновлён)
+- `profile.php` (обновлён)
+- `leaderboard.php` (обновлён)
+- `dungeon.php` (обновлён)
+- `src/Bootstrap/AppBootstrap.php` (обновлён)
+- `src/Infrastructure/Persistence/UserRepository.php` (обновлён)
+- `src/Infrastructure/Persistence/LeaderboardRepository.php` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
 ## 2026-03-13 — Синхронизированы статусы Product Analyst задач в TODO
 
 **Что сделано:**
@@ -20,6 +41,30 @@
 
 **Файлы затронуты:**
 - `.github/workflows/ci.yml` (создан)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
+## 2026-03-13 — Доведён DB infrastructure layer и закрыт TASK-009
+
+**Что сделано:**
+- `AppBootstrap` больше не подтягивает `db.php` как часть обязательного старта приложения
+- `ajax/auth.php` и `ajax/save.php` переведены на `DatabaseManager::connection()` вместо `DB::get()`
+- `profile.php`, `leaderboard.php`, `dungeon.php` переведены с прямого доступа к `DB::get()` на инфраструктурный/persistence слой
+- `UserRepository` и `LeaderboardRepository` расширены методами для чтений, нужных страницам
+- В runtime-коде больше нет прямых вызовов `DB::get()`; `db.php` остался как compatibility shim
+- В `TODO.md` `TASK-009` переведён в `done`
+
+**Файлы затронуты:**
+- `src/Bootstrap/AppBootstrap.php` (обновлён)
+- `src/Infrastructure/Persistence/UserRepository.php` (обновлён)
+- `src/Infrastructure/Persistence/LeaderboardRepository.php` (обновлён)
+- `ajax/auth.php` (обновлён)
+- `ajax/save.php` (обновлён)
+- `profile.php` (обновлён)
+- `leaderboard.php` (обновлён)
+- `dungeon.php` (обновлён)
 - `TODO.md` (обновлён)
 - `.claude/CHANGELOG.md` (обновлён)
 

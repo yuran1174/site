@@ -12,6 +12,15 @@ final class UserRepository
     {
     }
 
+    public function findMetaById(int $userId): ?array
+    {
+        $stmt = $this->db->prepare('SELECT created_at, last_seen FROM users WHERE id = ?');
+        $stmt->execute([$userId]);
+        $row = $stmt->fetch();
+
+        return is_array($row) ? $row : null;
+    }
+
     public function findByUsername(string $username): ?UserData
     {
         $stmt = $this->db->prepare('SELECT id, username, password_hash FROM users WHERE username = ?');

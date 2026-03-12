@@ -29,6 +29,23 @@ final class LeaderboardRepository
         );
     }
 
+    public function findTopWithLastSeen(int $limit = 10): array
+    {
+        $stmt = $this->db->prepare('
+            SELECT l.user_id, l.username, l.total_loc, l.prestige_count,
+                   COALESCE(l.account_level, 1) AS account_level, u.last_seen
+            FROM leaderboard l
+            JOIN users u ON u.id = l.user_id
+            ORDER BY l.total_loc DESC
+            LIMIT ?
+        ');
+        $stmt->bindValue(1, $limit, PDO::PARAM_INT);
+        $stmt->execute();
+        $rows = $stmt->fetchAll();
+
+        return is_array($rows) ? $rows : [];
+    }
+
     public function upsert(
         int $userId,
         string $username,

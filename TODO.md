@@ -177,8 +177,8 @@
 ## Epic 2 — Backend Extraction & Domain Layer
 
 ### TASK-009 — Вынести DB-слой в инфраструктурный класс
-- Status: `in_progress`
-- Note: добавлен `src/Infrastructure/Database/`, а `db.php` переведён в thin wrapper над `DatabaseManager`; часть кода всё ещё зависит от `DB::get()` как compatibility-слоя.
+- Status: `done`
+- Note: runtime-код переведён на `DatabaseManager` и persistence-слой; `db.php` оставлен только как legacy compatibility shim, но новые страницы и AJAX его больше не используют напрямую.
 - Priority: `P0`
 - Agent: `Backend Extraction`
 - Goal: убрать `db.php` как глобальную точку с логикой

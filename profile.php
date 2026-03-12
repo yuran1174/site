@@ -2,6 +2,10 @@
 declare(strict_types=1);
 require_once __DIR__ . '/bootstrap/app.php';
 
+use App\Infrastructure\Database\DatabaseManager;
+use App\Infrastructure\Persistence\GameSaveRepository;
+use App\Infrastructure\Persistence\UserRepository;
+
 \App\Bootstrap\AppBootstrap::bootWeb();
 
 if (!isset($_SESSION['user_id'])) {
@@ -11,18 +15,13 @@ if (!isset($_SESSION['user_id'])) {
 
 $userId   = (int) $_SESSION['user_id'];
 $username = $_SESSION['username'] ?? '';
-$db       = DB::get();
+$connection = DatabaseManager::connection();
+$users = new UserRepository($connection);
+$gameSaves = new GameSaveRepository($connection);
 
-// Load user info
-$userStmt = $db->prepare('SELECT created_at, last_seen FROM users WHERE id = ?');
-$userStmt->execute([$userId]);
-$userRow = $userStmt->fetch();
-
-// Load save data
-$saveStmt = $db->prepare('SELECT save_data FROM game_saves WHERE user_id = ?');
-$saveStmt->execute([$userId]);
-$saveRow  = $saveStmt->fetch();
-$save     = $saveRow ? json_decode($saveRow['save_data'], true) : [];
+$userRow = $users->findMetaById($userId) ?? [];
+$saveRow = $gameSaves->findByUserId($userId);
+$save = $saveRow ? json_decode($saveRow->saveData, true) : [];
 if (!is_array($save)) {
     $save = [];
 }

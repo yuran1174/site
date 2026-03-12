@@ -5,10 +5,12 @@ require_once __DIR__ . '/../bootstrap/app.php';
 
 use App\Application\Auth\AuthController;
 use App\Application\Auth\AuthService;
+use App\Infrastructure\Database\DatabaseManager;
 use App\Infrastructure\Persistence\UserRepository;
 
 \App\Bootstrap\AppBootstrap::bootApi();
 
-$service = new AuthService(new UserRepository(DB::get()));
+$connection = DatabaseManager::connection();
+$service = new AuthService(new UserRepository($connection));
 $controller = new AuthController($service);
 $controller->handle($_SERVER['REQUEST_METHOD'], app_request_json(), $_POST, $_GET);

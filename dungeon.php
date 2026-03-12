@@ -1,7 +1,9 @@
 <?php
 declare(strict_types=1);
-session_start();
+require_once __DIR__ . '/security.php';
 require_once __DIR__ . '/db.php';
+
+app_start_session();
 
 $isLoggedIn   = isset($_SESSION['user_id']);
 $accountLevel = 1;
@@ -218,6 +220,7 @@ if ($isLoggedIn) {
 <script>
   const IS_LOGGED_IN  = <?= $isLoggedIn ? 'true' : 'false' ?>;
   const ACCOUNT_LEVEL = <?= (int)$accountLevel ?>;
+  const CSRF_TOKEN    = <?= json_encode(app_csrf_token(), JSON_UNESCAPED_UNICODE) ?>;
 </script>
 <script src="js/dungeon.js"></script>
 </body>

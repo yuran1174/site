@@ -1,7 +1,9 @@
 <?php
 declare(strict_types=1);
-session_start();
+require_once __DIR__ . '/security.php';
 require_once __DIR__ . '/db.php';
+
+app_start_session();
 
 // Already logged in
 if (isset($_SESSION['user_id'])) {
@@ -111,6 +113,7 @@ if (isset($_SESSION['user_id'])) {
 </div><!-- /auth-wrap -->
 
 <script>
+const CSRF_TOKEN = <?= json_encode(app_csrf_token(), JSON_UNESCAPED_UNICODE) ?>;
 const QUOTES = [
   'Добро пожаловать в систему',
   'git commit -m "finally fixed it"',
@@ -200,7 +203,7 @@ loginForm.addEventListener('submit', async function(e) {
     const res = await fetch('ajax/auth.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'login', username, password }),
+      body: JSON.stringify({ action: 'login', username, password, csrf: CSRF_TOKEN }),
     });
     const data = await res.json();
     if (data.success) {
@@ -239,7 +242,7 @@ registerForm.addEventListener('submit', async function(e) {
     const res = await fetch('ajax/auth.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'register', username, password, confirm }),
+      body: JSON.stringify({ action: 'register', username, password, confirm, csrf: CSRF_TOKEN }),
     });
     const data = await res.json();
     if (data.success) {

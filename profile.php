@@ -1,7 +1,9 @@
 <?php
 declare(strict_types=1);
-session_start();
+require_once __DIR__ . '/security.php';
 require_once __DIR__ . '/db.php';
+
+app_start_session();
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: auth.php');
@@ -213,7 +215,7 @@ $ACHIEVEMENTS_DATA = [
   <a href="idle.php" class="nav-link">← Игра</a>
   <a href="leaderboard.php" class="nav-link">🏆 Рейтинг</a>
   <a href="minigame.php" class="nav-link">🐛 Охота на баги</a>
-  <a href="ajax/auth.php?action=logout" class="nav-link nav-link-dim">Выйти</a>
+  <a href="#" class="nav-link nav-link-dim" id="logoutBtn">Выйти</a>
 </div>
 
 <div class="page-wrap">
@@ -354,6 +356,7 @@ $ACHIEVEMENTS_DATA = [
 <div id="shopToast" class="shop-toast" style="display:none;"></div>
 
 <script>
+const CSRF_TOKEN = <?= json_encode(app_csrf_token(), JSON_UNESCAPED_UNICODE) ?>;
 const currentOO = <?= $prestigePoints ?>;
 let ooBalance   = currentOO;
 
@@ -387,7 +390,7 @@ document.querySelectorAll('.shop-buy-btn:not([disabled])').forEach(btn => {
       const res = await fetch('ajax/save.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'buy_prestige', id }),
+        body: JSON.stringify({ action: 'buy_prestige', id, csrf: CSRF_TOKEN }),
       });
       const data = await res.json();
 
@@ -409,6 +412,24 @@ document.querySelectorAll('.shop-buy-btn:not([disabled])').forEach(btn => {
     }
   });
 });
+
+const logoutBtn = document.getElementById('logoutBtn');
+if (logoutBtn) {
+  logoutBtn.addEventListener('click', async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch('ajax/auth.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'logout', csrf: CSRF_TOKEN }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        window.location.href = 'idle.php';
+      }
+    } catch (e) {}
+  });
+}
 </script>
 
 </body>

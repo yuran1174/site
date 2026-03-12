@@ -562,7 +562,7 @@ async function saveGameServer() {
     const res = await fetch('ajax/save.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'save', data: JSON.stringify(saveData) }),
+      body: JSON.stringify({ action: 'save', data: JSON.stringify(saveData), csrf: CSRF_TOKEN }),
     });
     await res.json();
   } catch(e) {
@@ -1755,7 +1755,7 @@ $(async function() {
       // sendBeacon — не блокирует закрытие, но гарантирует доставку
       const saveData = buildSaveData();
       navigator.sendBeacon('ajax/save.php', new Blob(
-        [JSON.stringify({ action: 'save', data: JSON.stringify(saveData) })],
+        [JSON.stringify({ action: 'save', data: JSON.stringify(saveData), csrf: CSRF_TOKEN })],
         { type: 'application/json' }
       ));
     }

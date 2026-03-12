@@ -1,7 +1,9 @@
 <?php
 declare(strict_types=1);
-session_start();
+require_once __DIR__ . '/security.php';
 require_once __DIR__ . '/db.php';
+
+app_start_session();
 
 $currentUserId = (int)($_SESSION['user_id'] ?? 0);
 $isLoggedIn    = $currentUserId > 0;
@@ -65,7 +67,7 @@ $rows = $stmt->fetchAll();
   <a href="idle.php" class="nav-link">← Игра</a>
   <?php if ($isLoggedIn): ?>
     <a href="profile.php" class="nav-link">👤 Профиль</a>
-    <a href="ajax/auth.php?action=logout" class="nav-link nav-link-dim">Выйти</a>
+    <a href="#" class="nav-link nav-link-dim" id="logoutBtn">Выйти</a>
   <?php else: ?>
     <a href="auth.php" class="nav-link">Войти</a>
   <?php endif; ?>
@@ -155,6 +157,7 @@ $rows = $stmt->fetchAll();
 </div>
 
 <script>
+const CSRF_TOKEN = <?= json_encode(app_csrf_token(), JSON_UNESCAPED_UNICODE) ?>;
 document.getElementById('refreshBtn').addEventListener('click', async function() {
   this.textContent = '↻ Загрузка...';
   this.disabled = true;
@@ -171,6 +174,24 @@ document.getElementById('refreshBtn').addEventListener('click', async function()
   this.textContent = '↻ Обновить';
   this.disabled = false;
 });
+
+const logoutBtn = document.getElementById('logoutBtn');
+if (logoutBtn) {
+  logoutBtn.addEventListener('click', async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch('ajax/auth.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'logout', csrf: CSRF_TOKEN }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        window.location.href = 'idle.php';
+      }
+    } catch (e) {}
+  });
+}
 </script>
 
 </body>

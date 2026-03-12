@@ -1,7 +1,9 @@
 <?php
 declare(strict_types=1);
-session_start();
+require_once __DIR__ . '/security.php';
 require_once __DIR__ . '/db.php';
+
+app_start_session();
 
 $isLoggedIn = isset($_SESSION['user_id']);
 $username   = $_SESSION['username'] ?? null;
@@ -34,7 +36,7 @@ else                                 $greeting = 'Ещё не спишь, кол
     <span class="ub-user">👤 <?= htmlspecialchars($username) ?></span>
     <a href="profile.php" class="ub-link">🏪 Магазин престижа</a>
     <a href="leaderboard.php" class="ub-link">🏆 Таблица</a>
-    <a href="ajax/auth.php?action=logout" class="ub-link ub-logout" id="logoutBtn">Выйти</a>
+    <a href="#" class="ub-link ub-logout" id="logoutBtn">Выйти</a>
   <?php else: ?>
     <span class="ub-guest">👤 Гость — <a href="auth.php" class="ub-guest-link">войди</a> чтобы сохранять прогресс</span>
     <a href="leaderboard.php" class="ub-link">🏆 Таблица лидеров</a>
@@ -191,7 +193,27 @@ else                                 $greeting = 'Ещё не спишь, кол
 <script>
   const PHP_GREETING  = <?= json_encode($greeting, JSON_UNESCAPED_UNICODE) ?>;
   const IS_LOGGED_IN  = <?= $isLoggedIn ? 'true' : 'false' ?>;
+  const CSRF_TOKEN    = <?= json_encode(app_csrf_token(), JSON_UNESCAPED_UNICODE) ?>;
 </script>
 <script src="js/idle.js"></script>
+<script>
+  const logoutBtn = document.getElementById('logoutBtn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      try {
+        const res = await fetch('ajax/auth.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'logout', csrf: CSRF_TOKEN }),
+        });
+        const data = await res.json();
+        if (data.success) {
+          window.location.href = 'idle.php';
+        }
+      } catch (e) {}
+    });
+  }
+</script>
 </body>
 </html>

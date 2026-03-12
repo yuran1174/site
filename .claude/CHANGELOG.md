@@ -1,3 +1,29 @@
+## 2026-03-12 — Усилены security-потоки auth/save и добавлен anti-cheat baseline
+
+**Что сделано:**
+- Добавлен `security.php` с безопасным стартом сессии, CSRF helper'ами, rate limiting и JSONL security-log в `storage/logs/security.log`
+- `ajax/auth.php`: убран logout по GET, добавлены CSRF-проверки, rate limit и логирование неудачных/подозрительных auth-запросов
+- `ajax/save.php`: добавлены CSRF-проверки, rate limit, базовая нормализация save payload, серверный пересчёт `prestigeMulti`, логирование подозрительных скачков и создание save-слоя для reward flow без существующей записи
+- `auth.php`, `idle.php`, `profile.php`, `leaderboard.php`, `minigame.php`, `dungeon.php`, `js/idle.js`, `js/dungeon.js`: прокинут CSRF-токен во все state-changing запросы; logout переведён на POST
+- Добавлена документация `docs/security/anti-cheat-baseline.md`
+
+**Файлы затронуты:**
+- `security.php` (создан)
+- `ajax/auth.php` (обновлён)
+- `ajax/save.php` (переписан)
+- `auth.php` (обновлён)
+- `idle.php` (обновлён)
+- `profile.php` (обновлён)
+- `leaderboard.php` (обновлён)
+- `minigame.php` (обновлён)
+- `dungeon.php` (обновлён)
+- `js/idle.js` (обновлён)
+- `js/dungeon.js` (обновлён)
+- `docs/security/anti-cheat-baseline.md` (создан)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
 ## 2026-03-12 — Подключён Composer и базовый PSR-4 autoload
 
 **Что сделано:**

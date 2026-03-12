@@ -727,7 +727,7 @@ function sendReward(loc, oo, isWin) {
     fetch('/ajax/save.php', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ action: isWin ? 'dungeon_clear' : 'minigame_reward', loc, oo }),
+        body:    JSON.stringify({ action: isWin ? 'dungeon_clear' : 'minigame_reward', loc, oo, csrf: CSRF_TOKEN }),
     });
 }
 

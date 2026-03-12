@@ -1,7 +1,9 @@
 <?php
 declare(strict_types=1);
-session_start();
+require_once __DIR__ . '/security.php';
 require_once __DIR__ . '/db.php';
+
+app_start_session();
 
 $isLoggedIn = isset($_SESSION['user_id']);
 $username   = $_SESSION['username'] ?? null;
@@ -106,6 +108,7 @@ $username   = $_SESSION['username'] ?? null;
 </div><!-- /mg-wrap -->
 
 <script>
+const CSRF_TOKEN  = <?= json_encode(app_csrf_token(), JSON_UNESCAPED_UNICODE) ?>;
 const IS_LOGGED_IN = <?= $isLoggedIn ? 'true' : 'false' ?>;
 const GAME_TIME    = 45; // seconds
 const GRID_SIZE    = 25; // 5×5
@@ -325,6 +328,7 @@ function applyReward() {
         bugs:   reward.bugs,
         loc:    reward.loc,
         oo:     reward.oo,
+        csrf:   CSRF_TOKEN,
       }),
     })
     .then(r => r.json())

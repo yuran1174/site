@@ -298,6 +298,21 @@ final class GameSaveService
         ];
     }
 
+    public function resetProgress(int $userId): array
+    {
+        $saveExists = $this->readRow($userId) !== null;
+        $leaderboardExists = $this->leaderboard->findByUserId($userId) !== null;
+
+        $this->gameSaves->deleteByUserId($userId);
+        $this->leaderboard->deleteByUserId($userId);
+
+        return [
+            'reset' => true,
+            'deletedSave' => $saveExists,
+            'deletedLeaderboard' => $leaderboardExists,
+        ];
+    }
+
     private function floatValue(mixed $value, float $min, float $max): float
     {
         if (!is_numeric($value)) {

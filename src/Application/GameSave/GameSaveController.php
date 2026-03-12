@@ -127,6 +127,23 @@ final class GameSaveController
                 ApiResponse::success($this->service->applyDungeonClear($userId, $username, $loc, $oo));
 
                 // no break
+            case 'reset_progress':
+                if ($method !== 'POST') {
+                    ApiResponse::error('Method not allowed', 405);
+                }
+
+                if ((string) app_config_value('app.env', 'development') !== 'development') {
+                    $this->logAndFail('dev_reset_forbidden', 'Not available in this environment', 403, [
+                        'action' => 'reset_progress',
+                    ]);
+                }
+
+                $this->requireCsrf('reset_progress');
+                $this->rateLimitOrFail('save:reset_progress', 5, 300, 'reset_progress', $identityBase);
+
+                ApiResponse::success($this->service->resetProgress($userId));
+
+                // no break
             default:
                 $this->logAndFail('save_unknown_action', 'Unknown action', 400, ['action' => $action]);
         }

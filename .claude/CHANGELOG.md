@@ -1,3 +1,18 @@
+## 2026-03-13 — Закрыт TASK-026: зафиксирована стратегия frontend build step
+
+**Что сделано:**
+- Добавлен `docs/frontend/build-strategy.md` с решением не вводить build step на текущем этапе
+- Зафиксированы причины отказа от bundler сейчас: modular JS уже есть, SPA/toolchain потребности нет, а прямые PHP entrypoint'ы остаются самым дешёвым и надёжным вариантом
+- Описаны триггеры, при которых переход на сборку станет обязательным, и предпочтительный кандидат для будущего шага — `Vite`
+- В `TODO.md` задача `TASK-026` переведена в `done`
+
+**Файлы затронуты:**
+- `docs/frontend/build-strategy.md` (создан)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
 ## 2026-03-13 — Закрыт TASK-025: введён общий CSS token-layer и правила стилей
 
 **Что сделано:**
@@ -322,6 +337,22 @@
 
 **Файлы затронуты:**
 - `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
+## 2026-03-13 — Добавлена браузерная dev-команда для сброса прогресса аккаунта
+
+**Что сделано:**
+- В `GameSaveService` добавлен dev-reset серверного прогресса аккаунта
+- В `GameSaveController` добавлен action `reset_progress` с CSRF, rate limit и ограничением только для `development`
+- В `idle.php` добавлена браузерная helper-команда `window.devResetAccountProgress()`
+- Команда очищает серверный прогресс, удаляет локальный `kodikofee_save` и перезагружает страницу
+
+**Файлы затронуты:**
+- `src/Application/GameSave/GameSaveService.php` (обновлён)
+- `src/Application/GameSave/GameSaveController.php` (обновлён)
+- `idle.php` (обновлён)
 - `.claude/CHANGELOG.md` (обновлён)
 
 ---

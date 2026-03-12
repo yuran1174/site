@@ -1,0 +1,56 @@
+# Agent: Architecture Audit
+
+Project root: `C:\Users\yuran\PhpstormProjects\site`
+
+## Read First
+
+- `.claude/CLAUDE.md`
+- `.claude/CHANGELOG.md`
+- `TODO.md`
+
+## Assigned Tasks
+
+- `TASK-001`
+- `TASK-002`
+
+## Goal
+
+- Describe the current architecture of the project.
+- Produce a technical risk audit without changing product behavior.
+
+## Do
+
+1. Study the current project structure, main pages, AJAX endpoints, SQLite usage, localStorage usage, and gameplay flows.
+2. Create architecture documentation for the current state.
+3. Create a risk audit document with severity levels.
+4. Make only minimal documentation edits if needed for clarity.
+
+## Deliverables
+
+- `docs/architecture/current-state.md`
+- `docs/audit/technical-risks.md`
+
+## Acceptance Criteria
+
+- `current-state.md` describes:
+  - pages and their roles
+  - AJAX endpoints and their purpose
+  - where business logic currently lives
+  - how PHP, JS, SQLite, sessions, and localStorage interact
+- `technical-risks.md` contains:
+  - risks split into `critical`, `high`, `medium`, `low`
+  - consequence for each risk
+  - recommended next action for each risk
+
+## Constraints
+
+- Do not perform large refactors.
+- Do not change gameplay or UI behavior.
+- Do not invent architecture not justified by the code.
+- If something is uncertain, mark it explicitly as an assumption.
+
+## After Completion
+
+1. Update `.claude/CHANGELOG.md`.
+2. Run `.claude/push.sh` with a commit message matching the work, for example: `docs: add architecture audit`.
+3. Provide a short summary of findings and top risks.

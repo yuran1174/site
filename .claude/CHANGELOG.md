@@ -5,6 +5,56 @@
 
 ---
 
+## 2026-03-12 — Инструкции агентов дополнены требованием коммита и пуша
+
+**Что сделано:**
+- Во все файлы `agents/*.md` добавлено обязательное завершение задачи через `.claude/push.sh`
+- В `TODO.md` добавлено общее правило: после каждой задачи агент должен обновить changelog, сделать коммит и пуш
+
+**Файлы затронуты:**
+- `agents/architecture-audit.md` (обновлён)
+- `agents/product-analyst.md` (обновлён)
+- `agents/refactor-plan.md` (обновлён)
+- `agents/backend-extraction.md` (обновлён)
+- `agents/security-hardening.md` (обновлён)
+- `agents/testing-bootstrap.md` (обновлён)
+- `agents/devops-baseline.md` (обновлён)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
+## 2026-03-12 — Добавлены файлы инструкций для ручного запуска агентов
+
+**Что сделано:**
+- Создана папка `agents/` с готовыми инструкциями для ролей `Architecture Audit`, `Product Analyst`, `Refactor Plan`, `Backend Extraction`, `Security Hardening`, `Testing Bootstrap`, `DevOps Baseline`
+- Каждая инструкция привязана к задачам из `TODO.md` и содержит ограничения, deliverables и acceptance criteria
+
+**Файлы затронуты:**
+- `agents/architecture-audit.md` (создан)
+- `agents/product-analyst.md` (создан)
+- `agents/refactor-plan.md` (создан)
+- `agents/backend-extraction.md` (создан)
+- `agents/security-hardening.md` (создан)
+- `agents/testing-bootstrap.md` (создан)
+- `agents/devops-baseline.md` (создан)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
+## 2026-03-12 — Добавлен master TODO для взросления проекта
+
+**Что сделано:**
+- Создан `TODO.md` с поэтапным планом перевода проекта из pet-project в поддерживаемый продукт
+- Задачи разбиты по эпикам, приоритетам, типам агентов и критериям готовности
+- Добавлен рекомендуемый порядок запуска агентов и общий Definition of Done
+
+**Файлы затронуты:**
+- `TODO.md` (создан)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
 ## 2026-03-12 — Мобильная адаптация / TG Mini App
 
 **Что сделано:**

@@ -289,6 +289,8 @@
   - новые изменения не завязаны только на runtime `ALTER TABLE`
 
 ### TASK-015 — Принять стратегию хранения игровых данных
+- Status: `done`
+- Note: создан `docs/data/storage-strategy.md`; зафиксировано, что account/auth и leaderboard остаются реляционными, основной игровой snapshot пока хранится в `game_saves.save_data`, а analytics и audit logs не смешиваются с save blob.
 - Priority: `P1`
 - Agent: `Data Migration`
 - Goal: решить, что хранить как JSON, а что вынести в таблицы
@@ -516,8 +518,8 @@
   - критичные сценарии проверяются автоматически
 
 ### TASK-029 — Добавить линтеры и форматтеры
-- Status: `partial`
-- Note: добавлены PHP formatter/lint baseline (`php-cs-fixer`, `tests/Tools/php-lint.php`, composer scripts `lint`, `format`, `format:check`); JS linting strategy и конфиг пока не введены.
+- Status: `done`
+- Note: добавлены PHP formatter/lint baseline и JS lint baseline на `node --check` с конфигом `.js-lint.json`; `composer lint` теперь прогоняет и PHP, и JS проверки автоматически.
 - Priority: `P1`
 - Agent: `Testing Bootstrap`
 - Goal: стабилизировать стиль и базовое качество

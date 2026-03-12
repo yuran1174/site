@@ -1,3 +1,18 @@
+## 2026-03-13 — Зафиксирована стратегия хранения игровых данных и закрыт TASK-015
+
+**Что сделано:**
+- Создан `docs/data/storage-strategy.md` с решением по `users`, `game_saves`, `leaderboard`, security/audit logs и будущим analytics events
+- Зафиксировано, что основной игровой snapshot пока остаётся в `game_saves.save_data` как JSON blob, а leaderboard хранится как отдельная серверная проекция
+- Отдельно описаны сущности, которые пока не нужно выносить из JSON, и кандидаты на будущую нормализацию при росте продукта
+- В `TODO.md` задача `TASK-015` переведена в `done`
+
+**Файлы затронуты:**
+- `docs/data/storage-strategy.md` (создан)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
 ## 2026-03-13 — Убран direct DB access из оставшихся страниц и endpoint'ов
 
 **Что сделано:**
@@ -15,6 +30,28 @@
 - `src/Bootstrap/AppBootstrap.php` (обновлён)
 - `src/Infrastructure/Persistence/UserRepository.php` (обновлён)
 - `src/Infrastructure/Persistence/LeaderboardRepository.php` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
+## 2026-03-13 — Закрыт TASK-029: добавлен JS lint baseline и обновлён composer lint
+
+**Что сделано:**
+- Добавлен lightweight JS lint runner `tests/Tools/js-lint.mjs`, который прогоняет `node --check` по `js/*.js` и проверяет запрещённые паттерны из `.js-lint.json`
+- `composer lint` разделён на `lint:php` и `lint:js`, чтобы качество PHP и JS прогонялось одной командой
+- CI workflow дополнен `actions/setup-node@v4`, а шаг lint теперь запускает общий `composer lint`
+- Integration tests переведены на новые repository-based сигнатуры `AuthService` и `GameSaveService`, а `DatabaseTestCase` получил более устойчивую очистку временной SQLite-базы под Windows
+- В `TODO.md` задача `TASK-029` переведена в `done`
+
+**Файлы затронуты:**
+- `.js-lint.json` (создан)
+- `tests/Tools/js-lint.mjs` (создан)
+- `tests/Integration/AuthServiceTest.php` (обновлён)
+- `tests/Integration/GameSaveServiceTest.php` (обновлён)
+- `tests/Support/DatabaseTestCase.php` (обновлён)
+- `composer.json` (обновлён)
+- `.github/workflows/ci.yml` (обновлён)
+- `TODO.md` (обновлён)
 - `.claude/CHANGELOG.md` (обновлён)
 
 ---

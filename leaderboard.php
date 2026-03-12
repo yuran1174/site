@@ -85,26 +85,23 @@ $rows = $leaderboard->findTopWithLastSeen(10);
 ?>
 <!DOCTYPE html>
 <html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Таблица лидеров — Код и Кофе</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏆</text></svg>">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/auth.css">
-</head>
+<?php
+$pageTitle = 'Таблица лидеров — Код и Кофе';
+$pageIcon = '🏆';
+$pageStyles = ['css/auth.css'];
+require __DIR__ . '/templates/partials/app-head.php';
+?>
 <body class="page-body">
 
-<div class="page-nav">
-  <a href="idle.php" class="nav-link">← Игра</a>
-  <?php if ($isLoggedIn): ?>
-    <a href="profile.php" class="nav-link">👤 Профиль</a>
-    <a href="#" class="nav-link nav-link-dim" id="logoutBtn">Выйти</a>
-  <?php else: ?>
-    <a href="auth.php" class="nav-link">Войти</a>
-  <?php endif; ?>
-</div>
+<?php
+$pageNavItems = [
+    ['href' => 'idle.php', 'label' => '← Игра'],
+    ['href' => 'profile.php', 'label' => '👤 Профиль', 'visible' => $isLoggedIn],
+    ['href' => '#', 'label' => 'Выйти', 'class' => 'nav-link-dim', 'id' => 'logoutBtn', 'visible' => $isLoggedIn],
+    ['href' => 'auth.php', 'label' => 'Войти', 'visible' => !$isLoggedIn],
+];
+require __DIR__ . '/templates/partials/page-nav.php';
+?>
 
 <div class="page-wrap">
 
@@ -208,24 +205,8 @@ document.getElementById('refreshBtn').addEventListener('click', async function()
   this.disabled = false;
 });
 
-const logoutBtn = document.getElementById('logoutBtn');
-if (logoutBtn) {
-  logoutBtn.addEventListener('click', async (e) => {
-    e.preventDefault();
-    try {
-      const res = await fetch('ajax/auth.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'logout', csrf: CSRF_TOKEN }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        window.location.href = 'idle.php';
-      }
-    } catch (e) {}
-  });
-}
 </script>
+<?php require __DIR__ . '/templates/partials/logout-script.php'; ?>
 
 </body>
 </html>

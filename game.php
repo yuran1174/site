@@ -221,15 +221,12 @@ $endingsJson = json_encode($endings, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG);
 ?>
 <!DOCTYPE html>
 <html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>День программиста — Игра</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/game.css">
-</head>
+<?php
+$pageTitle = 'День программиста — Игра';
+$pageIcon = '🎮';
+$pageStyles = ['css/game.css'];
+require __DIR__ . '/templates/partials/app-head.php';
+?>
 <body>
 
 <div class="game-wrap" id="gameWrap">

@@ -21,17 +21,14 @@ if ($hour >= 5 && $hour < 12) {
 ?>
 <!DOCTYPE html>
 <html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Код и Кофе — Idle Game</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💻</text></svg>">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="css/idle.css">
-  <script src="https://telegram.org/js/telegram-web-app.js" async></script>
-</head>
+<?php
+$pageTitle = 'Код и Кофе — Idle Game';
+$pageIcon = '💻';
+$pageStyles = ['css/idle.css'];
+$pageUseFontAwesome = true;
+$pageExtraHead = ['  <script src="https://telegram.org/js/telegram-web-app.js" async></script>'];
+require __DIR__ . '/templates/partials/app-head.php';
+?>
 <body>
 
 <!-- USER BAR -->
@@ -207,24 +204,6 @@ if ($hour >= 5 && $hour < 12) {
 <script src="js/idle-render.js"></script>
 <script src="js/idle-actions.js"></script>
 <script src="js/idle.js"></script>
-<script>
-  const logoutBtn = document.getElementById('logoutBtn');
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', async (e) => {
-      e.preventDefault();
-      try {
-        const res = await fetch('ajax/auth.php', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'logout', csrf: CSRF_TOKEN }),
-        });
-        const data = await res.json();
-        if (data.success) {
-          window.location.href = 'idle.php';
-        }
-      } catch (e) {}
-    });
-  }
-</script>
+<?php require __DIR__ . '/templates/partials/logout-script.php'; ?>
 </body>
 </html>

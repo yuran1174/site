@@ -199,6 +199,7 @@ if ($hour >= 5 && $hour < 12) {
   const IS_LOGGED_IN  = <?= $isLoggedIn ? 'true' : 'false' ?>;
   const CSRF_TOKEN    = <?= json_encode(app_csrf_token(), JSON_UNESCAPED_UNICODE) ?>;
 </script>
+<script src="data/game/idle-balance.js"></script>
 <script src="js/idle-runtime.js"></script>
 <script src="js/idle-economy.js"></script>
 <script src="js/idle-save.js"></script>

@@ -63,292 +63,88 @@ const {
 // GAME DATA DEFINITIONS
 // ================================================
 
-const BUILDINGS = [
-  { id:'junior',    name:'Джун',           emoji:'🐣', desc:'Каждый день спрашивает что делает git push.',          baseCost:50,       baseCps:0.5   },
-  { id:'mid',       name:'Мидл',           emoji:'👨‍💻', desc:'Знает что делает. Иногда.',                              baseCost:300,      baseCps:4     },
-  { id:'senior',    name:'Сеньор',         emoji:'🧙', desc:'Делает всё молча. Это пугает.',                         baseCost:2000,     baseCps:25    },
-  { id:'techlead',  name:'Тимлид',         emoji:'📋', desc:'Ходит на митинги вместо кода. Все рады.',              baseCost:15000,    baseCps:150   },
-  { id:'architect', name:'Архитектор',     emoji:'📐', desc:'Рисует квадраты со стрелками. Получает x2 зарплату.',  baseCost:100000,   baseCps:900   },
-  { id:'devops',    name:'DevOps',         emoji:'🐳', desc:'Написал bash скрипт и теперь считает себя богом.',     baseCost:750000,   baseCps:6000  },
-  { id:'cto',       name:'CTO',            emoji:'👔', desc:'Читает HackerNews и называет это стратегией.',          baseCost:5000000,  baseCps:35000 },
-  { id:'legacy_sys',name:'Легаси-система', emoji:'💾', desc:'Никто не знает как это работает. Но работает. Трогать страшно.',
-    baseCost:10000000, baseCps:5000, requiresShop:'legacy' },
-  { id:'ai_copilot',name:'ИИ Копилот',     emoji:'🤖', desc:'Пишет код сам. Иногда правильно. Иногда удаляет прод.',
-    baseCost:50000000, baseCps:25000, requiresShop:'ai_assist' },
-];
+const RAW_GAME_DATA = window.IdleGameData || {};
 
-const UPGRADES = [
-  // Click upgrades
-  { id:'espresso',    name:'Эспрессо',           emoji:'☕', category:'click', desc:'Двойной эспрессо — двойная скорость мышления.',       effect:{ type:'click', mult:2 }, cost:100,     unlockCondition: s => s.totalLoc >= 10 },
-  { id:'dual_monitor',name:'Двойной монитор',     emoji:'🖥️', category:'click', desc:'Два монитора = два раза больше вкладок для закрытия.', effect:{ type:'click', mult:2 }, cost:1000,    unlockCondition: s => s.totalLoc >= 200 },
-  { id:'mech_key',    name:'Механическая клава',  emoji:'⌨️', category:'click', desc:'Клацает в 2 раза громче и в 2 раза продуктивнее.',     effect:{ type:'click', mult:2 }, cost:8000,    unlockCondition: s => s.totalLoc >= 2000 },
-  { id:'rubber_duck', name:'Резиновая утка',       emoji:'🦆', category:'click', desc:'Объяснил утке задачу — сам всё понял.',                effect:{ type:'click', mult:2 }, cost:50000,   unlockCondition: s => s.totalLoc >= 15000 },
-  { id:'chatgpt',     name:'ChatGPT Pro',          emoji:'🤖', category:'click', desc:'ИИ пишет код. Ты только ctrl+c и ctrl+v. x3 клик.',    effect:{ type:'click', mult:3 }, cost:300000,  unlockCondition: s => s.totalLoc >= 100000 },
-  { id:'neuro',       name:'Нейронный интерфейс',  emoji:'🧠', category:'click', desc:'Мысль = код. Баги тоже от мыслей. x5 клик.',           effect:{ type:'click', mult:5 }, cost:2000000, unlockCondition: s => s.totalLoc >= 500000 },
+function matchesRule(rule, s) {
+  if (!rule) {
+    return true;
+  }
 
-  // Junior upgrades
-  { id:'j_docs',      name:'Задача с документацией', emoji:'📄', category:'junior',  desc:'Дали документацию. Джун прочитал. Это меняет всё.',     effect:{ type:'building', id:'junior', mult:2 }, cost:500,    unlockCondition: s => (s.buildings.junior||0) >= 1 },
-  { id:'j_so',        name:'Stack Overflow аккаунт', emoji:'🔍', category:'junior',  desc:'Теперь копирует ответы с рейтингом выше 100.',            effect:{ type:'building', id:'junior', mult:2 }, cost:5000,   unlockCondition: s => (s.buildings.junior||0) >= 5 },
-  { id:'j_mentor',    name:'Наставник',               emoji:'🤝', category:'junior',  desc:'Сеньор-наставник. Джун больше не спрашивает каждые 5 мин.', effect:{ type:'building', id:'junior', mult:3 }, cost:50000,  unlockCondition: s => (s.buildings.junior||0) >= 25 },
+  switch (rule.type) {
+    case 'totalLocAtLeast':
+      return (s.totalLoc || 0) >= rule.value;
+    case 'totalClicksAtLeast':
+      return (s.totalClicks || 0) >= rule.value;
+    case 'buildingCountAtLeast':
+      return ((s.buildings || {})[rule.buildingId] || 0) >= rule.value;
+    case 'totalBuildingsAtLeast':
+      return getTotalBuildings(s) >= rule.value;
+    case 'prestigeAtLeast':
+      return (s.prestige || 0) >= rule.value;
+    case 'upgradeCountAtLeast':
+      return getUpgradeCount(s) >= rule.value;
+    case 'locPerSecondAtLeast':
+      return getLocPerSecond() >= rule.value;
+    case 'eventCountAtLeast':
+      return (s.eventCount || 0) >= rule.value;
+    case 'maxOfflineAtLeast':
+      return (s.maxOffline || 0) >= rule.value;
+    case 'storyUnlocked':
+      return !!(s.story && s.story[rule.chapterId]);
+    case 'storyAllChapters':
+      return STORY_CHAPTERS.every((chapter) => s.story && s.story[chapter.id]);
+    case 'dungeonClearsAtLeast':
+      return (s.dungeonClears || 0) >= rule.value;
+    case 'locThisRunAtLeast':
+      return (s.locThisRun || 0) >= rule.value;
+    case 'accountLevelAtLeast':
+      return getAccountLevel() >= rule.value;
+    case 'prestigeShopTotalLevelsAtLeast':
+      return Object.values(s.prestigeShop || {}).reduce((sum, value) => sum + value, 0) >= rule.value;
+    case 'prestigeShopUniqueItemsAtLeast':
+      return Object.keys(s.prestigeShop || {}).length >= rule.value;
+    case 'allBaseBuildingsOwned':
+      return BUILDINGS.filter((building) => !building.requiresShop).every((building) => ((s.buildings || {})[building.id] || 0) >= 1);
+    default:
+      return false;
+  }
+}
 
-  // Mid upgrades
-  { id:'m_monitor',   name:'Второй монитор',      emoji:'🖥️', category:'mid', desc:'Наконец-то IDE на одном, Spotify на втором.',            effect:{ type:'building', id:'mid', mult:2 }, cost:3000,   unlockCondition: s => (s.buildings.mid||0) >= 1 },
-  { id:'m_review',    name:'Code review доступ',  emoji:'🔎', category:'mid', desc:'Пишет комментарии в PR. Считает это работой.',            effect:{ type:'building', id:'mid', mult:2 }, cost:30000,  unlockCondition: s => (s.buildings.mid||0) >= 5 },
-  { id:'m_refactor',  name:'Право на рефакторинг',emoji:'🔨', category:'mid', desc:'Всё равно пишет TODO. Но теперь рефакторит старые.',      effect:{ type:'building', id:'mid', mult:3 }, cost:300000, unlockCondition: s => (s.buildings.mid||0) >= 25 },
+function buildEffect(effectRule) {
+  if (!effectRule) {
+    return undefined;
+  }
 
-  // Senior upgrades
-  { id:'s_silent',    name:'Молчаливое согласие', emoji:'🤫', category:'senior', desc:'Кивает на митингах. Делает всё по-своему.',              effect:{ type:'building', id:'senior', mult:2 }, cost:20000,   unlockCondition: s => (s.buildings.senior||0) >= 1 },
-  { id:'s_nomeet',    name:'Игнор митингов',      emoji:'🚫', category:'senior', desc:'«Я буду асинхронно». Продуктивность x2.',                effect:{ type:'building', id:'senior', mult:2 }, cost:200000,  unlockCondition: s => (s.buildings.senior||0) >= 5 },
-  { id:'s_10x',       name:'10x Статус',          emoji:'⚡', category:'senior', desc:'Официально признан 10x developer. x4 к всему.',          effect:{ type:'building', id:'senior', mult:4 }, cost:2000000, unlockCondition: s => (s.buildings.senior||0) >= 25 },
+  switch (effectRule.type) {
+    case 'multiplyLoc':
+      return (s) => {
+        s.loc = Math.floor(s.loc * effectRule.value);
+      };
+    case 'subtractLocFlat':
+      return (s) => {
+        s.loc = Math.max(0, s.loc - effectRule.value);
+      };
+    default:
+      return undefined;
+  }
+}
 
-  // Techlead upgrades
-  { id:'t_jira',      name:'Jira-мастер',         emoji:'📊', category:'techlead', desc:'Научился создавать тикеты быстрее чем их делать.',       effect:{ type:'building', id:'techlead', mult:2 }, cost:150000,  unlockCondition: s => (s.buildings.techlead||0) >= 1 },
-  { id:'t_1on1',      name:'1-on-1 митинги',      emoji:'💬', category:'techlead', desc:'Мотивирует команду. Команда теперь пишет код.',           effect:{ type:'building', id:'techlead', mult:2 }, cost:1500000, unlockCondition: s => (s.buildings.techlead||0) >= 5 },
-  { id:'t_roadmap',   name:'Дорожная карта',      emoji:'🗺️', category:'techlead', desc:'Нарисовал дорожную карту. Все поняли куда идут. x3.',    effect:{ type:'building', id:'techlead', mult:3 }, cost:15000000,unlockCondition: s => (s.buildings.techlead||0) >= 25 },
-
-  // Architect upgrades
-  { id:'a_patterns',  name:'Паттерны проектирования', emoji:'📐', category:'architect', desc:'SOLID, DRY, KISS. Теперь знает акронимы — и применяет.', effect:{ type:'building', id:'architect', mult:2 }, cost:1000000,  unlockCondition: s => (s.buildings.architect||0) >= 1 },
-  { id:'a_whiteboard',name:'Умная доска',          emoji:'✏️', category:'architect', desc:'Доска с маркерами. Стрелки стали красивее.',              effect:{ type:'building', id:'architect', mult:3 }, cost:10000000, unlockCondition: s => (s.buildings.architect||0) >= 5 },
-
-  // DevOps upgrades
-  { id:'d_k8s',       name:'Kubernetes кластер',  emoji:'☸️', category:'devops', desc:'Docker + k8s. Теперь это «как в enterprise».',              effect:{ type:'building', id:'devops', mult:2 }, cost:7500000,  unlockCondition: s => (s.buildings.devops||0) >= 1 },
-  { id:'d_terraform', name:'Infrastructure as Code',emoji:'🏗️',category:'devops', desc:'Всё в git. Серверы пересоздаются за минуту.',              effect:{ type:'building', id:'devops', mult:3 }, cost:75000000, unlockCondition: s => (s.buildings.devops||0) >= 5 },
-
-  // CTO upgrades
-  { id:'c_vc',        name:'Венчурное финансирование',emoji:'💰',category:'cto',  desc:'Привлёк инвестиции на питче. Теперь burn rate x2 продуктивнее.', effect:{ type:'building', id:'cto', mult:2 }, cost:50000000,  unlockCondition: s => (s.buildings.cto||0) >= 1 },
-  { id:'c_ipo',       name:'IPO',                   emoji:'📈', category:'cto',  desc:'Выход на биржу. Теперь все работают ради акций.',         effect:{ type:'building', id:'cto', mult:3 }, cost:500000000,unlockCondition: s => (s.buildings.cto||0) >= 5 },
-
-  // Global upgrades
-  { id:'g_agile',     name:'Agile методология',   emoji:'🔄', category:'global', desc:'Спринты, стендапы, ретро. Все x2. Все устали.',           effect:{ type:'global', mult:2 }, cost:1000000,    unlockCondition: s => getTotalBuildings(s) >= 10 },
-  { id:'g_cicd',      name:'CI/CD пайплайн',       emoji:'⚙️', category:'global', desc:'Деплой по кнопке. Главное не нажать случайно.',           effect:{ type:'global', mult:2 }, cost:10000000,   unlockCondition: s => getTotalBuildings(s) >= 50 },
-  { id:'g_micro',     name:'Микросервисы',          emoji:'🔗', category:'global', desc:'Монолит разбит на 200 сервисов. Теперь все x3.',         effect:{ type:'global', mult:3 }, cost:100000000,  unlockCondition: s => getTotalBuildings(s) >= 100 },
-  { id:'g_blockchain',name:'Блокчейн',              emoji:'⛓️', category:'global', desc:'Добавили блокчейн. Инвесторы счастливы. Все x5 (???).', effect:{ type:'global', mult:5 }, cost:50000000000,unlockCondition: s => getTotalBuildings(s) >= 200 },
-];
-
-const ACHIEVEMENTS = [
-  { id:'first_loc',    name:'Hello World',           emoji:'👋', desc:'Написать первую строку кода',           condition: s => s.totalLoc >= 1 },
-  { id:'loc_100',      name:'Stack Overflow Lurker', emoji:'🔍', desc:'Накопить 100 ЛОК',                      condition: s => s.totalLoc >= 100 },
-  { id:'loc_1k',       name:'TODO Маньяк',            emoji:'📝', desc:'Накопить 1,000 ЛОК',                    condition: s => s.totalLoc >= 1000 },
-  { id:'loc_10k',      name:'Настоящий Программист', emoji:'💻', desc:'Накопить 10,000 ЛОК',                   condition: s => s.totalLoc >= 10000 },
-  { id:'loc_100k',     name:'10x Developer',          emoji:'🚀', desc:'Накопить 100,000 ЛОК',                  condition: s => s.totalLoc >= 100000 },
-  { id:'loc_1m',       name:'Principal Engineer',     emoji:'🏆', desc:'Накопить 1,000,000 ЛОК',               condition: s => s.totalLoc >= 1000000 },
-  { id:'loc_1b',       name:'Мифический Программист', emoji:'🐉', desc:'Накопить 1,000,000,000 ЛОК',           condition: s => s.totalLoc >= 1e9 },
-  { id:'clicks_100',   name:'Кнопкодав',              emoji:'🖱️', desc:'Кликнуть 100 раз',                     condition: s => s.totalClicks >= 100 },
-  { id:'clicks_1000',  name:'Карпальный Туннель',     emoji:'🤕', desc:'Кликнуть 1,000 раз',                   condition: s => s.totalClicks >= 1000 },
-  { id:'first_junior', name:'Первый найм',             emoji:'🐣', desc:'Нанять первого джуна',                  condition: s => (s.buildings.junior||0) >= 1 },
-  { id:'ten_juniors',  name:'Джун-ферма',              emoji:'🏭', desc:'Нанять 10 джунов',                      condition: s => (s.buildings.junior||0) >= 10 },
-  { id:'first_senior', name:'Серьёзный человек',      emoji:'🧙', desc:'Нанять первого сеньора',                condition: s => (s.buildings.senior||0) >= 1 },
-  { id:'first_cto',    name:'Мы серьёзная компания',  emoji:'👔', desc:'Нанять CTO',                            condition: s => (s.buildings.cto||0) >= 1 },
-  { id:'total_50',     name:'Стартап',                 emoji:'🏢', desc:'Иметь 50 сотрудников',                  condition: s => getTotalBuildings(s) >= 50 },
-  { id:'prestige_1',   name:'Переписать с нуля',       emoji:'🔄', desc:'Сделать первый престиж',                condition: s => s.prestige >= 1 },
-  { id:'prestige_5',   name:'Синдром перфекциониста', emoji:'♾️', desc:'Сделать 5 престижей',                   condition: s => s.prestige >= 5 },
-  { id:'upgrade_10',   name:'Шопоголик',               emoji:'🛍️', desc:'Купить 10 улучшений',                  condition: s => getUpgradeCount(s) >= 10 },
-  { id:'cps_1000',     name:'Фабрика Кода',            emoji:'⚙️', desc:'Достичь 1,000 ЛОК/с',                  condition: s => getLocPerSecond() >= 1000 },
-  { id:'event_10',     name:'Закалённый Боевым',       emoji:'🔥', desc:'Пережить 10 случайных событий',         condition: s => s.eventCount >= 10 },
-  { id:'offline_1h',   name:'Работал Пока Спал',       emoji:'😴', desc:'Получить оффлайн-прогресс за 1+ час',   condition: s => s.maxOffline >= 3600 },
-
-  // Story achievements
-  { id:'story_ch1', name:'Традиции священны',         emoji:'📜', desc:'Узнать о первом баге',                  condition: s => s.story && s.story.ch1 },
-  { id:'story_ch3', name:'Менеджер по документации',  emoji:'📚', desc:'Дорасти до главы о команде',            condition: s => s.story && s.story.ch3 },
-  { id:'story_ch6', name:'Не трогай это, человек',    emoji:'🤖', desc:'Разбудить ИИ Копилота',                 condition: s => s.story && s.story.ch6 },
-  { id:'story_end',  name:'Легенда индустрии',         emoji:'🌟', desc:'Прочитать все главы сюжета',            condition: s => STORY_CHAPTERS.every(ch => s.story && s.story[ch.id]) },
-
-  // Building milestones
-  { id:'25_juniors',  name:'Джун-армия',               emoji:'🐣', desc:'25 джунов в команде',                   condition: s => (s.buildings.junior||0) >= 25 },
-  { id:'10_seniors',  name:'Совет старейшин',           emoji:'🧙', desc:'10 сеньоров',                          condition: s => (s.buildings.senior||0) >= 10 },
-  { id:'5_cto',       name:'Слишком много боссов',      emoji:'👔', desc:'5 CTO одновременно',                   condition: s => (s.buildings.cto||0) >= 5 },
-  { id:'all_types',   name:'Полная команда',            emoji:'🏢', desc:'Купить хотя бы 1 каждого типа',        condition: s => BUILDINGS.filter(b=>!b.requiresShop).every(b=>(s.buildings[b.id]||0)>=1) },
-  { id:'100_total',   name:'Корпорация',                emoji:'🏙️', desc:'100 сотрудников суммарно',             condition: s => getTotalBuildings(s) >= 100 },
-
-  // Click milestones
-  { id:'clicks_10k',  name:'Туннельный синдром',        emoji:'🤕', desc:'10 000 кликов',                        condition: s => s.totalClicks >= 10000 },
-  { id:'clicks_100k', name:'Киборг',                    emoji:'🦾', desc:'100 000 кликов',                       condition: s => s.totalClicks >= 100000 },
-
-  // LOC milestones
-  { id:'loc_10m',    name:'Фабрика кода',               emoji:'🏭', desc:'10 миллионов ЛОК',                    condition: s => s.totalLoc >= 1e7 },
-  { id:'loc_1b_new', name:'Гигакодер',                  emoji:'💎', desc:'1 миллиард ЛОК',                      condition: s => s.totalLoc >= 1e9 },
-  { id:'loc_1t',     name:'Бог кода',                   emoji:'⚡', desc:'1 триллион ЛОК',                      condition: s => s.totalLoc >= 1e12 },
-
-  // Prestige milestones
-  { id:'prestige_3',  name:'Перфекционист',             emoji:'🔁', desc:'3 перезапуска',                        condition: s => s.prestige >= 3 },
-  { id:'prestige_10', name:'Сизиф IT',                  emoji:'⛰️', desc:'10 перезапусков',                     condition: s => s.prestige >= 10 },
-
-  // Event achievements
-  { id:'events_25',   name:'Всё видел',                 emoji:'😮', desc:'Пережить 25 событий',                  condition: s => s.eventCount >= 25 },
-  { id:'events_100',  name:'Ничто не удивляет',         emoji:'😐', desc:'Пережить 100 событий',                 condition: s => s.eventCount >= 100 },
-
-  // Speed/special
-  { id:'lps_100',    name:'Конвейер',                   emoji:'🚂', desc:'100 ЛОК/с',                            condition: s => getLocPerSecond() >= 100 },
-  { id:'lps_10k',    name:'Реактор',                    emoji:'⚛️', desc:'10 000 ЛОК/с',                        condition: s => getLocPerSecond() >= 10000 },
-  { id:'lps_1m',     name:'Сингулярность',              emoji:'🌀', desc:'1 000 000 ЛОК/с',                     condition: s => getLocPerSecond() >= 1000000 },
-
-  // Prestige shop
-  { id:'shop_5items', name:'Шопоголик престижа',        emoji:'🛍️', desc:'Купить 5 предметов в магазине',       condition: s => Object.values(s.prestigeShop||{}).reduce((a,b)=>a+b,0) >= 5 },
-
-  // Dungeon
-  { id:'dungeon_win', name:'Баг-охотник',               emoji:'🏰', desc:'Пройти подземелье до конца',           condition: s => (s.dungeonClears||0) >= 1 },
-  { id:'dungeon_5',   name:'Исследователь кода',        emoji:'🗺️', desc:'Пройти подземелье 5 раз',             condition: s => (s.dungeonClears||0) >= 5 },
-  { id:'dungeon_10',  name:'Охотник на глубины',        emoji:'⚔️', desc:'Пройти подземелье 10 раз',            condition: s => (s.dungeonClears||0) >= 10 },
-  { id:'dungeon_25',  name:'Легенда подземелья',        emoji:'🏆', desc:'Пройти подземелье 25 раз',            condition: s => (s.dungeonClears||0) >= 25 },
-  { id:'dungeon_50',  name:'Повелитель багов',          emoji:'🐉', desc:'Пройти подземелье 50 раз',            condition: s => (s.dungeonClears||0) >= 50 },
-
-  // LocThisRun milestones
-  { id:'run_1m',      name:'Миллион за ран',            emoji:'💰', desc:'Заработать 1М ЛОК за один перезапуск',  condition: s => (s.locThisRun||0) >= 1e6 },
-  { id:'run_10m',     name:'Десять миллионов',          emoji:'💎', desc:'Заработать 10М ЛОК за один перезапуск', condition: s => (s.locThisRun||0) >= 1e7 },
-  { id:'run_100m',    name:'Сотня миллионов',           emoji:'👑', desc:'Заработать 100М ЛОК за один перезапуск',condition: s => (s.locThisRun||0) >= 1e8 },
-  { id:'run_1b',      name:'Миллиард за ран',           emoji:'🌟', desc:'Заработать 1B ЛОК за один перезапуск',  condition: s => (s.locThisRun||0) >= 1e9 },
-
-  // Account level milestones
-  { id:'lvl_5',       name:'Начинающий',                emoji:'⬆️', desc:'Достичь уровня аккаунта 5',             condition: s => getAccountLevel() >= 5 },
-  { id:'lvl_10',      name:'Уверенный старт',           emoji:'🔥', desc:'Достичь уровня аккаунта 10',            condition: s => getAccountLevel() >= 10 },
-  { id:'lvl_25',      name:'Профессионал',              emoji:'⭐', desc:'Достичь уровня аккаунта 25',            condition: s => getAccountLevel() >= 25 },
-  { id:'lvl_50',      name:'Ветеран IT',                emoji:'🎖️', desc:'Достичь уровня аккаунта 50',            condition: s => getAccountLevel() >= 50 },
-
-  // Building count milestones
-  { id:'50_mid',      name:'Армия мидлов',              emoji:'👨‍💻', desc:'50 мидлов одновременно',               condition: s => (s.buildings.mid||0) >= 50 },
-  { id:'10_techlead', name:'Паноптикум тимлидов',       emoji:'📋', desc:'10 тимлидов в команде',                condition: s => (s.buildings.techlead||0) >= 10 },
-  { id:'5_devops',    name:'k8s-армия',                 emoji:'🐳', desc:'5 DevOps инженеров',                   condition: s => (s.buildings.devops||0) >= 5 },
-  { id:'3_architect', name:'Архитектурный совет',       emoji:'📐', desc:'3 архитектора в команде',              condition: s => (s.buildings.architect||0) >= 3 },
-  { id:'200_total',   name:'Единорог',                  emoji:'🦄', desc:'200 сотрудников суммарно',             condition: s => getTotalBuildings(s) >= 200 },
-  { id:'500_total',   name:'Корпорация мечты',          emoji:'🌆', desc:'500 сотрудников суммарно',             condition: s => getTotalBuildings(s) >= 500 },
-
-  // Prestige chain
-  { id:'prestige_2',  name:'Дважды с нуля',             emoji:'🔁', desc:'2 перезапуска',                        condition: s => s.prestige >= 2 },
-  { id:'prestige_7',  name:'Семикратный',               emoji:'✨', desc:'7 перезапусков',                       condition: s => s.prestige >= 7 },
-  { id:'prestige_15', name:'Бесконечный цикл',          emoji:'♾️', desc:'15 перезапусков',                      condition: s => s.prestige >= 15 },
-  { id:'prestige_20', name:'git reset --hard HEAD~∞',   emoji:'💀', desc:'20 перезапусков',                      condition: s => s.prestige >= 20 },
-
-  // Click milestones
-  { id:'clicks_1m',   name:'Тренированный палец',       emoji:'🦾', desc:'1 000 000 кликов',                     condition: s => s.totalClicks >= 1e6 },
-
-  // LPS milestones
-  { id:'lps_100k',    name:'Гиперпроизводство',         emoji:'🚀', desc:'100 000 ЛОК/с',                        condition: s => getLocPerSecond() >= 100000 },
-  { id:'lps_1m',      name:'Сингулярность',             emoji:'🌀', desc:'1 000 000 ЛОК/с',                      condition: s => getLocPerSecond() >= 1000000 },
-
-  // Events
-  { id:'events_50',   name:'Бывалый',                   emoji:'💪', desc:'Пережить 50 событий',                  condition: s => s.eventCount >= 50 },
-  { id:'events_200',  name:'Ничто не удивляет',         emoji:'😑', desc:'Пережить 200 событий',                 condition: s => s.eventCount >= 200 },
-
-  // Story milestones
-  { id:'story_ch4',   name:'Паразиты рынка',            emoji:'⚔️', desc:'Столкнуться с конкурентами',           condition: s => s.story && s.story.ch4 },
-  { id:'story_ch7',   name:'Корпоративный апогей',      emoji:'🏙️', desc:'Достичь апогея компании',              condition: s => s.story && s.story.ch7 },
-  { id:'story_ch8',   name:'Статья в Forbes',           emoji:'📰', desc:'Стать легендой индустрии',             condition: s => s.story && s.story.ch8 },
-
-  // Prestige shop
-  { id:'shop_all',    name:'Всё по чуть-чуть',          emoji:'🛒', desc:'Купить хотя бы 1 уровень всех предметов магазина', condition: s => Object.keys(s.prestigeShop||{}).length >= 8 },
-
-  // LOC total milestones (extra)
-  { id:'loc_10b',     name:'Архитектор вселенной',      emoji:'🌌', desc:'Накопить 10 миллиардов ЛОК суммарно', condition: s => s.totalLoc >= 1e10 },
-
-  // Offline
-  { id:'offline_8h',  name:'Удалённая работа++',        emoji:'🏠', desc:'Получить оффлайн-прогресс за 8+ часов', condition: s => s.maxOffline >= 28800 },
-];
-
-const STORY_CHAPTERS = [
-  {
-    id: 'ch0', requiredLoc: 0, title: '// Начало',
-    text: 'День первый. Тебя взяли джуном в маленький стартап. Код написан в 2003-м. Документации нет. Автора нашли и уволили в 2007-м. Репозиторий называется "final_v2_REAL_fix". Удачи.',
-    emoji: '👶'
-  },
-  {
-    id: 'ch1', requiredLoc: 500, title: '// Первый баг',
-    text: 'Ты нашёл баг который существует с момента основания компании. Он никому не мешает. Не трогай его — это традиция. Senior сказал что "так и задумано".',
-    emoji: '🐛'
-  },
-  {
-    id: 'ch2', requiredLoc: 5000, title: '// Технический долг',
-    text: 'Инвесторы в восторге. Продакт хочет добавить блокчейн. Архитектор нарисовал 47 квадратов со стрелками и ушёл в отпуск. Ты остался один. С квадратами.',
-    emoji: '💸'
-  },
-  {
-    id: 'ch3', requiredLoc: 50000, title: '// Команда',
-    text: 'Команда растёт. Появился новый Senior который на все вопросы отвечает "посмотри в документации". Документации нет. Ты написал документацию. Никто не читает.',
-    emoji: '👥'
-  },
-  {
-    id: 'ch4', requiredLoc: 200000, title: '// Конкуренты',
-    text: 'Конкурент скопировал ваш продукт. Слово в слово. Включая баг с удвоением цен. Пользователи переходят к ним — там "всё то же самое но дешевле".',
-    emoji: '⚔️'
-  },
-  {
-    id: 'ch5', requiredLoc: 1000000, title: '// Престиж',
-    text: 'Вы достигли успеха. Теперь можно всё переписать с нуля используя "правильную архитектуру". Это называется "стратегический рефакторинг". Инвесторы снова в восторге.',
-    emoji: '🔄'
-  },
-  {
-    id: 'ch6', requiredLoc: 5000000, title: '// ИИ восстание',
-    text: 'ИИ Копилот начал писать код сам. Код работает. Ты не понимаешь как. Он добавил комментарий: "// не трогай это, человек". Ты не трогаешь.',
-    emoji: '🤖'
-  },
-  {
-    id: 'ch7', requiredLoc: 50000000, title: '// Апогей',
-    text: 'Вы — крупнейшая IT-компания. У вас 10,000 сотрудников. 9,800 из них ходят на митинги. 200 пишут код. Система работает. Никто не знает почему.',
-    emoji: '🏆'
-  },
-  {
-    id: 'ch8', requiredLoc: 500000000, title: '// Легенда',
-    text: 'Статья в Forbes: "Как один программист написал систему обрабатывающую 99% мирового трафика за чашкой кофе". Ты читаешь статью. Пьёшь кофе. Добавляешь console.log.',
-    emoji: '🌟'
-  },
-];
-
-const EVENTS = [
-  { id:'bug_prod',     name:'БАГ В ПРОДЕ',            emoji:'🔥', type:'bad',
-    text:'Упал прод! Теряешь 5% текущих ЛОК.',
-    effect: s => { s.loc = Math.floor(s.loc * 0.95); } },
-  { id:'release',      name:'УСПЕШНЫЙ РЕЛИЗ',         emoji:'🎉', type:'good',
-    text:'Релиз прошёл без багов! ЛОК/с ×2 на 30 секунд.',
-    tempMulti: 2, tempDuration: 30000 },
-  { id:'meeting',      name:'ВСТРЕЧА НА 5 МИНУТ',     emoji:'📞', type:'bad',
-    text:'Встреча на «5 минут». Все замерли на 10 секунд.',
-    pause: 10000 },
-  { id:'coffee_break', name:'КОФЕМАШИНА СЛОМАЛАСЬ',   emoji:'☕', type:'bad',
-    text:'Кофемашина сломалась. Клики -50% на 20 секунд.',
-    tempClickMult: 0.5, tempDuration: 20000 },
-  { id:'recruiter',    name:'НАПИСАЛ РЕКРУТЕР',        emoji:'💼', type:'good',
-    text:'Рекрутер: «+20% к зарплате». Мотивация: джуны ×3 на 30 сек.',
-    tempBuildingMult: { junior: 3 }, tempDuration: 30000 },
-  { id:'junior_broke', name:'ДЖУН СНЁС БАЗУ',          emoji:'💥', type:'bad',
-    text:'Джун запустил DROP TABLE в проде. Теряешь 10% ЛОК.',
-    effect: s => { s.loc = Math.floor(s.loc * 0.90); },
-    condition: s => (s.buildings.junior||0) > 0 },
-  { id:'hackathon',    name:'ХАКАТОН',                 emoji:'⚡', type:'good',
-    text:'Команда на хакатоне! Все ×3 на 60 секунд.',
-    tempMulti: 3, tempDuration: 60000 },
-  { id:'techdebt',     name:'ТЕХНИЧЕСКИЙ ДОЛГ',        emoji:'💸', type:'neutral',
-    text:'Обнаружен техдолг. Пришлось рефакторить. -200 ЛОК.',
-    effect: s => { s.loc = Math.max(0, s.loc - 200); } },
-  { id:'senior_quit',  name:'СЕНЬОР УХОДИТ',           emoji:'👋', type:'bad',
-    text:'Сеньор уходит во фриланс. Его эффект -0 на 20 сек.',
-    condition: s => (s.buildings.senior||0) > 0,
-    tempBuildingMult: { senior: 0 }, tempDuration: 20000 },
-  { id:'new_laptop',   name:'НОВЫЙ НОУТБУК',           emoji:'💻', type:'good',
-    text:'Выдали новый ноутбук! ЛОК/клик ×3 на 30 секунд.',
-    tempClickMult: 3, tempDuration: 30000 },
-];
-
-const NEWS_MESSAGES = [
-  '99 маленьких багов в коде. Убрал один — 127 маленьких багов в коде.',
-  'Программирование: искусство говорить компьютеру что делать и удивляться результату.',
-  'Главный принцип оптимизации: сначала заставь работать, потом заставь работать быстро.',
-  'Любой код, написанный больше 6 месяцев назад, написан кем-то другим.',
-  'Работает? Не трогай.',
-  'Документация — это то что пишут после того как всё сломается.',
-  'undefined is not a function — мантра нашего времени.',
-  'Я не лентяй. Я оптимизирую свои энергозатраты.',
-  'Git blame показывает что это написал я. В 3 ночи. 2 года назад.',
-  'Stack Overflow — это не костыль. Это архитектурное решение.',
-  '// это точно временно (написано в 2019)',
-  'Наш код работает. Мы не знаем почему. Не трогаем.',
-  'Senior developer: человек который знает какие ошибки НЕ делать. И делает их.',
-  'npm install — теперь node_modules весит больше проекта.',
-  'Merge conflict на строке 1 в файле package-lock.json. Разработчик плачет.',
-  'В задаче написано «маленькая правка». Прошло 3 дня.',
-  'Работает только в Chrome? Это же 70% рынка. Окей!',
-  'Самый быстрый код — тот который не написан.',
-  'Первое правило оптимизации: не оптимизируй. Второе: ещё не оптимизируй.',
-  'Я написал этот код трезвым? Серьёзно?',
-];
+const BUILDINGS = RAW_GAME_DATA.buildings || [];
+const UPGRADES = (RAW_GAME_DATA.upgrades || []).map((upgrade) => ({
+  ...upgrade,
+  unlockCondition: (s) => matchesRule(upgrade.unlockRule, s),
+}));
+const STORY_CHAPTERS = RAW_GAME_DATA.storyChapters || [];
+const ACHIEVEMENTS = (RAW_GAME_DATA.achievements || []).map((achievement) => ({
+  ...achievement,
+  condition: (s) => matchesRule(achievement.rule, s),
+}));
+const EVENTS = (RAW_GAME_DATA.events || []).map((gameEvent) => ({
+  ...gameEvent,
+  condition: gameEvent.rule ? (s) => matchesRule(gameEvent.rule, s) : undefined,
+  effect: buildEffect(gameEvent.effectRule),
+}));
+const NEWS_MESSAGES = RAW_GAME_DATA.newsMessages || [];
 
 // ================================================
 // GAME STATE

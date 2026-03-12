@@ -52,8 +52,8 @@
       { emoji: '🐛', name: 'Охота на баги', desc: 'Мини-игра: лови баги за время', unlockLabel: 'Доступно сразу', link: 'minigame.php', linkText: 'Играть', unlocked: true },
       { emoji: '📖', name: 'Сюжет', desc: 'История развития разработчика', unlockLabel: 'Доступно сразу', link: null, linkText: null, note: 'Главы появляются автоматически по мере роста', unlocked: true },
       { emoji: '🏰', name: 'Подземелье', desc: 'Рогалик в кодовой базе — 10 этажей багов', unlockLabel: 'Уровень аккаунта 5', link: 'dungeon.php', linkText: 'Войти', unlocked: level >= 5 },
-      { emoji: '⚔️', name: 'PVP Арена', desc: 'Сражайся с другими разработчиками в режиме реального времени', unlockLabel: 'Престиж 3', link: state.prestige >= 3 ? 'pvp.php' : null, linkText: 'В арену', unlocked: state.prestige >= 3 },
-      { emoji: '🗺️', name: 'Особые события', desc: 'Специальные события с уникальными наградами', unlockLabel: 'Престиж 5', link: null, linkText: null, note: 'Открывается на 5-м перезапуске', unlocked: state.prestige >= 5 },
+      { emoji: '⚔️', name: 'PVP Арена', desc: 'Асинхронные дуэли между снимками прогресса', unlockLabel: 'В разработке', link: null, linkText: null, note: 'Вход в арену скрыт до появления реальной страницы и серверного контура', unlocked: false },
+      { emoji: '🗺️', name: 'Сезонные события', desc: 'Ограниченные по времени правила и награды', unlockLabel: 'Подготовка системы', link: null, linkText: null, note: 'Сначала будет общий event-слой, потом расписание и контент', unlocked: false },
     ];
 
     html += '<div class="progress-section">';
@@ -101,8 +101,8 @@
     const activities = [
       { emoji: '🐛', name: 'Охота на баги', desc: 'Мини-игра: лови баги за время', link: 'minigame.php', unlocked: true },
       { emoji: '🏰', name: 'Подземелье', desc: 'Рогалик: 10 этажей, боссы, лут', link: 'dungeon.php', unlocked: level >= 5, unlockHint: `Уровень аккаунта 5 (сейчас ${level})` },
-      { emoji: '⚔️', name: 'PVP Арена', desc: 'Бои с другими разработчиками', link: null, unlocked: state.prestige >= 3, unlockHint: `Престиж 3 (сейчас ${state.prestige})` },
-      { emoji: '🗺️', name: 'Особые события', desc: 'Случайные события с бонусами', link: null, unlocked: state.prestige >= 5, unlockHint: `Престиж 5 (сейчас ${state.prestige})` },
+      { emoji: '⚔️', name: 'PVP Арена', desc: 'Асинхронные дуэли между игроками', link: null, unlocked: false, unlockHint: 'В разработке: сначала страница, правила матчмейкинга и отдельный рейтинг' },
+      { emoji: '🗺️', name: 'Сезонные события', desc: 'Временные правила и уникальные награды', link: null, unlocked: false, unlockHint: 'Готовится event-система и расписание сезонов' },
     ];
 
     let html = '<div class="act-label">// активности</div><div class="act-cards">';

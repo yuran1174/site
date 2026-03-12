@@ -639,7 +639,8 @@
   - определён каталог событий и обязательных параметров
 
 ### TASK-036 — Вынести баланс в data-driven слой
-- Status: `in_progress`
+- Status: `done`
+- Note: добавлен `data/game/idle-balance.js` как единый источник данных для зданий, апгрейдов, достижений, сюжетных глав, событий и их rule-based unlock/condition схем; `idle.php` и `js/idle.js` переведены на новый data-driven runtime.
 - Priority: `P1`
 - Agent: `Game Systems`
 - Goal: сделать балансируемость игры управляемой
@@ -671,7 +672,8 @@
 ## Epic 9 — Content Scaling
 
 ### TASK-038 — Формализовать модель прогрессии
-- Status: `in_progress`
+- Status: `done`
+- Note: создан `docs/game/progression-model.md` с формализацией ранa, метапрогрессии, account level, prestige pacing, dungeon reward loop и unlock pacing как одной системы.
 - Priority: `P1`
 - Agent: `Game Systems`
 - Goal: стабилизировать развитие игры как системы
@@ -686,7 +688,8 @@
   - progression описана как система, а не только как код
 
 ### TASK-039 — Закрыть продуктовые заглушки
-- Status: `in_progress`
+- Status: `done`
+- Note: создан `docs/game/product-stubs.md`; misleading unlock для `pvp.php` убран из runtime UI, а PVP и сезонные события помечены как planned features без ложной навигации.
 - Priority: `P2`
 - Agent: `Game Systems`
 - Goal: убрать мёртвые зоны продукта
@@ -700,7 +703,8 @@
   - в интерфейсе не остаётся misleading navigation
 
 ### TASK-040 — Подготовить систему сезонного ивентинга
-- Status: `in_progress`
+- Status: `done`
+- Note: создан `docs/game/seasonal-events.md` с моделью seasonal definitions, modifiers, missions, rewards, reward hooks и ограничениями по балансу.
 - Priority: `P2`
 - Agent: `Game Systems`
 - Goal: заложить основу для регулярного контента

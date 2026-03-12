@@ -15,6 +15,28 @@
 
 ---
 
+## 2026-03-13 — Закрыты TASK-036, TASK-038, TASK-039 и TASK-040 по game systems
+
+**Что сделано:**
+- Добавлен `data/game/idle-balance.js`, в который вынесены здания, апгрейды, достижения, сюжетные главы, события и их rule-based условия; `idle.php` и `js/idle.js` переведены на новый data-driven источник
+- Создан `docs/game/progression-model.md` с формализацией ранa, prestige loop, account level, dungeon reward loop и unlock pacing как единой системы прогрессии
+- Создан `docs/game/product-stubs.md`; misleading unlock на несуществующий `pvp.php` убран из runtime UI, а PVP и сезонные события помечены как planned features без ложной навигации
+- Создан `docs/game/seasonal-events.md` с моделью seasonal definitions, modifiers, missions, rewards и reward hooks для будущего live-ops слоя
+- В `TODO.md` задачи `TASK-036`, `TASK-038`, `TASK-039`, `TASK-040` переведены в `done`
+
+**Файлы затронуты:**
+- `data/game/idle-balance.js` (создан)
+- `docs/game/progression-model.md` (создан)
+- `docs/game/product-stubs.md` (создан)
+- `docs/game/seasonal-events.md` (создан)
+- `idle.php` (обновлён)
+- `js/idle.js` (обновлён)
+- `js/idle-render.js` (обновлён)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
 ## 2026-03-13 — Приведён PHP-код к текущему formatter baseline
 
 **Что сделано:**

@@ -20,6 +20,12 @@ Project root: `C:\Users\yuran\PhpstormProjects\site`
 
 - Improve security and reduce trust in the client without breaking user flows.
 
+## Language
+
+- All communication with the user must be in Russian.
+- Final summaries, reports, questions, and explanations must be written in Russian.
+- Documentation files may be written in Russian unless there is a strong reason to use English.
+
 ## Do
 
 1. Add CSRF protection for state-changing requests.

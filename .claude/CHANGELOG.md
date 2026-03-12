@@ -1,7 +1,75 @@
+## 2026-03-12 — Зафиксирована продуктовая модель и baseline-метрики
+
+**Что сделано:**
+- Проанализированы текущие пользовательские потоки: лендинг, текстовая игра, idle-ядро, престиж, подземелье, мини-игра, auth/profile/leaderboard
+- Создан `docs/product/game-loop.md` с описанием ядра продукта, core loop, meta loop, active/passive активностей и primary/secondary механик
+- Создан `docs/product/monetization-outline.md` с безопасным контуром монетизации без pay-to-win как основной стратегии
+- Создан `docs/product/metrics.md` с baseline KPI и формулами расчёта activation, retention, average session length, login conversion, prestige conversion и dungeon engagement
+
+**Файлы затронуты:**
+- `docs/product/game-loop.md` (создан)
+- `docs/product/monetization-outline.md` (создан)
+- `docs/product/metrics.md` (создан)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
+## 2026-03-12 — Архитектурный аудит и техриски текущего состояния
+
+**Что сделано:**
+- Добавлена документация текущей архитектуры проекта с описанием страниц, AJAX-эндпоинтов, состояния, SQLite и потоков наград
+- Добавлен технический аудит рисков с разбивкой по severity: `critical`, `high`, `medium`, `low`
+- Зафиксированы предположения там, где код показывает непоследовательное поведение между клиентом и сервером
+
+**Файлы затронуты:**
+- `docs/architecture/current-state.md` (создан)
+- `docs/audit/technical-risks.md` (создан)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
 # CHANGELOG — История изменений проекта «Жизнь программиста»
 
 > Каждое изменение фиксируется здесь. Новые записи добавляются **сверху**.
 > Формат: дата, описание, затронутые файлы.
+
+---
+
+## 2026-03-12 — План целевой структуры проекта и безопасный scaffold каталогов
+
+**Что сделано:**
+- Создан документ `docs/architecture/target-structure.md` с описанием текущих структурных проблем, целевой структуры, поэтапной миграции и рисков
+- Добавлены пустые каталоги `public/`, `src/`, `config/`, `storage/`, `migrations/`, `tests/` как безопасный scaffold без переноса рабочих файлов
+- Зафиксировано, какие root-файлы и `ajax/`-эндпоинты должны временно остаться на месте и позже стать тонкими адаптерами
+
+**Файлы затронуты:**
+- `docs/architecture/target-structure.md` (создан)
+- `public/.gitkeep` (создан)
+- `src/.gitkeep` (создан)
+- `config/.gitkeep` (создан)
+- `storage/.gitkeep` (создан)
+- `migrations/.gitkeep` (создан)
+- `tests/.gitkeep` (создан)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
+## 2026-03-12 — Инструкции агентов дополнены требованием писать на русском
+
+**Что сделано:**
+- Во все файлы `agents/*.md` добавлено языковое правило: общение с пользователем и итоговые отчёты должны быть на русском
+- В `TODO.md` добавлено общее правило про русский язык для всех агентов
+
+**Файлы затронуты:**
+- `agents/architecture-audit.md` (обновлён)
+- `agents/product-analyst.md` (обновлён)
+- `agents/refactor-plan.md` (обновлён)
+- `agents/backend-extraction.md` (обновлён)
+- `agents/security-hardening.md` (обновлён)
+- `agents/testing-bootstrap.md` (обновлён)
+- `agents/devops-baseline.md` (обновлён)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
 
 ---
 

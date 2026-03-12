@@ -18,6 +18,12 @@ Project root: `C:\Users\yuran\PhpstormProjects\site`
 - Describe the current architecture of the project.
 - Produce a technical risk audit without changing product behavior.
 
+## Language
+
+- All communication with the user must be in Russian.
+- Final summaries, reports, questions, and explanations must be written in Russian.
+- Documentation files may be written in Russian unless there is a strong reason to use English.
+
 ## Do
 
 1. Study the current project structure, main pages, AJAX endpoints, SQLite usage, localStorage usage, and gameplay flows.

@@ -23,6 +23,12 @@ Project root: `C:\Users\yuran\PhpstormProjects\site`
 
 - Move the backend toward a maintainable structure while preserving current behavior.
 
+## Language
+
+- All communication with the user must be in Russian.
+- Final summaries, reports, questions, and explanations must be written in Russian.
+- Documentation files may be written in Russian unless there is a strong reason to use English.
+
 ## Main Principle
 
 - Existing entrypoints may remain in place.

@@ -20,6 +20,12 @@ Project root: `C:\Users\yuran\PhpstormProjects\site`
 
 - Make the project reproducible for development and manageable for deployment.
 
+## Language
+
+- All communication with the user must be in Russian.
+- Final summaries, reports, questions, and explanations must be written in Russian.
+- Documentation files may be written in Russian unless there is a strong reason to use English.
+
 ## Do
 
 1. Prepare `README.md` with local setup instructions.

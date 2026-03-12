@@ -16,6 +16,12 @@ Project root: `C:\Users\yuran\PhpstormProjects\site`
 
 - Define a safe migration plan for a more mature project structure without a risky rewrite.
 
+## Language
+
+- All communication with the user must be in Russian.
+- Final summaries, reports, questions, and explanations must be written in Russian.
+- Documentation files may be written in Russian unless there is a strong reason to use English.
+
 ## Do
 
 1. Inspect the current project structure.

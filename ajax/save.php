@@ -59,20 +59,23 @@ switch ($action) {
         ');
         $stmt->execute([$userId, $rawData]);
 
+        $dungeonClears = max(0, (int)($parsed['dungeonClears'] ?? 0));
+
         // Update leaderboard
         $lb = $db->prepare('
-            INSERT INTO leaderboard (user_id, username, total_loc, prestige_count, account_level, updated_at)
-            VALUES (?, ?, ?, ?, ?, strftime(\'%s\',\'now\'))
+            INSERT INTO leaderboard (user_id, username, total_loc, prestige_count, account_level, dungeon_clears, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?, strftime(\'%s\',\'now\'))
             ON CONFLICT(user_id) DO UPDATE SET
                 username       = excluded.username,
                 total_loc      = excluded.total_loc,
                 prestige_count = excluded.prestige_count,
                 account_level  = excluded.account_level,
+                dungeon_clears = excluded.dungeon_clears,
                 updated_at     = excluded.updated_at
         ');
-        $lb->execute([$userId, $username, $totalLoc, $prestigeCount, $accountLvl]);
+        $lb->execute([$userId, $username, $totalLoc, $prestigeCount, $accountLvl, $dungeonClears]);
 
-        echo json_encode(['success' => true]);
+        echo json_encode(['success' => true, 'accountLevel' => $accountLvl]);
         exit;
     }
 
@@ -86,8 +89,17 @@ switch ($action) {
             exit;
         }
 
-        // Return raw save_data as-is (it's already JSON)
-        echo json_encode(['success' => true, 'data' => $row['save_data']]);
+        // Also return server-computed account_level from leaderboard
+        $lbRow = $db->prepare('SELECT account_level, dungeon_clears FROM leaderboard WHERE user_id = ?');
+        $lbRow->execute([$userId]);
+        $lb = $lbRow->fetch();
+
+        echo json_encode([
+            'success'      => true,
+            'data'         => $row['save_data'],
+            'accountLevel' => $lb ? (int)$lb['account_level'] : 1,
+            'dungeonClears'=> $lb ? (int)$lb['dungeon_clears'] : 0,
+        ]);
         exit;
     }
 

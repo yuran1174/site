@@ -46,5 +46,8 @@ class DB {
         if (!in_array('account_level', $cols)) {
             $db->exec("ALTER TABLE leaderboard ADD COLUMN account_level INTEGER DEFAULT 1");
         }
+        if (!in_array('dungeon_clears', $cols)) {
+            $db->exec("ALTER TABLE leaderboard ADD COLUMN dungeon_clears INTEGER DEFAULT 0");
+        }
     }
 }

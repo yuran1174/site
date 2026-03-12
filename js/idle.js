@@ -666,6 +666,9 @@ async function loadGameServer() {
       // prestige*, prestigeShop, prestigePoints stay from server
     }
 
+    // Override dungeonClears with server's authoritative count if available
+    if (json.dungeonClears !== undefined) merged.dungeonClears = json.dungeonClears;
+
     const lastSave = merged.lastSave || Date.now();
     applyLoadedData(merged);
     applyOfflineProgress(lastSave);

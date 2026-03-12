@@ -28,6 +28,8 @@
 ## Epic 0 — Audit & Product Definition
 
 ### TASK-001 — Описать текущую архитектуру
+- Status: `done`
+- Note: создан `docs/architecture/current-state.md` с картой страниц, AJAX-эндпоинтов, состояния, SQLite, localStorage и связей между PHP/JS/сессиями.
 - Priority: `P0`
 - Agent: `Architecture Audit`
 - Goal: собрать полную карту проекта
@@ -47,6 +49,8 @@
   - указаны слабые места и точки связности
 
 ### TASK-002 — Провести технический аудит рисков
+- Status: `done`
+- Note: создан `docs/audit/technical-risks.md` с разбиением рисков по `critical/high/medium/low`, последствиями и рекомендуемыми действиями.
 - Priority: `P0`
 - Agent: `Architecture Audit`
 - Goal: зафиксировать ключевые техриски
@@ -269,6 +273,8 @@
 ## Epic 3 — Data Model, Migrations, Persistence
 
 ### TASK-014 — Ввести систему миграций
+- Status: `in_progress`
+- Note: запускаю минимальную версионируемую migration system с initial schema и runner без ломки текущего bootstrap.
 - Priority: `P0`
 - Agent: `Data Migration`
 - Goal: управлять схемой БД версионируемо

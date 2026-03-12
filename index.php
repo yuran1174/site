@@ -87,6 +87,7 @@ $todayZodiac = $zodiacKeys[(int)date('d') % 12];
       <li><a href="#bugfeature">Баг/Фича</a></li>
       <li><a href="#horoscope">Гороскоп</a></li>
       <li><a href="#quiz">Тест</a></li>
+      <li><a href="#roadmap">Роадмап</a></li>
     </ul>
     <button class="hamburger" id="hamburger">
       <span></span><span></span><span></span>
@@ -332,6 +333,98 @@ $todayZodiac = $zodiacKeys[(int)date('d') % 12];
       <p id="resultDesc"></p>
       <div class="result-traits" id="resultTraits"></div>
       <button class="btn-main" id="quizRestart">Пройти снова</button>
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section id="roadmap" class="section">
+  <div class="container">
+    <h2 class="section-title"><span class="accent">//</span> Дорожная карта</h2>
+    <p class="section-sub">Что строим дальше — честно и публично</p>
+
+    <div class="roadmap-current">
+      <div class="rm-current-label"><i class="fas fa-check-circle"></i> Уже в игре</div>
+      <div class="rm-current-tags">
+        <span class="rm-tag">⚙️ Idle-ядро</span>
+        <span class="rm-tag">✨ Престиж</span>
+        <span class="rm-tag">🏰 Подземелье (10 этажей)</span>
+        <span class="rm-tag">🐛 Охота на баги</span>
+        <span class="rm-tag">📖 Сюжет (8 глав)</span>
+        <span class="rm-tag">🎲 Случайные события</span>
+        <span class="rm-tag">🏆 Таблица лидеров</span>
+        <span class="rm-tag">👤 Аккаунты</span>
+      </div>
+    </div>
+
+    <div class="roadmap-phases">
+
+      <div class="rm-phase rm-phase--active">
+        <div class="rm-phase-head">
+          <div class="rm-phase-num">01</div>
+          <div class="rm-phase-info">
+            <div class="rm-phase-title">Укрепление основы</div>
+            <div class="rm-badge rm-badge--active"><i class="fas fa-code"></i> В разработке</div>
+          </div>
+        </div>
+        <ul class="rm-items">
+          <li class="rm-item"><span class="rm-dot"></span><strong>Dungeon v2 — классы</strong><br><span>Frontend / Backend / DevOps со своими статами и способностями</span></li>
+          <li class="rm-item"><span class="rm-dot"></span><strong>Dungeon v2 — боссы</strong><br><span>Боссы на 5-м и 10-м этажах с уникальными механиками</span></li>
+          <li class="rm-item"><span class="rm-dot"></span><strong>Dungeon v2 — экипировка</strong><br><span>Предметы, инвентарь, синергия с idle-прогрессом</span></li>
+          <li class="rm-item"><span class="rm-dot"></span><strong>Цепочки событий в idle</strong><br><span>Квесты из 2–3 шагов вместо одиночных событий</span></li>
+          <li class="rm-item"><span class="rm-dot"></span><strong>Активные способности</strong><br><span>Кликабельные скиллы с кулдауном в основной игре</span></li>
+        </ul>
+      </div>
+
+      <div class="rm-phase">
+        <div class="rm-phase-head">
+          <div class="rm-phase-num">02</div>
+          <div class="rm-phase-info">
+            <div class="rm-phase-title">Новые активности</div>
+            <div class="rm-badge rm-badge--planned"><i class="fas fa-clock"></i> Планируется</div>
+          </div>
+        </div>
+        <ul class="rm-items">
+          <li class="rm-item"><span class="rm-dot"></span><strong>⚔️ PVP Арена</strong><br><span>Асинхронные дуэли, ставки на очки опыта, рейтинг арены</span></li>
+          <li class="rm-item"><span class="rm-dot"></span><strong>🔍 Code Review</strong><br><span>Мини-игра: найди баги в псевдокоде за 60 секунд</span></li>
+          <li class="rm-item"><span class="rm-dot"></span><strong>⚡ Спринт-режим</strong><br><span>5-минутный challenge с уникальными наградами раз в час</span></li>
+        </ul>
+      </div>
+
+      <div class="rm-phase">
+        <div class="rm-phase-head">
+          <div class="rm-phase-num">03</div>
+          <div class="rm-phase-info">
+            <div class="rm-phase-title">Мета-прогрессия</div>
+            <div class="rm-badge rm-badge--planned"><i class="fas fa-clock"></i> Планируется</div>
+          </div>
+        </div>
+        <ul class="rm-items">
+          <li class="rm-item"><span class="rm-dot"></span><strong>Престиж v2 — смена работы</strong><br><span>Второй слой: выбор работодателя с уникальными механиками</span></li>
+          <li class="rm-item"><span class="rm-dot"></span><strong>Компании</strong><br><span>Стартап / Корпорация / Удалёнка / Gamedev — разный геймплей</span></li>
+          <li class="rm-item"><span class="rm-dot"></span><strong>Сезонные события</strong><br><span>Ежемесячные ивенты с уникальными наградами</span></li>
+        </ul>
+      </div>
+
+      <div class="rm-phase">
+        <div class="rm-phase-head">
+          <div class="rm-phase-num">04</div>
+          <div class="rm-phase-info">
+            <div class="rm-phase-title">Социальность</div>
+            <div class="rm-badge rm-badge--idea"><i class="fas fa-lightbulb"></i> Идеи</div>
+          </div>
+        </div>
+        <ul class="rm-items">
+          <li class="rm-item"><span class="rm-dot"></span><strong>Гильдии / Команды</strong><br><span>Совместные проекты, командный лидерборд</span></li>
+          <li class="rm-item"><span class="rm-dot"></span><strong>Асинхронные рейды</strong><br><span>Группа игроков против общего «легаси-монолита»</span></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="roadmap-footer-note">
+      <i class="fas fa-terminal"></i>
+      Роадмап живой — обновляется по мере разработки. Каждая фаза должна быть играбельна сама по себе.
     </div>
   </div>
 </section>

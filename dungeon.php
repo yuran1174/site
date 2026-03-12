@@ -29,6 +29,7 @@ if ($isLoggedIn) {
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/dungeon.css">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
 
@@ -98,6 +99,7 @@ if ($isLoggedIn) {
       <span class="cs-hint-key">Q</span><span class="cs-hint-key">E</span> — навыки &nbsp;·&nbsp;
       <span class="cs-hint-key">Пробел</span> — пропустить ход
     </div>
+    <div class="cs-hint cs-hint-touch">📱 На мобильном — управляй D-Pad под полем</div>
 
     <?php if ($isLoggedIn): ?>
     <div class="cs-bonus">Уровень аккаунта <?= (int)$accountLevel ?> → бонус +<?= floor($accountLevel / 5) ?> к статам</div>
@@ -177,6 +179,23 @@ if ($isLoggedIn) {
         <a href="idle.php" class="btn-back">← В idle-игру</a>
       </div>
 
+    </div>
+  </div>
+
+  <!-- MOBILE D-PAD -->
+  <div id="dpad" style="display:none;">
+    <div class="dpad-dirs">
+      <button class="dpad-btn" id="dpadUp">↑</button>
+      <div class="dpad-row">
+        <button class="dpad-btn" id="dpadLeft">←</button>
+        <button class="dpad-btn dpad-skip" id="dpadSkip">·</button>
+        <button class="dpad-btn" id="dpadRight">→</button>
+      </div>
+      <button class="dpad-btn" id="dpadDown">↓</button>
+    </div>
+    <div class="dpad-skills">
+      <button class="dpad-btn dpad-skill" id="dpadQ">Q</button>
+      <button class="dpad-btn dpad-skill" id="dpadE">E</button>
     </div>
   </div>
 

@@ -28,7 +28,8 @@
       "Bash(cd \"D:/OSPanel/site\" && bash .claude/push.sh \"fix: #4 — профиль: все достижения \\(70 шт\\), locked показываются с ???, grid-layout\")",
       "Bash(cd \"D:/OSPanel/site\" && bash .claude/push.sh \"fix: #5 — timeAgo в лидерборде: недели, дата, нулевой timestamp\")",
       "Bash(cd \"D:/OSPanel/site\" && bash .claude/push.sh \"fix: #6 — убраны кнопки экспорт/импорт/сброс, importModal, все обработчики\")",
-      "Bash(bash .claude/push.sh \"fix: исправлены награды из активностей — неверный ключ localStorage, race condition, sync после применения\")"
+      "Bash(bash .claude/push.sh \"fix: исправлены награды из активностей — неверный ключ localStorage, race condition, sync после применения\")",
+      "Bash(bash .claude/push.sh \"feat: мобильная адаптация — D-pad для подземелья, TG SDK, hover:none, touch targets\")"
     ]
   }
 }

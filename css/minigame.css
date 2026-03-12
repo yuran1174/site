@@ -10,8 +10,8 @@
 }
 
 .mg-body {
-  overflow: hidden;
-  height: 100vh;
+  overflow-x: hidden;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
@@ -22,7 +22,7 @@
   align-items: center;
   justify-content: center;
   padding: 60px 16px 20px;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 /* ================================================
@@ -201,6 +201,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  touch-action: manipulation;
 }
 
 .mg-cell:hover { border-color: var(--border2); }

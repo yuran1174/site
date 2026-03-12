@@ -735,6 +735,7 @@ function sendReward(loc, oo, isWin) {
 function startGame(classId) {
     document.getElementById('classSelect').style.display = 'none';
     document.getElementById('gameOverlay').style.display = 'none';
+    document.getElementById('dpad').style.display = 'flex';
 
     const cls   = CLASS_DEFS[classId];
     const bonus = Math.floor((ACCOUNT_LEVEL || 1) / 5);
@@ -1034,7 +1035,30 @@ $(function () {
 
     $('#btnRestart, #overlayRestart').on('click', function () {
         document.getElementById('gameOverlay').style.display = 'none';
+        document.getElementById('dpad').style.display = 'none';
         G = null;
         document.getElementById('classSelect').style.display = 'flex';
+    });
+
+    // Mobile D-pad bindings
+    const dpadMap = [
+        ['dpadUp',    () => tryMove(0, -1)],
+        ['dpadDown',  () => tryMove(0,  1)],
+        ['dpadLeft',  () => tryMove(-1, 0)],
+        ['dpadRight', () => tryMove(1,  0)],
+        ['dpadSkip',  () => performTurn()],
+        ['dpadQ',     () => useSkill(0)],
+        ['dpadE',     () => useSkill(1)],
+    ];
+    dpadMap.forEach(([id, fn]) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (G && G.phase === 'playing') fn();
+        }, { passive: false });
+        el.addEventListener('click', () => {
+            if (G && G.phase === 'playing') fn();
+        });
     });
 });

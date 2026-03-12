@@ -5,6 +5,24 @@
 
 ---
 
+## 2026-03-12 — Мобильная адаптация / TG Mini App
+
+**Что сделано:**
+- `idle.php`, `dungeon.php`, `minigame.php`: добавлен Telegram Web App SDK (`telegram-web-app.js`)
+- `css/idle.css`: fix `#rightPanel` на мобильном (min-height: 55vh вместо 500px), `@media (hover: none)` убирает sticky-hover, `touch-action: manipulation` на кнопках, `overflow-x: hidden`, улучшения для activitiesBar на узком экране, вкладки `#shopTabs` прокручиваются горизонтально
+- `css/auth.css`: `overflow-x: hidden`, `touch-action: manipulation`
+- `css/minigame.css`: `touch-action: manipulation` на ячейках, убран `overflow: hidden` / `height: 100vh` (заменён на `min-height: 100vh` + `overflow-x: hidden`)
+- `dungeon.php`: добавлен виртуальный D-pad (7 кнопок: ↑↓←→, skip, Q, E), подсказка на мобильном
+- `css/dungeon.css`: стили D-pad (скрыт на десктопе, видим на мобильном ≤680px)
+- `js/dungeon.js`: обработчики D-pad (touchstart + click), show/hide D-pad при старте/рестарте игры
+
+**Файлы затронуты:**
+- `idle.php`, `dungeon.php`, `minigame.php`
+- `css/idle.css`, `css/auth.css`, `css/minigame.css`, `css/dungeon.css`
+- `js/dungeon.js`
+
+---
+
 ## 2026-03-12 — Фикс: награды из активностей не зачислялись на аккаунт
 
 **Что сделано:**

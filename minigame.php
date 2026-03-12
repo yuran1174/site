@@ -17,6 +17,7 @@ $username   = $_SESSION['username'] ?? null;
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/auth.css">
   <link rel="stylesheet" href="css/minigame.css">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body class="mg-body">
 

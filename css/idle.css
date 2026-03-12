@@ -33,6 +33,8 @@
 /* RESET */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; overflow: hidden; }
+html { overflow-x: hidden; }
+button, a, [role="button"] { touch-action: manipulation; }
 
 body {
   font-family: var(--sans);
@@ -1259,7 +1261,7 @@ body {
    RESPONSIVE
    ================================================ */
 @media (max-width: 800px) {
-  html, body { overflow: auto; }
+  html, body { overflow: auto; overflow-x: hidden; }
 
   #gameLayout {
     flex-direction: column;
@@ -1276,8 +1278,9 @@ body {
   }
 
   #rightPanel {
-    height: 500px;
-    flex: none;
+    min-height: 55vh;
+    flex: 1;
+    height: auto;
   }
 
   #topbar { flex-wrap: wrap; height: auto; padding: 10px 14px; gap: 8px; top: 34px; }
@@ -1290,20 +1293,45 @@ body {
   #achievementsList { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
   #upgradesList { grid-template-columns: 1fr; }
 
-  #clickBtn { width: 130px; height: 130px; }
-  .click-icon { font-size: 28px; }
-  .click-glow { width: 150px; height: 150px; }
+  #clickBtn { width: 140px; height: 140px; }
+  .click-icon { font-size: 30px; }
+  .click-glow { width: 160px; height: 160px; }
 
   #userBar { gap: 8px; padding: 0 10px; }
   .ub-user { display: none; }
+
+  .tab-btn { min-height: 44px; }
+  .building-card { min-height: 44px; }
+  #btnRestart { min-height: 44px; }
 }
 
 @media (max-width: 480px) {
   #topbar-center { order: 3; width: 100%; }
   #topbar-left, #topbar-right { flex: 1; }
 
-  .tab-btn { padding: 10px 10px; font-size: 12px; }
-  #shopTabs { padding: 0 8px; }
+  .tab-btn { padding: 12px 8px; font-size: 12px; }
+  #shopTabs { padding: 0 4px; overflow-x: auto; flex-wrap: nowrap; }
+
+  .act-cards { flex-direction: column; }
+  .act-card { min-width: unset; }
+  #activitiesBar { margin: 8px 0 12px; padding: 0 8px; }
+}
+
+/* Убираем sticky-hover эффекты на touch-устройствах */
+@media (hover: none) {
+  .building-card:hover {
+    border-color: var(--border);
+    box-shadow: none;
+    transform: none;
+  }
+  .building-card.affordable:hover { border-color: rgba(0,212,170,0.3); }
+  .building-card::before { display: none; }
+  .upgrade-card:hover { border-color: var(--border); box-shadow: none; }
+  .achieve-card.earned:hover { transform: none; box-shadow: none; }
+  #clickBtn:hover { transform: none; }
+  #prestigeBtn:hover { transform: none; box-shadow: none; }
+  .tab-btn:hover { color: var(--dim); }
+  .act-unlocked:hover { border-color: rgba(0,212,170,0.25); background: unset; }
 }
 
 /* ================================================

@@ -13,6 +13,17 @@ use RuntimeException;
 
 final class GameSaveService
 {
+    private const PRESTIGE_SHOP_ITEMS = [
+        'coffee_iv' => ['cost' => 1, 'maxLevel' => 5],
+        'veteran' => ['cost' => 2, 'maxLevel' => 1],
+        'discount' => ['cost' => 3, 'maxLevel' => 3],
+        'automator' => ['cost' => 4, 'maxLevel' => 1],
+        'legacy' => ['cost' => 5, 'maxLevel' => 1, 'requiresPrestige' => 3],
+        'ai_assist' => ['cost' => 8, 'maxLevel' => 1, 'requiresPrestige' => 5],
+        'offline_boost' => ['cost' => 2, 'maxLevel' => 3],
+        'event_luck' => ['cost' => 3, 'maxLevel' => 2],
+    ];
+
     public function __construct(
         private readonly GameSaveRepository $gameSaves,
         private readonly LeaderboardRepository $leaderboard,
@@ -86,7 +97,7 @@ final class GameSaveService
         $clean['prestigeMulti'] = round((float) pow(1.5, $clean['prestige']), 8);
         $clean['prestigePoints'] = $this->intValue($parsed['prestigePoints'] ?? 0, 0, 100000);
         $clean['totalPrestigePoints'] = $this->intValue($parsed['totalPrestigePoints'] ?? 0, 0, 100000);
-        $clean['prestigeShop'] = $this->intMap($parsed['prestigeShop'] ?? [], 32, 10);
+        $clean['prestigeShop'] = $this->normalizePrestigeShop($parsed['prestigeShop'] ?? []);
         $clean['eventCount'] = $this->intValue($parsed['eventCount'] ?? 0, 0, 1000000);
         $clean['maxOffline'] = $this->intValue($parsed['maxOffline'] ?? 0, 0, 86400);
         $clean['story'] = $this->boolMap($parsed['story'] ?? [], 128);
@@ -101,35 +112,49 @@ final class GameSaveService
             $clean['locThisRun'] = $clean['totalLoc'];
         }
 
+        $allowedMaxOffline = $this->allowedMaxOfflineSeconds($clean['prestigeShop']);
+        if ($clean['maxOffline'] > $allowedMaxOffline) {
+            $this->securityLog('suspicious_save_max_offline', [
+                'incoming' => $clean['maxOffline'],
+                'allowed' => $allowedMaxOffline,
+            ]);
+            $clean['maxOffline'] = $allowedMaxOffline;
+        }
+
         $existingPrestige = $this->intValue($existing['prestige'] ?? 0, 0, 1000);
         if ($clean['prestige'] > $existingPrestige + 3) {
-            if (function_exists('app_security_log')) {
-                app_security_log('suspicious_save_prestige_jump', [
-                    'existing' => $existingPrestige,
-                    'incoming' => $clean['prestige'],
-                ]);
-            }
+            $this->securityLog('suspicious_save_prestige_jump', [
+                'existing' => $existingPrestige,
+                'incoming' => $clean['prestige'],
+            ]);
             $clean['prestige'] = $existingPrestige + 3;
             $clean['prestigeMulti'] = round((float) pow(1.5, $clean['prestige']), 8);
         }
 
         $existingDungeonClears = $this->intValue($existing['dungeonClears'] ?? 0, 0, 10000);
         if ($clean['dungeonClears'] > $existingDungeonClears + 3) {
-            if (function_exists('app_security_log')) {
-                app_security_log('suspicious_save_dungeon_jump', [
-                    'existing' => $existingDungeonClears,
-                    'incoming' => $clean['dungeonClears'],
-                ]);
-            }
+            $this->securityLog('suspicious_save_dungeon_jump', [
+                'existing' => $existingDungeonClears,
+                'incoming' => $clean['dungeonClears'],
+            ]);
             $clean['dungeonClears'] = $existingDungeonClears + 3;
         }
 
         $existingTotalOo = $this->intValue($existing['totalPrestigePoints'] ?? 0, 0, 100000);
-        if ($clean['totalPrestigePoints'] > $existingTotalOo + 100 && function_exists('app_security_log')) {
-            app_security_log('suspicious_save_oo_jump', [
+        if ($clean['totalPrestigePoints'] > $existingTotalOo + 100) {
+            $this->securityLog('suspicious_save_oo_jump', [
                 'existing' => $existingTotalOo,
                 'incoming' => $clean['totalPrestigePoints'],
             ]);
+            $clean['totalPrestigePoints'] = $existingTotalOo + 100;
+        }
+
+        if ($clean['prestigePoints'] > $clean['totalPrestigePoints']) {
+            $this->securityLog('suspicious_save_prestige_points_balance', [
+                'prestigePoints' => $clean['prestigePoints'],
+                'totalPrestigePoints' => $clean['totalPrestigePoints'],
+            ]);
+            $clean['prestigePoints'] = $clean['totalPrestigePoints'];
         }
 
         return $clean;
@@ -189,16 +214,7 @@ final class GameSaveService
             throw new RuntimeException('No item id');
         }
 
-        $shopItems = [
-            'coffee_iv' => ['cost' => 1, 'maxLevel' => 5],
-            'veteran' => ['cost' => 2, 'maxLevel' => 1],
-            'discount' => ['cost' => 3, 'maxLevel' => 3],
-            'automator' => ['cost' => 4, 'maxLevel' => 1],
-            'legacy' => ['cost' => 5, 'maxLevel' => 1, 'requiresPrestige' => 3],
-            'ai_assist' => ['cost' => 8, 'maxLevel' => 1, 'requiresPrestige' => 5],
-            'offline_boost' => ['cost' => 2, 'maxLevel' => 3],
-            'event_luck' => ['cost' => 3, 'maxLevel' => 2],
-        ];
+        $shopItems = self::PRESTIGE_SHOP_ITEMS;
 
         if (!isset($shopItems[$itemId])) {
             throw new RuntimeException('Unknown item');
@@ -338,6 +354,50 @@ final class GameSaveService
         }
 
         return $clean;
+    }
+
+    private function normalizePrestigeShop(mixed $value): array
+    {
+        if (!is_array($value)) {
+            return [];
+        }
+
+        $clean = [];
+        foreach (self::PRESTIGE_SHOP_ITEMS as $itemId => $item) {
+            $incoming = $this->intValue($value[$itemId] ?? 0, 0, 10);
+            if ($incoming <= 0) {
+                continue;
+            }
+
+            $maxLevel = (int) $item['maxLevel'];
+            if ($incoming > $maxLevel) {
+                $this->securityLog('suspicious_save_shop_level', [
+                    'itemId' => $itemId,
+                    'incoming' => $incoming,
+                    'allowed' => $maxLevel,
+                ]);
+            }
+
+            $clean[$itemId] = min($incoming, $maxLevel);
+        }
+
+        return $clean;
+    }
+
+    private function allowedMaxOfflineSeconds(array $prestigeShop): int
+    {
+        $offlineBoostLevel = $this->intValue($prestigeShop['offline_boost'] ?? 0, 0, 3);
+
+        return (8 + ($offlineBoostLevel * 4)) * 3600;
+    }
+
+    private function securityLog(string $event, array $context): void
+    {
+        if (!function_exists('app_security_log')) {
+            return;
+        }
+
+        app_security_log($event, $context);
     }
 
     private function nowMs(): int

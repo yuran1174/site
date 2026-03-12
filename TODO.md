@@ -387,8 +387,8 @@
   - лимиты настраиваемы
 
 ### TASK-021 — Усилить серверную валидацию и античит
-- Status: `partial`
-- Note: добавлены cap'ы наград, нормализация save payload, серверный пересчёт `prestigeMulti`, логирование подозрительных скачков и `docs/security/anti-cheat-baseline.md`; полноценной серверно-авторитативной модели прогресса пока нет.
+  - Status: `done`
+  - Note: добавлены cap'ы наград, нормализация save payload, серверный пересчёт `prestigeMulti`, whitelist/max-level для `prestigeShop`, серверный лимит `maxOffline`, инвариант `prestigePoints <= totalPrestigePoints`, clamp/log подозрительных скачков и обновлён `docs/security/anti-cheat-baseline.md`; полноценная server-authoritative модель остаётся отдельным следующим этапом.
 - Priority: `P0`
 - Agent: `Security Hardening`
 - Goal: уменьшить доверие к клиенту
@@ -639,6 +639,7 @@
   - определён каталог событий и обязательных параметров
 
 ### TASK-036 — Вынести баланс в data-driven слой
+- Status: `in_progress`
 - Priority: `P1`
 - Agent: `Game Systems`
 - Goal: сделать балансируемость игры управляемой
@@ -670,6 +671,7 @@
 ## Epic 9 — Content Scaling
 
 ### TASK-038 — Формализовать модель прогрессии
+- Status: `in_progress`
 - Priority: `P1`
 - Agent: `Game Systems`
 - Goal: стабилизировать развитие игры как системы
@@ -684,6 +686,7 @@
   - progression описана как система, а не только как код
 
 ### TASK-039 — Закрыть продуктовые заглушки
+- Status: `in_progress`
 - Priority: `P2`
 - Agent: `Game Systems`
 - Goal: убрать мёртвые зоны продукта
@@ -697,6 +700,7 @@
   - в интерфейсе не остаётся misleading navigation
 
 ### TASK-040 — Подготовить систему сезонного ивентинга
+- Status: `in_progress`
 - Priority: `P2`
 - Agent: `Game Systems`
 - Goal: заложить основу для регулярного контента

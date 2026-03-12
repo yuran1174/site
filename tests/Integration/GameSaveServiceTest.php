@@ -139,6 +139,44 @@ final class GameSaveServiceTest extends DatabaseTestCase
         self::assertSame(5, $sanitized['dungeonClears']);
     }
 
+    public function testSanitizePayloadKeepsPrestigeShopWithinServerRules(): void
+    {
+        $service = $this->createService();
+
+        $sanitized = $service->sanitizePayload([
+            'prestigeShop' => [
+                'coffee_iv' => 99,
+                'offline_boost' => 99,
+                'event_luck' => 2,
+                'hacked_item' => 7,
+            ],
+            'maxOffline' => 999999,
+        ], $service->defaultData());
+
+        self::assertSame([
+            'coffee_iv' => 5,
+            'offline_boost' => 3,
+            'event_luck' => 2,
+        ], $sanitized['prestigeShop']);
+        self::assertSame(72000, $sanitized['maxOffline']);
+    }
+
+    public function testSanitizePayloadClampsSuspiciousPrestigePointBalances(): void
+    {
+        $service = $this->createService();
+
+        $existing = $service->defaultData();
+        $existing['totalPrestigePoints'] = 10;
+
+        $sanitized = $service->sanitizePayload([
+            'prestigePoints' => 999,
+            'totalPrestigePoints' => 999,
+        ], $existing);
+
+        self::assertSame(110, $sanitized['totalPrestigePoints']);
+        self::assertSame(110, $sanitized['prestigePoints']);
+    }
+
     private function createUser(string $username): int
     {
         $hash = password_hash('secret123', PASSWORD_BCRYPT);

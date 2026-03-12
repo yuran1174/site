@@ -1,3 +1,20 @@
+## 2026-03-13 — Завершён TASK-021 по серверной валидации и anti-cheat baseline
+
+**Что сделано:**
+- Усилена серверная нормализация save payload в `GameSaveService`: `prestigeShop` теперь whitelist'ится по известным item id и режется по server-side `maxLevel`
+- `maxOffline` теперь ограничивается серверно-допустимым максимумом на основе `offline_boost`, а `prestigePoints` не могут превышать `totalPrestigePoints`
+- Слишком большие скачки `totalPrestigePoints` теперь не только логируются, но и режутся до безопасного порога
+- Добавлены интеграционные тесты для shop/maxOffline и OO-инвариантов, обновлены `TODO.md` и `docs/security/anti-cheat-baseline.md`
+
+**Файлы затронуты:**
+- `src/Application/GameSave/GameSaveService.php` (обновлён)
+- `tests/Integration/GameSaveServiceTest.php` (обновлён)
+- `docs/security/anti-cheat-baseline.md` (обновлён)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
 ## 2026-03-13 — Приведён PHP-код к текущему formatter baseline
 
 **Что сделано:**

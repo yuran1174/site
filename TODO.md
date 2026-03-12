@@ -305,6 +305,8 @@
   - есть обоснованное решение по каждой крупной сущности
 
 ### TASK-016 — Подготовить стратегию БД на рост
+- Status: `done`
+- Note: создан `docs/data/sqlite-vs-postgres.md`; зафиксировано, что SQLite остаётся текущим решением для single-instance стадии, а обязательный переход на PostgreSQL наступает при multiple writers, event-heavy storage, server-authoritative progression или более жёстких требованиях к backup/restore.
 - Priority: `P1`
 - Agent: `Data Migration`
 - Goal: оценить пределы SQLite и критерии перехода на PostgreSQL
@@ -550,6 +552,8 @@
 ## Epic 7 — DevOps, Runtime, Observability
 
 ### TASK-031 — Описать локальный запуск и onboarding
+- Status: `done`
+- Note: добавлен `README.md` с локальным запуском, env setup, миграциями, тестами и базовым smoke-check.
 - Priority: `P0`
 - Agent: `DevOps Baseline`
 - Goal: убрать knowledge silo
@@ -564,6 +568,8 @@
   - новый разработчик может поднять проект по инструкции
 
 ### TASK-032 — Подготовить production/stage/dev конфиги
+- Status: `done`
+- Note: добавлен `docs/devops/environments.md` с явной стратегией для `development`, `stage`, `production` и набором обязательных env-переменных.
 - Priority: `P1`
 - Agent: `DevOps Baseline`
 - Goal: сделать окружения явными
@@ -578,6 +584,8 @@
   - dev и prod конфиги не смешаны
 
 ### TASK-033 — Подготовить deploy strategy
+- Status: `done`
+- Note: добавлен `docs/devops/deploy.md` с release flow, rollback, backup и migration/deploy baseline.
 - Priority: `P1`
 - Agent: `DevOps Baseline`
 - Goal: сделать деплой повторяемым
@@ -593,6 +601,8 @@
   - rollback-сценарий продуман
 
 ### TASK-034 — Ввести error monitoring и uptime checks
+- Status: `done`
+- Note: добавлен `docs/devops/monitoring.md` с baseline error logging, uptime checks, SQLite health и операционным регламентом.
 - Priority: `P2`
 - Agent: `DevOps Baseline`
 - Goal: видеть проблемы в рантайме до жалоб пользователя

@@ -1,3 +1,18 @@
+## 2026-03-13 — Зафиксирована стратегия роста БД и закрыт TASK-016
+
+**Что сделано:**
+- Создан `docs/data/sqlite-vs-postgres.md` с decision record по текущему выбору SQLite и условиям обязательного перехода на PostgreSQL
+- Зафиксированы фактические SQLite-first ограничения текущей инфраструктуры: `sqlite:` DSN в `DatabaseManager`, SQLite-специфичный SQL и single-instance operational model
+- Описаны триггеры перехода: multiple writers, event-heavy storage, server-authoritative gameplay, analytics/query pressure и более жёсткие требования к backup/restore
+- В `TODO.md` задача `TASK-016` переведена в `done`
+
+**Файлы затронуты:**
+- `docs/data/sqlite-vs-postgres.md` (создан)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
 ## 2026-03-13 — Зафиксирована стратегия хранения игровых данных и закрыт TASK-015
 
 **Что сделано:**
@@ -91,6 +106,25 @@
 
 **Файлы затронуты:**
 - `.github/workflows/ci.yml` (создан)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
+## 2026-03-13 — Добавлен DevOps baseline: onboarding, env strategy, deploy и monitoring docs
+
+**Что сделано:**
+- Добавлен `README.md` с инструкцией локального запуска, env setup, миграциями и командами качества
+- Добавлен `docs/devops/environments.md` с разделением `development` / `stage` / `production`
+- Добавлен `docs/devops/deploy.md` с baseline release flow, rollback и backup strategy
+- Добавлен `docs/devops/monitoring.md` с baseline error logging, uptime checks и SQLite health signals
+- В `TODO.md` задачи `TASK-031`, `TASK-032`, `TASK-033`, `TASK-034` переведены в `done`
+
+**Файлы затронуты:**
+- `README.md` (создан)
+- `docs/devops/environments.md` (создан)
+- `docs/devops/deploy.md` (создан)
+- `docs/devops/monitoring.md` (создан)
 - `TODO.md` (обновлён)
 - `.claude/CHANGELOG.md` (обновлён)
 

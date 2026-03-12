@@ -638,26 +638,39 @@ async function loadGameServer() {
     const json = await res.json();
     if (!json.success || !json.data) return false;
 
-    const data = JSON.parse(json.data);
-    if (!data || !data.version) return false;
+    const serverData = JSON.parse(json.data);
+    if (!serverData || !serverData.version) return false;
 
-    // Compare timestamps - use whichever is newer
-    const serverTs = data.lastSave || 0;
     const localRaw = localStorage.getItem('kodikofee_save');
-    let   localTs  = 0;
+    let localData  = null;
     if (localRaw) {
-      try { localTs = (JSON.parse(localRaw).lastSave || 0); } catch(e) {}
+      try { localData = JSON.parse(localRaw); } catch(e) {}
     }
 
-    if (serverTs >= localTs) {
-      const lastSave = data.lastSave || Date.now();
-      applyLoadedData(data);
-      applyOfflineProgress(lastSave);
-      // Sync local with server
-      saveGame();
-      return true;
+    // Merge strategy:
+    // - prestige/shop/OO — always from server (authoritative, modified server-side)
+    // - gameplay (loc, buildings, etc.) — from whichever save is newer
+    let merged = Object.assign({}, serverData);
+    if (localData && (localData.lastSave || 0) > (serverData.lastSave || 0)) {
+      merged.loc               = localData.loc;
+      merged.totalLoc          = localData.totalLoc;
+      merged.locThisRun        = localData.locThisRun;
+      merged.totalClicks       = localData.totalClicks;
+      merged.buildings         = localData.buildings;
+      merged.upgrades          = localData.upgrades;
+      merged.achievements      = localData.achievements;
+      merged.eventCount        = localData.eventCount;
+      merged.story             = localData.story;
+      merged.dungeonClears     = localData.dungeonClears;
+      merged.maxOffline        = localData.maxOffline;
+      // prestige*, prestigeShop, prestigePoints stay from server
     }
-    return false;
+
+    const lastSave = merged.lastSave || Date.now();
+    applyLoadedData(merged);
+    applyOfflineProgress(lastSave);
+    saveGame();
+    return true;
   } catch(e) {
     console.warn('Server load failed:', e);
     return false;

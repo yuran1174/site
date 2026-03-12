@@ -159,6 +159,8 @@ switch ($action) {
         // Deduct OO and set level
         $saveData['prestigePoints']         = $oo - $item['cost'];
         $saveData['prestigeShop'][$itemId]  = $currentLevel + 1;
+        // Update lastSave so client always sees server as authoritative after shop purchase
+        $saveData['lastSave'] = (int)(microtime(true) * 1000);
 
         $newSaveJson = json_encode($saveData);
 

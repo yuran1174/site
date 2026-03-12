@@ -273,8 +273,8 @@
 ## Epic 3 — Data Model, Migrations, Persistence
 
 ### TASK-014 — Ввести систему миграций
-- Status: `in_progress`
-- Note: запускаю минимальную версионируемую migration system с initial schema и runner без ломки текущего bootstrap.
+- Status: `done`
+- Note: добавлены `MigrationRunner`, initial SQL migration и документация потока миграций; схема теперь воспроизводится из `migrations/`, а не только через runtime schema patching.
 - Priority: `P0`
 - Agent: `Data Migration`
 - Goal: управлять схемой БД версионируемо

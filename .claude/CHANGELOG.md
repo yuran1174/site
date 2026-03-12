@@ -59,6 +59,28 @@
 
 ---
 
+## 2026-03-13 — Введена система миграций и закрыт TASK-014
+
+**Что сделано:**
+- Добавлен `MigrationRunner` с таблицей `schema_migrations`
+- `SchemaInitializer` переведён с runtime schema patching на применение SQL-миграций из директории `migrations/`
+- Добавлена initial migration `migrations/0001_initial_schema.sql` с актуальной схемой `users`, `game_saves`, `leaderboard`
+- В `config/database.php` и `.env.example` добавлен путь до миграций
+- Создана документация `docs/data/migration-flow.md`
+- В `TODO.md` `TASK-014` переведён в `done`
+
+**Файлы затронуты:**
+- `.env.example` (обновлён)
+- `config/database.php` (обновлён)
+- `src/Infrastructure/Database/SchemaInitializer.php` (обновлён)
+- `src/Infrastructure/Database/MigrationRunner.php` (создан)
+- `migrations/0001_initial_schema.sql` (создан)
+- `docs/data/migration-flow.md` (создан)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
 ## 2026-03-13 — Доведён DB infrastructure layer и закрыт TASK-009
 
 **Что сделано:**

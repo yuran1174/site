@@ -23,6 +23,7 @@
     "sort-packages": true
   },
   "scripts": {
+    "dev:reset-account": "@php scripts/dev/reset-account-progress.php",
     "seed:dev": "@php scripts/seed/dev-seed.php",
     "test": "vendor/bin/phpunit --configuration phpunit.xml.dist",
     "lint": [

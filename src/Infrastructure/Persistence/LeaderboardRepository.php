@@ -66,4 +66,10 @@ final class LeaderboardRepository
         ');
         $stmt->execute([$userId, $username, $totalLoc, $prestigeCount, $accountLevel, $dungeonClears]);
     }
+
+    public function deleteByUserId(int $userId): void
+    {
+        $stmt = $this->db->prepare('DELETE FROM leaderboard WHERE user_id = ?');
+        $stmt->execute([$userId]);
+    }
 }

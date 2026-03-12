@@ -39,4 +39,10 @@ final class GameSaveRepository
         ');
         $stmt->execute([$userId, $saveData]);
     }
+
+    public function deleteByUserId(int $userId): void
+    {
+        $stmt = $this->db->prepare('DELETE FROM game_saves WHERE user_id = ?');
+        $stmt->execute([$userId]);
+    }
 }

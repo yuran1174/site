@@ -303,6 +303,23 @@
 
 ---
 
+## 2026-03-13 — Добавлена dev-команда для сброса прогресса аккаунта
+
+**Что сделано:**
+- Добавлен CLI-скрипт `scripts/dev/reset-account-progress.php` для сброса серверного прогресса аккаунта по `--username` или `--user-id`
+- В `composer.json` добавлена команда `composer dev:reset-account`
+- В persistence-слой добавлены методы удаления сохранения и записи лидерборда для пользователя
+- Скрипт явно предупреждает про необходимость очистить браузерный `localStorage`, чтобы старый прогресс не был отправлен обратно
+
+**Файлы затронуты:**
+- `composer.json` (обновлён)
+- `scripts/dev/reset-account-progress.php` (создан)
+- `src/Infrastructure/Persistence/GameSaveRepository.php` (обновлён)
+- `src/Infrastructure/Persistence/LeaderboardRepository.php` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
 ## 2026-03-13 — Добавлены агенты геймдизайнера и сценариста
 
 **Что сделано:**

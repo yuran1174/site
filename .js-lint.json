@@ -1,0 +1,24 @@
+{
+  "include": [
+    "js/*.js"
+  ],
+  "forbiddenPatterns": [
+    {
+      "name": "debugger statement",
+      "pattern": "\\bdebugger\\s*;"
+    },
+    {
+      "name": "eval call",
+      "pattern": "\\beval\\s*\\("
+    },
+    {
+      "name": "Function constructor",
+      "pattern": "\\bnew\\s+Function\\s*\\("
+    },
+    {
+      "name": "merge conflict marker",
+      "pattern": "^(<{7}|={7}|>{7})",
+      "flags": "m"
+    }
+  ]
+}

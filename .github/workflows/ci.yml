@@ -21,6 +21,11 @@ jobs:
           coverage: none
           tools: composer:v2
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
       - name: Validate composer.json
         run: composer validate --strict
 
@@ -30,7 +35,7 @@ jobs:
       - name: Prepare temp directories
         run: mkdir -p storage/tmp
 
-      - name: Run PHP lint
+      - name: Run lint
         run: composer lint
 
       - name: Run PHPUnit

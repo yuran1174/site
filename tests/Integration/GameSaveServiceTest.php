@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace Tests\Integration;
 
 use App\Application\GameSave\GameSaveService;
+use App\Infrastructure\Persistence\GameSaveRepository;
+use App\Infrastructure\Persistence\LeaderboardRepository;
+use App\Infrastructure\Persistence\UserRepository;
 use Tests\Support\DatabaseTestCase;
 
 final class GameSaveServiceTest extends DatabaseTestCase
@@ -12,7 +15,7 @@ final class GameSaveServiceTest extends DatabaseTestCase
     public function testSaveSanitizesPayloadAndUpdatesLeaderboard(): void
     {
         $userId = $this->createUser('saver');
-        $service = new GameSaveService($this->db);
+        $service = $this->createService();
 
         $existing = $service->defaultData();
         $payload = [
@@ -48,7 +51,7 @@ final class GameSaveServiceTest extends DatabaseTestCase
     public function testLoadPayloadReturnsStoredSaveAndLeaderboardProjection(): void
     {
         $userId = $this->createUser('loader');
-        $service = new GameSaveService($this->db);
+        $service = $this->createService();
 
         $save = $service->defaultData();
         $save['totalLoc'] = 5000;
@@ -72,7 +75,7 @@ final class GameSaveServiceTest extends DatabaseTestCase
     public function testBuyPrestigeConsumesOoAndUpgradesShopItem(): void
     {
         $userId = $this->createUser('shopper');
-        $service = new GameSaveService($this->db);
+        $service = $this->createService();
 
         $save = $service->defaultData();
         $save['prestigePoints'] = 5;
@@ -91,7 +94,7 @@ final class GameSaveServiceTest extends DatabaseTestCase
     public function testMinigameRewardUpdatesSaveAndCapsOo(): void
     {
         $userId = $this->createUser('hunter');
-        $service = new GameSaveService($this->db);
+        $service = $this->createService();
 
         $result = $service->applyMinigameReward($userId, 'hunter', 999, 2500, 9);
 
@@ -105,7 +108,7 @@ final class GameSaveServiceTest extends DatabaseTestCase
     public function testDungeonClearUpdatesProgressAndCapsReward(): void
     {
         $userId = $this->createUser('raider');
-        $service = new GameSaveService($this->db);
+        $service = $this->createService();
 
         $result = $service->applyDungeonClear($userId, 'raider', 999999, 10);
 
@@ -120,7 +123,7 @@ final class GameSaveServiceTest extends DatabaseTestCase
 
     public function testSanitizePayloadLimitsLargePrestigeJumps(): void
     {
-        $service = new GameSaveService($this->db);
+        $service = $this->createService();
 
         $existing = $service->defaultData();
         $existing['prestige'] = 1;
@@ -143,5 +146,14 @@ final class GameSaveServiceTest extends DatabaseTestCase
         $stmt->execute([$username, $hash]);
 
         return (int) $this->db->lastInsertId();
+    }
+
+    private function createService(): GameSaveService
+    {
+        return new GameSaveService(
+            new GameSaveRepository($this->db),
+            new LeaderboardRepository($this->db),
+            new UserRepository($this->db),
+        );
     }
 }

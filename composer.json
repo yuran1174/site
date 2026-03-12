@@ -24,7 +24,12 @@
   },
   "scripts": {
     "test": "vendor/bin/phpunit --configuration phpunit.xml.dist",
-    "lint": "@php tests/Tools/php-lint.php",
+    "lint": [
+      "@lint:php",
+      "@lint:js"
+    ],
+    "lint:php": "@php tests/Tools/php-lint.php",
+    "lint:js": "node tests/Tools/js-lint.mjs",
     "format": "@php -d sys_temp_dir=storage/tmp vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php",
     "format:check": "@php -d sys_temp_dir=storage/tmp vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --dry-run --diff"
   },

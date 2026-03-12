@@ -45,9 +45,16 @@ abstract class DatabaseTestCase extends TestCase
         }
 
         $this->db = null;
+        gc_collect_cycles();
 
         if (is_file($this->databasePath)) {
-            unlink($this->databasePath);
+            for ($attempt = 0; $attempt < 5; $attempt++) {
+                if (@unlink($this->databasePath) || !is_file($this->databasePath)) {
+                    break;
+                }
+
+                usleep(50000);
+            }
         }
 
         parent::tearDown();

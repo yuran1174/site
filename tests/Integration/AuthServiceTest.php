@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Integration;
 
 use App\Application\Auth\AuthService;
+use App\Infrastructure\Persistence\UserRepository;
 use RuntimeException;
 use Tests\Support\DatabaseTestCase;
 
@@ -12,7 +13,7 @@ final class AuthServiceTest extends DatabaseTestCase
 {
     public function testRegisterCreatesUserAndSession(): void
     {
-        $service = new AuthService($this->db);
+        $service = new AuthService(new UserRepository($this->db));
 
         $result = $service->register('tester_1', 'secret123', 'secret123');
 
@@ -30,7 +31,7 @@ final class AuthServiceTest extends DatabaseTestCase
         $stmt = $this->db->prepare('INSERT INTO users (username, password_hash) VALUES (?, ?)');
         $stmt->execute(['taken_name', $hash]);
 
-        $service = new AuthService($this->db);
+        $service = new AuthService(new UserRepository($this->db));
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Этот логин уже занят');
@@ -43,7 +44,7 @@ final class AuthServiceTest extends DatabaseTestCase
         $stmt = $this->db->prepare('INSERT INTO users (username, password_hash) VALUES (?, ?)');
         $stmt->execute(['tester_2', $hash]);
 
-        $service = new AuthService($this->db);
+        $service = new AuthService(new UserRepository($this->db));
         $result = $service->login('tester_2', 'secret123');
 
         self::assertSame('tester_2', html_entity_decode($result['username']));
@@ -57,7 +58,7 @@ final class AuthServiceTest extends DatabaseTestCase
         $stmt = $this->db->prepare('INSERT INTO users (username, password_hash) VALUES (?, ?)');
         $stmt->execute(['tester_3', $hash]);
 
-        $service = new AuthService($this->db);
+        $service = new AuthService(new UserRepository($this->db));
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Неверный логин или пароль');
@@ -69,7 +70,7 @@ final class AuthServiceTest extends DatabaseTestCase
         $_SESSION['user_id'] = 77;
         $_SESSION['username'] = 'tester_4';
 
-        $service = new AuthService($this->db);
+        $service = new AuthService(new UserRepository($this->db));
         $service->logout();
 
         self::assertSame([], $_SESSION);

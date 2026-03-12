@@ -173,7 +173,7 @@
 ## Epic 2 — Backend Extraction & Domain Layer
 
 ### TASK-009 — Вынести DB-слой в инфраструктурный класс
-- Status: `partial`
+- Status: `in_progress`
 - Note: добавлен `src/Infrastructure/Database/`, а `db.php` переведён в thin wrapper над `DatabaseManager`; часть кода всё ещё зависит от `DB::get()` как compatibility-слоя.
 - Priority: `P0`
 - Agent: `Backend Extraction`
@@ -521,6 +521,8 @@
   - стиль проекта можно прогонять автоматически
 
 ### TASK-030 — Настроить CI baseline
+- Status: `done`
+- Note: добавлен GitHub Actions workflow `.github/workflows/ci.yml`; на `push` и `pull_request` запускаются `composer validate`, `composer install`, `composer lint`, `composer test`, `composer format:check`.
 - Priority: `P1`
 - Agent: `DevOps Baseline`
 - Goal: автоматизировать базовые проверки

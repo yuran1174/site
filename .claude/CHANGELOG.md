@@ -1,3 +1,17 @@
+## 2026-03-13 — Добавлен CI baseline для composer, lint и тестов
+
+**Что сделано:**
+- Добавлен GitHub Actions workflow `.github/workflows/ci.yml`
+- На `push` в `main` и на `pull_request` выполняются `composer validate`, `composer install`, `composer lint`, `composer test` и `composer format:check`
+- В `TODO.md` задача `TASK-030` переведена в `done` с примечанием по текущему coverage CI
+
+**Файлы затронуты:**
+- `.github/workflows/ci.yml` (создан)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
 ## 2026-03-12 — Доведён config-слой и закрыт TASK-008
 
 **Что сделано:**

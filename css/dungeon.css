@@ -397,6 +397,176 @@ html, body {
 #overlayReturn:hover { opacity: 0.85; }
 
 /* ================================================
+   CLASS SELECT OVERLAY
+   ================================================ */
+#classSelect {
+  position: fixed; inset: 0; z-index: 200;
+  background: #070911;
+  display: flex; align-items: center; justify-content: center;
+  padding: 1rem;
+}
+
+.cs-wrap {
+  max-width: 860px; width: 100%;
+  display: flex; flex-direction: column; align-items: center; gap: 1.5rem;
+}
+
+.cs-header { text-align: center; }
+.cs-eyebrow {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--accent); margin-bottom: .5rem;
+}
+.cs-title { font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 800; color: var(--text); margin-bottom: .3rem; font-family: var(--mono); }
+.cs-sub { color: var(--dim); font-size: 13px; }
+
+.cs-cards {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1rem; width: 100%;
+}
+
+.class-card {
+  position: relative; overflow: hidden;
+  background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: 12px; padding: 1.4rem 1.2rem;
+  cursor: pointer; transition: transform .2s, border-color .2s;
+  display: flex; flex-direction: column; gap: .6rem;
+}
+.class-card:hover { transform: translateY(-4px); border-color: var(--border2); }
+
+.cc-glow {
+  position: absolute; top: -30px; left: 50%; transform: translateX(-50%);
+  width: 120px; height: 120px; border-radius: 50%;
+  background: var(--cc-color);
+  opacity: .06; filter: blur(24px); pointer-events: none;
+  transition: opacity .2s;
+}
+.class-card:hover .cc-glow { opacity: .14; }
+
+.cc-emoji { font-size: 2.2rem; line-height: 1; }
+.cc-name  { font-family: var(--mono); font-size: 1rem; font-weight: 700; }
+.cc-desc  { font-size: 11.5px; color: var(--dim); line-height: 1.5; flex: 1; }
+
+.cc-stats {
+  display: flex; gap: .5rem; flex-wrap: wrap; margin-top: .2rem;
+}
+.cc-stat {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 6px; padding: .2rem .55rem;
+  font-family: var(--mono); font-size: 11px;
+  display: flex; flex-direction: column; align-items: center; gap: 1px;
+}
+.cc-stat-label { color: var(--dim); font-size: 9px; text-transform: uppercase; letter-spacing: .5px; }
+.cc-stat-val   { color: var(--text); font-weight: 700; }
+
+.cc-skills { display: flex; flex-direction: column; gap: .35rem; margin-top: .3rem; }
+.cc-skill  { display: flex; align-items: flex-start; gap: .5rem; font-size: 11px; color: var(--dim); }
+.cc-key {
+  flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center;
+  width: 18px; height: 18px; border-radius: 4px;
+  background: var(--bg3); border: 1px solid var(--border2);
+  font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--accent);
+}
+
+.cs-hint { font-size: 11px; color: var(--dim); display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; justify-content: center; }
+.cs-hint-key {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: .1rem .45rem; border-radius: 4px;
+  background: var(--bg3); border: 1px solid var(--border2);
+  font-family: var(--mono); font-size: 10px; color: var(--text);
+}
+.cs-bonus { font-size: 11px; color: var(--accent); font-family: var(--mono); }
+
+/* ================================================
+   STORY MODAL
+   ================================================ */
+#storyModal {
+  position: fixed; inset: 0; z-index: 150;
+  background: rgba(7, 9, 17, .92);
+  display: none; align-items: center; justify-content: center;
+  padding: 1rem;
+}
+
+.sm-wrap {
+  max-width: 560px; width: 100%;
+  background: #0d111e; border: 1px solid var(--border2);
+  border-radius: 12px; padding: 2rem 2rem 1.5rem;
+  box-shadow: 0 0 60px rgba(0, 0, 0, .6);
+  display: flex; flex-direction: column; gap: 1rem;
+}
+
+.sm-title {
+  font-family: var(--mono); font-size: 13px; font-weight: 700;
+  color: var(--accent); letter-spacing: 1px;
+}
+
+.sm-scanline {
+  height: 1px; background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: .4;
+}
+
+.sm-content {
+  font-family: var(--mono); font-size: 12.5px; line-height: 1.8;
+  color: var(--text); min-height: 140px; max-height: 260px;
+  overflow-y: auto;
+}
+
+.story-line { margin: 0; opacity: 0; transform: translateY(4px); transition: none; }
+.story-line--in { opacity: 1; transform: translateY(0); transition: opacity .25s ease, transform .25s ease; }
+
+.sm-btn {
+  align-self: flex-end;
+  padding: .5rem 1.2rem; border-radius: 6px;
+  background: var(--bg3); border: 1px solid var(--border2);
+  color: var(--accent); font-family: var(--mono); font-size: 12px; font-weight: 700;
+  cursor: pointer; transition: all .15s;
+}
+.sm-btn:hover { background: var(--border); border-color: var(--accent); }
+
+/* ================================================
+   PLAYER CLASSNAME & SKILLS
+   ================================================ */
+.player-classname {
+  font-family: var(--mono); font-size: 12px; font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.stat-xp-row { grid-column: 1 / -1; }
+
+#skillsPanel {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 10px 12px;
+}
+
+#skillsList { display: flex; flex-direction: column; gap: 5px; margin-bottom: 6px; }
+
+.skill-btn {
+  display: flex; align-items: center; gap: 7px;
+  width: 100%; padding: 6px 10px;
+  background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: 6px; cursor: pointer;
+  font-family: var(--mono); font-size: 11px; color: var(--text);
+  transition: all .15s; text-align: left;
+}
+.skill-btn:hover { border-color: var(--accent); color: var(--accent); }
+.skill-btn.skill-off { opacity: .45; cursor: default; }
+.skill-btn.skill-off:hover { border-color: var(--border2); color: var(--dim); }
+
+.sk-key {
+  flex-shrink: 0; width: 22px; height: 16px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: #1a2035; border: 1px solid var(--border2); border-radius: 3px;
+  font-size: 10px; color: var(--accent); font-weight: 700;
+}
+.sk-name { flex: 1; font-size: 11px; }
+.sk-cd {
+  flex-shrink: 0; min-width: 16px; text-align: right;
+  font-size: 11px; color: var(--accent); font-weight: 700;
+}
+.skill-off .sk-cd { color: var(--dim); }
+
+.skills-hint { font-size: 10px; color: var(--dim); text-align: center; }
+
+/* ================================================
    MOBILE
    ================================================ */
 @media (max-width: 680px) {

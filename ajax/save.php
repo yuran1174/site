@@ -216,6 +216,44 @@ switch ($action) {
         exit;
     }
 
+    case 'dungeon_clear': {
+        $loc = max(0, (float)($input['loc'] ?? 0));
+        $oo  = max(0, (int)($input['oo']  ?? 0));
+        $loc = min($loc, 500000);
+        $oo  = min($oo, 3);
+
+        $stmt = $db->prepare('SELECT save_data FROM game_saves WHERE user_id = ?');
+        $stmt->execute([$userId]);
+        $row = $stmt->fetch();
+
+        if (!$row) {
+            echo json_encode(['success' => true, 'applied' => false]);
+            exit;
+        }
+
+        $saveData = json_decode($row['save_data'], true);
+        if (!is_array($saveData)) {
+            echo json_encode(['success' => true, 'applied' => false]);
+            exit;
+        }
+
+        $saveData['dungeonClears'] = ($saveData['dungeonClears'] ?? 0) + 1;
+        $saveData['loc']           = ($saveData['loc']      ?? 0) + $loc;
+        $saveData['totalLoc']      = ($saveData['totalLoc'] ?? 0) + $loc;
+        $saveData['locThisRun']    = ($saveData['locThisRun'] ?? 0) + $loc;
+        if ($oo > 0) {
+            $saveData['prestigePoints']      = ($saveData['prestigePoints']      ?? 0) + $oo;
+            $saveData['totalPrestigePoints'] = ($saveData['totalPrestigePoints'] ?? 0) + $oo;
+        }
+
+        $newSave = json_encode($saveData);
+        $upd = $db->prepare('UPDATE game_saves SET save_data = ?, updated_at = strftime(\'%s\',\'now\') WHERE user_id = ?');
+        $upd->execute([$newSave, $userId]);
+
+        echo json_encode(['success' => true, 'applied' => true, 'dungeonClears' => $saveData['dungeonClears']]);
+        exit;
+    }
+
     default:
         echo json_encode(['error' => 'Unknown action']);
         exit;

@@ -460,4 +460,20 @@
     renderAll: renderAll,
     initTabs: initTabs,
   };
+
+  // Expose render helpers for legacy callers that still expect global functions.
+  Object.assign(window, {
+    renderProgressTab: renderProgressTab,
+    renderActivitiesBar: renderActivitiesBar,
+    showToast: showToast,
+    shuffledNews: shuffledNews,
+    advanceTicker: advanceTicker,
+    renderBuildings: renderBuildings,
+    renderUpgrades: renderUpgrades,
+    renderAchievements: renderAchievements,
+    updateOODisplay: updateOODisplay,
+    updateTopBar: updateTopBar,
+    renderAll: renderAll,
+    initTabs: initTabs,
+  });
 }());

@@ -200,4 +200,7 @@
     applyPrestigeShopEffects: applyPrestigeShopEffects,
     isBuildingUnlocked: isBuildingUnlocked,
   };
+
+  // Temporary compatibility bridge while idle logic is being split across files.
+  Object.assign(window, window.IdleEconomy);
 }());

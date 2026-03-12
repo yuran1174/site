@@ -37,6 +37,25 @@
 
 ---
 
+## 2026-03-13 — Исправлен запуск idle-игры после декомпозиции фронтенда
+
+**Что сделано:**
+- В `idle.php` приведён в порядок порядок подключения idle-скриптов и убран дублирующий `idle-balance.js`
+- В `js/idle.js` убраны дубли функций, которые уже были вынесены в `js/idle-actions.js`, из-за чего страница падала с `Identifier has already been declared`
+- В `js/idle-economy.js`, `js/idle-render.js` и `js/idle.js` добавлен compatibility bridge для shared state и legacy helper-вызовов между split-файлами
+- Проверен JS lint после исправления: idle-скрипты больше не валятся на синтаксисе и дублирующихся декларациях
+
+**Файлы затронуты:**
+- `idle.php` (обновлён)
+- `js/idle-economy.js` (обновлён)
+- `js/idle-render.js` (обновлён)
+- `js/idle.js` (обновлён)
+- `js/idle-data.js` (используется как часть split-структуры)
+- `js/idle-actions.js` (используется как часть split-структуры)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
 ## 2026-03-13 — Приведён PHP-код к текущему formatter baseline
 
 **Что сделано:**

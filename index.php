@@ -359,12 +359,12 @@ $todayZodiac = $zodiacKeys[(int)date('d') % 12];
 
     <div class="roadmap-phases">
 
-      <div class="rm-phase rm-phase--active">
+      <div class="rm-phase rm-phase--next">
         <div class="rm-phase-head">
           <div class="rm-phase-num">01</div>
           <div class="rm-phase-info">
             <div class="rm-phase-title">Укрепление основы</div>
-            <div class="rm-badge rm-badge--active"><i class="fas fa-code"></i> В разработке</div>
+            <div class="rm-badge rm-badge--next"><i class="fas fa-arrow-right"></i> Следующий этап</div>
           </div>
         </div>
         <ul class="rm-items">

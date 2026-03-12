@@ -7,7 +7,8 @@
       "Bash(cd \"D:/OSPanel/site\" && bash .claude/push.sh \"init: инициализация проекта, правила разработки и структура\")",
       "Bash(cd \"D:/OSPanel/site\" && bash .claude/push.sh \"chore: добавлен .gitignore, убраны db/sqlite, logs, .idea из репо\")",
       "Read(//mnt/d/OSPanel/**)",
-      "Bash(bash .claude/push.sh \"feat: добавлена секция роадмапа на главной странице\")"
+      "Bash(bash .claude/push.sh \"feat: добавлена секция роадмапа на главной странице\")",
+      "Bash(cd \"D:/OSPanel/site\" && bash .claude/push.sh \"fix: исправлен статус фазы 1 роадмапа — не В разработке, а Следующий этап\")"
     ]
   }
 }

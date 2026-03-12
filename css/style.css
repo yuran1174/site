@@ -542,7 +542,7 @@ code { font-family: var(--mono); font-size: .9em; color: var(--accent); }
   background: var(--border);
   transition: background .3s;
 }
-.rm-phase--active::before {
+.rm-phase--next::before {
   background: linear-gradient(90deg, var(--accent), var(--accent2));
 }
 .rm-phase:hover {
@@ -564,7 +564,7 @@ code { font-family: var(--mono); font-size: .9em; color: var(--accent); }
   line-height: 1;
   flex-shrink: 0;
 }
-.rm-phase--active .rm-phase-num {
+.rm-phase--next .rm-phase-num {
   color: var(--accent);
 }
 .rm-phase-info {
@@ -589,7 +589,7 @@ code { font-family: var(--mono); font-size: .9em; color: var(--accent); }
   padding: .2rem .6rem;
   border-radius: 20px;
 }
-.rm-badge--active {
+.rm-badge--next {
   background: rgba(0,212,170,.12);
   border: 1px solid rgba(0,212,170,.3);
   color: var(--accent);
@@ -634,7 +634,7 @@ code { font-family: var(--mono); font-size: .9em; color: var(--accent); }
   background: var(--border);
   margin-top: .55rem;
 }
-.rm-phase--active .rm-dot {
+.rm-phase--next .rm-dot {
   background: var(--accent);
   box-shadow: 0 0 6px rgba(0,212,170,.5);
 }

@@ -1,11 +1,8 @@
 <?php
 declare(strict_types=1);
-require_once __DIR__ . '/../security.php';
-require_once __DIR__ . '/../db.php';
+require_once __DIR__ . '/../bootstrap/app.php';
 
-app_start_session();
-
-header('Content-Type: application/json; charset=utf-8');
+\App\Bootstrap\AppBootstrap::bootApi();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $action = $_GET['action'] ?? '';

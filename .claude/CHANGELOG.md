@@ -24,6 +24,31 @@
 
 ---
 
+## 2026-03-12 — Введён единый bootstrap приложения
+
+**Что сделано:**
+- Добавлен `src/Bootstrap/AppBootstrap.php` с едиными сценариями инициализации для страниц, web-сессий и JSON API
+- Добавлен `bootstrap/app.php` как общий вход в bootstrap с поддержкой Composer autoload и fallback на прямое подключение класса
+- Корневые страницы и AJAX-эндпоинты переведены с прямых `require_once security.php/db.php` и `app_start_session()` на единый bootstrap
+- Централизованы базовые runtime-настройки: error reporting, session start и JSON header для API
+
+**Файлы затронуты:**
+- `src/Bootstrap/AppBootstrap.php` (создан)
+- `bootstrap/app.php` (создан)
+- `index.php`
+- `game.php`
+- `auth.php`
+- `idle.php`
+- `profile.php`
+- `leaderboard.php`
+- `minigame.php`
+- `dungeon.php`
+- `ajax/auth.php`
+- `ajax/save.php`
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
 ## 2026-03-12 — Подключён Composer и базовый PSR-4 autoload
 
 **Что сделано:**

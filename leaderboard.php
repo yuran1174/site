@@ -1,9 +1,8 @@
 <?php
 declare(strict_types=1);
-require_once __DIR__ . '/security.php';
-require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/bootstrap/app.php';
 
-app_start_session();
+\App\Bootstrap\AppBootstrap::bootWeb();
 
 $currentUserId = (int)($_SESSION['user_id'] ?? 0);
 $isLoggedIn    = $currentUserId > 0;

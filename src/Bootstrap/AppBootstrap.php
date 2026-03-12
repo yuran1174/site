@@ -5,32 +5,48 @@ namespace App\Bootstrap;
 
 final class AppBootstrap
 {
-    private static bool $booted = false;
+    private static bool $initialized = false;
+    private static string $projectRoot = '';
 
-    public static function boot(bool $startSession = true): void
+    public static function bootPage(): void
     {
-        if (!self::$booted) {
-            $rootPath = dirname(__DIR__, 2);
-            Environment::load($rootPath);
-            Config::load($rootPath);
-            date_default_timezone_set((string) Config::get('app.timezone', 'Europe/Moscow'));
-            self::$booted = true;
-        }
-
-        if ($startSession) {
-            self::startSession();
-        }
+        self::initialize();
     }
 
-    private static function startSession(): void
+    public static function bootWeb(): void
     {
-        if (function_exists('app_start_session')) {
-            app_start_session();
+        self::initialize();
+        app_start_session();
+    }
+
+    public static function bootApi(): void
+    {
+        self::initialize();
+        app_start_session();
+        header('Content-Type: application/json; charset=utf-8');
+    }
+
+    public static function projectRoot(): string
+    {
+        self::initialize();
+        return self::$projectRoot;
+    }
+
+    private static function initialize(): void
+    {
+        if (self::$initialized) {
             return;
         }
 
-        if (session_status() !== PHP_SESSION_ACTIVE) {
-            session_start();
-        }
+        self::$projectRoot = dirname(__DIR__, 2);
+
+        require_once self::$projectRoot . '/security.php';
+        require_once self::$projectRoot . '/db.php';
+
+        error_reporting(E_ALL);
+        ini_set('display_errors', '0');
+        ini_set('log_errors', '1');
+
+        self::$initialized = true;
     }
 }

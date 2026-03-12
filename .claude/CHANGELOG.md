@@ -19,6 +19,30 @@
 
 ---
 
+## 2026-03-12 — Поднят testing baseline: PHPUnit, lint и formatter
+
+**Что сделано:**
+- В `composer.json` добавлены dev-зависимости `phpunit/phpunit` и `friendsofphp/php-cs-fixer`, а также scripts: `test`, `lint`, `format`, `format:check`
+- Добавлены `phpunit.xml.dist`, `.php-cs-fixer.dist.php` и test bootstrap в `tests/bootstrap.php`
+- Созданы интеграционные тесты для `AuthService` и `GameSaveService`: регистрация, логин, save/load, покупка prestige, награды minigame/dungeon, античит-нормализация save payload
+- Добавлен lightweight PHP lint runner `tests/Tools/php-lint.php`
+- Проверки реально прогнаны: PHPUnit, PHP lint и `php-cs-fixer --dry-run`
+
+**Файлы затронуты:**
+- `composer.json` (обновлён)
+- `composer.lock` (создан)
+- `phpunit.xml.dist` (создан)
+- `.php-cs-fixer.dist.php` (создан)
+- `.gitignore` (обновлён)
+- `tests/bootstrap.php` (создан)
+- `tests/Support/DatabaseTestCase.php` (создан)
+- `tests/Integration/AuthServiceTest.php` (создан)
+- `tests/Integration/GameSaveServiceTest.php` (создан)
+- `tests/Tools/php-lint.php` (создан)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
 ## 2026-03-12 — Усилены security-потоки auth/save и добавлен anti-cheat baseline
 
 **Что сделано:**

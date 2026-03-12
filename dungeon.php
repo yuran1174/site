@@ -15,9 +15,10 @@ if ($isLoggedIn) {
         $row = $stmt->fetch();
         if ($row) {
             $sd = json_decode($row['save_data'], true);
-            $accountLevel = max(1, (int)($sd['accountLevel'] ?? 1));
+            $accountLevel = max(1, (int) ($sd['accountLevel'] ?? 1));
         }
-    } catch (Exception $e) {}
+    } catch (Exception $e) {
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -103,7 +104,7 @@ if ($isLoggedIn) {
     <div class="cs-hint cs-hint-touch">📱 На мобильном — управляй D-Pad под полем</div>
 
     <?php if ($isLoggedIn): ?>
-    <div class="cs-bonus">Уровень аккаунта <?= (int)$accountLevel ?> → бонус +<?= floor($accountLevel / 5) ?> к статам</div>
+    <div class="cs-bonus">Уровень аккаунта <?= (int) $accountLevel ?> → бонус +<?= floor($accountLevel / 5) ?> к статам</div>
     <?php endif; ?>
   </div>
 </div>
@@ -129,7 +130,7 @@ if ($isLoggedIn) {
     <span>Этаж: <span id="floorNum">—</span>/10</span>
     <?php if ($isLoggedIn): ?>
     <span class="nav-sep">|</span>
-    <span class="nav-dim">Ур. аккаунта: <?= (int)$accountLevel ?></span>
+    <span class="nav-dim">Ур. аккаунта: <?= (int) $accountLevel ?></span>
     <?php endif; ?>
   </nav>
 
@@ -218,7 +219,7 @@ if ($isLoggedIn) {
 <script src="https://cdn.jsdelivr.net/npm/phaser@3.87.0/dist/phaser.min.js"></script>
 <script>
   const IS_LOGGED_IN  = <?= $isLoggedIn ? 'true' : 'false' ?>;
-  const ACCOUNT_LEVEL = <?= (int)$accountLevel ?>;
+  const ACCOUNT_LEVEL = <?= (int) $accountLevel ?>;
   const CSRF_TOKEN    = <?= json_encode(app_csrf_token(), JSON_UNESCAPED_UNICODE) ?>;
 </script>
 <script src="js/dungeon.js"></script>

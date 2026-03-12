@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 function app_is_https(): bool
@@ -11,7 +12,7 @@ function app_is_https(): bool
         return true;
     }
 
-    return (int)($_SERVER['SERVER_PORT'] ?? 0) === 443;
+    return (int) ($_SERVER['SERVER_PORT'] ?? 0) === 443;
 }
 
 function app_start_session(): void
@@ -50,7 +51,7 @@ function app_start_session(): void
 function app_csrf_token(): string
 {
     app_start_session();
-    return (string)($_SESSION['_csrf_token'] ?? '');
+    return (string) ($_SESSION['_csrf_token'] ?? '');
 }
 
 function app_request_json(): array
@@ -90,7 +91,7 @@ function app_request_csrf_token(): string
 function app_verify_csrf(?string $token = null): bool
 {
     app_start_session();
-    $expected = (string)($_SESSION['_csrf_token'] ?? '');
+    $expected = (string) ($_SESSION['_csrf_token'] ?? '');
     $actual = $token ?? app_request_csrf_token();
 
     return $expected !== '' && $actual !== '' && hash_equals($expected, $actual);
@@ -121,14 +122,14 @@ function app_client_ip(): string
 {
     $keys = ['HTTP_CF_CONNECTING_IP', 'HTTP_X_FORWARDED_FOR', 'REMOTE_ADDR'];
     foreach ($keys as $key) {
-        $value = trim((string)($_SERVER[$key] ?? ''));
+        $value = trim((string) ($_SERVER[$key] ?? ''));
         if ($value === '') {
             continue;
         }
 
         if ($key === 'HTTP_X_FORWARDED_FOR') {
             $parts = explode(',', $value);
-            $value = trim((string)($parts[0] ?? ''));
+            $value = trim((string) ($parts[0] ?? ''));
         }
 
         return substr($value, 0, 64);
@@ -146,7 +147,7 @@ function app_security_log(string $event, array $context = []): void
         'ts' => gmdate('c'),
         'event' => $event,
         'ip' => app_client_ip(),
-        'user_id' => (int)($_SESSION['user_id'] ?? 0),
+        'user_id' => (int) ($_SESSION['user_id'] ?? 0),
         'session_id' => session_id(),
         'context' => $context,
     ];
@@ -181,7 +182,7 @@ function app_rate_limit(string $scope, int $limit, int $windowSeconds, ?string $
     }
 
     if (count($attempts) >= $limit) {
-        $oldest = (int)($attempts[0] ?? $now);
+        $oldest = (int) ($attempts[0] ?? $now);
         return [
             'allowed' => false,
             'retry_after' => max(1, $windowSeconds - ($now - $oldest)),

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Http;
@@ -16,13 +17,23 @@ final class ApiResponse
         exit;
     }
 
-    public static function success(array $payload = [], int $statusCode = 200): never
+    public static function success(array $data = [], int $statusCode = 200, array $meta = []): never
     {
-        self::json(['success' => true] + $payload, $statusCode);
+        self::json([
+            'success' => true,
+            'data' => $data,
+            'error' => null,
+            'meta' => $meta,
+        ] + $data, $statusCode);
     }
 
-    public static function error(string $message, int $statusCode = 200, array $payload = []): never
+    public static function error(string $message, int $statusCode = 200, array $meta = []): never
     {
-        self::json(['error' => $message] + $payload, $statusCode);
+        self::json([
+            'success' => false,
+            'data' => null,
+            'error' => $message,
+            'meta' => $meta,
+        ] + $meta, $statusCode);
     }
 }

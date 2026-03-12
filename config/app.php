@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 return [
@@ -6,4 +7,5 @@ return [
     'debug' => filter_var(getenv('APP_DEBUG') ?: 'false', FILTER_VALIDATE_BOOL),
     'url' => getenv('APP_URL') ?: 'http://localhost',
     'timezone' => getenv('APP_TIMEZONE') ?: 'Europe/Moscow',
+    'display_errors' => filter_var(getenv('APP_DEBUG') ?: 'false', FILTER_VALIDATE_BOOL),
 ];

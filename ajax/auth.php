@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 require_once __DIR__ . '/../bootstrap/app.php';
@@ -66,7 +67,7 @@ switch ($action) {
         try {
             ApiResponse::success($service->login(
                 (string) ($input['username'] ?? $_POST['username'] ?? ''),
-                (string) ($input['password'] ?? $_POST['password'] ?? '')
+                (string) ($input['password'] ?? $_POST['password'] ?? ''),
             ));
         } catch (RuntimeException $e) {
             $message = $e->getMessage();
@@ -89,7 +90,7 @@ switch ($action) {
             ApiResponse::success($service->register(
                 (string) ($input['username'] ?? $_POST['username'] ?? ''),
                 (string) ($input['password'] ?? $_POST['password'] ?? ''),
-                (string) ($input['confirm'] ?? $_POST['confirm'] ?? '')
+                (string) ($input['confirm'] ?? $_POST['confirm'] ?? ''),
             ));
         } catch (RuntimeException $e) {
             $message = $e->getMessage();

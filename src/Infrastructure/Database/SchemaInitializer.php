@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Infrastructure\Database;
@@ -33,12 +34,12 @@ final class SchemaInitializer
             );
         ");
 
-        $cols = array_column($db->query("PRAGMA table_info(leaderboard)")->fetchAll(), 'name');
+        $cols = array_column($db->query('PRAGMA table_info(leaderboard)')->fetchAll(), 'name');
         if (!in_array('account_level', $cols, true)) {
-            $db->exec("ALTER TABLE leaderboard ADD COLUMN account_level INTEGER DEFAULT 1");
+            $db->exec('ALTER TABLE leaderboard ADD COLUMN account_level INTEGER DEFAULT 1');
         }
         if (!in_array('dungeon_clears', $cols, true)) {
-            $db->exec("ALTER TABLE leaderboard ADD COLUMN dungeon_clears INTEGER DEFAULT 0");
+            $db->exec('ALTER TABLE leaderboard ADD COLUMN dungeon_clears INTEGER DEFAULT 0');
         }
     }
 }

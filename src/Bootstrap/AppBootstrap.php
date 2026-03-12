@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Bootstrap;
@@ -7,6 +8,11 @@ final class AppBootstrap
 {
     private static bool $initialized = false;
     private static string $projectRoot = '';
+
+    public static function boot(): void
+    {
+        self::bootPage();
+    }
 
     public static function bootPage(): void
     {
@@ -40,12 +46,20 @@ final class AppBootstrap
 
         self::$projectRoot = dirname(__DIR__, 2);
 
+        Environment::load(self::$projectRoot);
+        Config::load(self::$projectRoot);
+
         require_once self::$projectRoot . '/security.php';
         require_once self::$projectRoot . '/db.php';
 
         error_reporting(E_ALL);
-        ini_set('display_errors', '0');
+        ini_set('display_errors', Config::get('app.display_errors', false) ? '1' : '0');
         ini_set('log_errors', '1');
+
+        $timezone = (string) Config::get('app.timezone', 'Europe/Moscow');
+        if ($timezone !== '') {
+            date_default_timezone_set($timezone);
+        }
 
         self::$initialized = true;
     }

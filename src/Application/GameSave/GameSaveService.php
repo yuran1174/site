@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Application\GameSave;
@@ -8,9 +9,7 @@ use RuntimeException;
 
 final class GameSaveService
 {
-    public function __construct(private readonly PDO $db)
-    {
-    }
+    public function __construct(private readonly PDO $db) {}
 
     public function readRow(int $userId): ?array
     {

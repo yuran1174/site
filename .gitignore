@@ -16,3 +16,6 @@ Thumbs.db
 # Composer / временные файлы
 vendor/
 .tmp/
+.php-cs-fixer.cache
+.phpunit.cache/
+storage/tmp/

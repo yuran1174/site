@@ -4,37 +4,76 @@ require_once __DIR__ . '/bootstrap/app.php';
 
 \App\Bootstrap\AppBootstrap::bootWeb();
 
-$currentUserId = (int)($_SESSION['user_id'] ?? 0);
+$currentUserId = (int) ($_SESSION['user_id'] ?? 0);
 $isLoggedIn    = $currentUserId > 0;
 
-function fmtLoc(float $n): string {
-    if ($n < 1000)   return number_format($n, 0, '.', ' ');
-    if ($n < 1e6)    return number_format($n/1e3, 1, '.', ' ') . 'K';
-    if ($n < 1e9)    return number_format($n/1e6, 2, '.', ' ') . 'M';
-    if ($n < 1e12)   return number_format($n/1e9, 2, '.', ' ') . 'B';
-    return number_format($n/1e12, 2, '.', ' ') . 'T';
+function fmtLoc(float $n): string
+{
+    if ($n < 1000) {
+        return number_format($n, 0, '.', ' ');
+    }
+    if ($n < 1e6) {
+        return number_format($n / 1e3, 1, '.', ' ') . 'K';
+    }
+    if ($n < 1e9) {
+        return number_format($n / 1e6, 2, '.', ' ') . 'M';
+    }
+    if ($n < 1e12) {
+        return number_format($n / 1e9, 2, '.', ' ') . 'B';
+    }
+    return number_format($n / 1e12, 2, '.', ' ') . 'T';
 }
 
-function timeAgo(int $ts): string {
-    if ($ts <= 0) return 'давно';
+function timeAgo(int $ts): string
+{
+    if ($ts <= 0) {
+        return 'давно';
+    }
     $diff = time() - $ts;
-    if ($diff < 0)       return 'только что';
-    if ($diff < 60)      return 'только что';
-    if ($diff < 3600)    return floor($diff / 60) . ' мин назад';
-    if ($diff < 86400)   return floor($diff / 3600) . ' ч назад';
-    if ($diff < 604800)  return floor($diff / 86400) . ' дн назад';
-    if ($diff < 2592000) return floor($diff / 604800) . ' нед назад';
+    if ($diff < 0) {
+        return 'только что';
+    }
+    if ($diff < 60) {
+        return 'только что';
+    }
+    if ($diff < 3600) {
+        return floor($diff / 60) . ' мин назад';
+    }
+    if ($diff < 86400) {
+        return floor($diff / 3600) . ' ч назад';
+    }
+    if ($diff < 604800) {
+        return floor($diff / 86400) . ' дн назад';
+    }
+    if ($diff < 2592000) {
+        return floor($diff / 604800) . ' нед назад';
+    }
     return date('d.m.Y', $ts);
 }
 
-function accountLevelTitle(int $lvl): string {
-    if ($lvl >= 50) return 'Легенда';
-    if ($lvl >= 35) return 'CTO';
-    if ($lvl >= 25) return 'Архитектор';
-    if ($lvl >= 18) return 'Тимлид';
-    if ($lvl >= 12) return 'Сеньор';
-    if ($lvl >= 7)  return 'Мидл';
-    if ($lvl >= 3)  return 'Джун';
+function accountLevelTitle(int $lvl): string
+{
+    if ($lvl >= 50) {
+        return 'Легенда';
+    }
+    if ($lvl >= 35) {
+        return 'CTO';
+    }
+    if ($lvl >= 25) {
+        return 'Архитектор';
+    }
+    if ($lvl >= 18) {
+        return 'Тимлид';
+    }
+    if ($lvl >= 12) {
+        return 'Сеньор';
+    }
+    if ($lvl >= 7) {
+        return 'Мидл';
+    }
+    if ($lvl >= 3) {
+        return 'Джун';
+    }
     return 'Стажёр';
 }
 
@@ -106,12 +145,12 @@ $rows = $stmt->fetchAll();
         </thead>
         <tbody>
           <?php foreach ($rows as $i => $row):
-            $rank     = $i + 1;
-            $medal    = $rank === 1 ? '🥇' : ($rank === 2 ? '🥈' : ($rank === 3 ? '🥉' : ''));
-            $isMe     = ($currentUserId > 0 && (int)$row['user_id'] === $currentUserId);
-            $acLvl    = (int)$row['account_level'];
-            $acTitle  = accountLevelTitle($acLvl);
-          ?>
+              $rank     = $i + 1;
+              $medal    = $rank === 1 ? '🥇' : ($rank === 2 ? '🥈' : ($rank === 3 ? '🥉' : ''));
+              $isMe     = ($currentUserId > 0 && (int) $row['user_id'] === $currentUserId);
+              $acLvl    = (int) $row['account_level'];
+              $acTitle  = accountLevelTitle($acLvl);
+              ?>
           <tr class="lb-row <?= $isMe ? 'lb-row-me' : '' ?>">
             <td class="lb-rank">
               <?php if ($medal): ?>
@@ -128,15 +167,15 @@ $rows = $stmt->fetchAll();
               <span class="lb-level-badge">Ур. <?= $acLvl ?></span>
               <span class="lb-level-title"><?= htmlspecialchars($acTitle) ?></span>
             </td>
-            <td class="lb-loc"><?= htmlspecialchars(fmtLoc((float)$row['total_loc'])) ?></td>
+            <td class="lb-loc"><?= htmlspecialchars(fmtLoc((float) $row['total_loc'])) ?></td>
             <td class="lb-prestige">
-              <?php if ((int)$row['prestige_count'] > 0): ?>
-                <span class="lb-prestige-badge">✨ <?= (int)$row['prestige_count'] ?></span>
+              <?php if ((int) $row['prestige_count'] > 0): ?>
+                <span class="lb-prestige-badge">✨ <?= (int) $row['prestige_count'] ?></span>
               <?php else: ?>
                 <span class="lb-zero">—</span>
               <?php endif; ?>
             </td>
-            <td class="lb-lastseen"><?= htmlspecialchars(timeAgo((int)$row['last_seen'])) ?></td>
+            <td class="lb-lastseen"><?= htmlspecialchars(timeAgo((int) $row['last_seen'])) ?></td>
           </tr>
           <?php endforeach; ?>
         </tbody>

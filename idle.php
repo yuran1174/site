@@ -171,6 +171,9 @@ else                                 $greeting = 'Ещё не спишь, кол
 
 </div><!-- /gameLayout -->
 
+<!-- ACTIVITIES BAR -->
+<div id="activitiesBar"></div>
+
 <!-- TOAST CONTAINER -->
 <div id="toastContainer"></div>
 

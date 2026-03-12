@@ -1136,6 +1136,64 @@ function renderProgressTab() {
 }
 
 // ================================================
+// ACTIVITIES BAR
+// ================================================
+
+function renderActivitiesBar() {
+  const bar = document.getElementById('activitiesBar');
+  if (!bar) return;
+
+  const lvl = getAccountLevel();
+
+  const activities = [
+    {
+      emoji: '🐛', name: 'Охота на баги',
+      desc: 'Мини-игра: лови баги за время',
+      link: 'minigame.php',
+      unlocked: true,
+    },
+    {
+      emoji: '🏰', name: 'Подземелье',
+      desc: 'Рогалик: 10 этажей, боссы, лут',
+      link: 'dungeon.php',
+      unlocked: lvl >= 5,
+      unlockHint: `Уровень аккаунта 5 (сейчас ${lvl})`,
+    },
+    {
+      emoji: '⚔️', name: 'PVP Арена',
+      desc: 'Бои с другими разработчиками',
+      link: null,
+      unlocked: state.prestige >= 3,
+      unlockHint: `Престиж 3 (сейчас ${state.prestige})`,
+    },
+    {
+      emoji: '🗺️', name: 'Особые события',
+      desc: 'Случайные события с бонусами',
+      link: null,
+      unlocked: state.prestige >= 5,
+      unlockHint: `Престиж 5 (сейчас ${state.prestige})`,
+    },
+  ];
+
+  let html = `<div class="act-label">// активности</div><div class="act-cards">`;
+  for (const act of activities) {
+    if (act.unlocked && act.link) {
+      html += `<a href="${act.link}" class="act-card act-unlocked">`;
+    } else if (act.unlocked) {
+      html += `<div class="act-card act-unlocked act-no-link">`;
+    } else {
+      html += `<div class="act-card act-locked" data-tooltip="Откроется: ${act.unlockHint}">`;
+    }
+    html += `<span class="act-emoji">${act.emoji}</span>`;
+    html += `<div class="act-info"><span class="act-name">${act.name}</span><span class="act-desc">${act.desc}</span></div>`;
+    if (!act.unlocked) html += `<span class="act-lock-icon">🔒</span>`;
+    html += act.unlocked && act.link ? `</a>` : `</div>`;
+  }
+  html += `</div>`;
+  bar.innerHTML = html;
+}
+
+// ================================================
 // TOAST SYSTEM
 // ================================================
 
@@ -1476,6 +1534,7 @@ function renderAll() {
   renderUpgrades();
   renderAchievements();
   renderProgressTab();
+  renderActivitiesBar();
   updateTopBar();
 }
 

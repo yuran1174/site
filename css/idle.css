@@ -1456,3 +1456,99 @@ button { font-family: var(--sans); }
   transition: background 0.2s;
 }
 .pa-btn:hover { background: rgba(0,212,170,0.2); }
+
+/* ================================================
+   ACTIVITIES BAR
+   ================================================ */
+#activitiesBar {
+  max-width: 860px;
+  margin: 16px auto 24px;
+  padding: 0 12px;
+}
+.act-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--dim);
+  margin-bottom: 8px;
+}
+.act-cards {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.act-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  text-decoration: none;
+  flex: 1;
+  min-width: 160px;
+  position: relative;
+  transition: border-color 0.2s, background 0.2s;
+}
+.act-unlocked {
+  border-color: rgba(0,212,170,0.25);
+  cursor: pointer;
+}
+.act-unlocked:hover {
+  border-color: var(--accent);
+  background: rgba(0,212,170,0.06);
+}
+.act-locked {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: grayscale(0.4);
+}
+.act-no-link { cursor: default; }
+.act-emoji { font-size: 22px; flex-shrink: 0; }
+.act-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.act-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+}
+.act-desc {
+  font-size: 11px;
+  color: var(--dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.act-lock-icon {
+  margin-left: auto;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+/* Tooltip для заблокированных */
+.act-locked::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #0e1522;
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 12px;
+  font-family: var(--mono);
+  white-space: nowrap;
+  padding: 6px 10px;
+  border-radius: 6px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 100;
+}
+.act-locked:hover::after {
+  opacity: 1;
+}

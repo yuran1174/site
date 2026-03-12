@@ -5,6 +5,21 @@
 
 ---
 
+## 2026-03-12 — Блок активностей в idle-игре
+
+**Что сделано:**
+- Добавлен `#activitiesBar` в `idle.php` — видимый блок ниже основного layout
+- `renderActivitiesBar()` в `idle.js` — рендерит 4 карточки активностей с состоянием unlock
+- Заблокированные активности показывают тултип при наведении: «Откроется: [условие]»
+- Стили в `css/idle.css`: карточки, hover, CSS-тултип через `::after` + `data-tooltip`
+
+**Файлы затронуты:**
+- `idle.php` (добавлен #activitiesBar)
+- `js/idle.js` (renderActivitiesBar + вызов в renderAll)
+- `css/idle.css` (стили activities bar)
+
+---
+
 ## 2026-03-12 — Dungeon v3: Phaser 3 подключён
 
 **Что сделано:**

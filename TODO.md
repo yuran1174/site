@@ -96,6 +96,8 @@
 ## Epic 1 — Foundation & Project Structure
 
 ### TASK-005 — Ввести взрослую структуру каталогов
+- Status: `done`
+- Note: созданы `public/`, `src/`, `config/`, `storage/`, `migrations/`, `tests/`, `docs/`; добавлен план миграции в `docs/architecture/target-structure.md` без массового переноса файлов.
 - Priority: `P0`
 - Agent: `Refactor Plan`
 - Goal: подготовить проект к росту без полной переписи
@@ -110,6 +112,8 @@
   - runtime-данные отделены от исходников концептуально или физически
 
 ### TASK-006 — Подключить Composer и PSR-4 autoload
+- Status: `done`
+- Note: в проекте есть `composer.json` с PSR-4 для `src/`; в `bootstrap/app.php` добавлен fallback autoload, чтобы новый слой работал и без `vendor/autoload.php`.
 - Priority: `P0`
 - Agent: `Backend Extraction`
 - Goal: перейти от файлового хаоса к управляемой автозагрузке
@@ -125,6 +129,8 @@
   - проект остаётся запускаемым локально
 
 ### TASK-007 — Ввести единый bootstrap приложения
+- Status: `done`
+- Note: добавлены `bootstrap/app.php` и `src/Bootstrap/AppBootstrap.php`; страницы и AJAX-эндпоинты используют общий bootstrap.
 - Priority: `P0`
 - Agent: `Backend Extraction`
 - Goal: убрать разрозненную инициализацию из страниц и AJAX
@@ -142,6 +148,8 @@
   - нет дублирования стартовой логики по файлам
 
 ### TASK-008 — Вынести конфиг в отдельный слой
+- Status: `partial`
+- Note: добавлены `.env.example` и базовый `config/` (`app.php`, `database.php`), но полноценное разделение dev/prod и замена всех захардкоженных значений по проекту ещё не завершены.
 - Priority: `P0`
 - Agent: `Backend Extraction`
 - Goal: отделить конфигурацию от кода
@@ -160,6 +168,8 @@
 ## Epic 2 — Backend Extraction & Domain Layer
 
 ### TASK-009 — Вынести DB-слой в инфраструктурный класс
+- Status: `partial`
+- Note: добавлен `src/Infrastructure/Database/`, а `db.php` переведён в thin wrapper над `DatabaseManager`; часть кода всё ещё зависит от `DB::get()` как compatibility-слоя.
 - Priority: `P0`
 - Agent: `Backend Extraction`
 - Goal: убрать `db.php` как глобальную точку с логикой
@@ -174,6 +184,8 @@
   - подключение БД идёт через единый слой
 
 ### TASK-010 — Вынести auth-логику в сервисы и контроллеры
+- Status: `partial`
+- Note: создан `src/Application/Auth/AuthService.php`, `ajax/auth.php` стал заметно тоньше; endpoint всё ещё хранит HTTP/security-обвязку и пока не выделен в отдельный controller-класс.
 - Priority: `P0`
 - Agent: `Backend Extraction`
 - Goal: убрать бизнес-логику из `ajax/auth.php`
@@ -191,6 +203,8 @@
   - логика не живёт внутри PHP-страницы/эндпоинта
 
 ### TASK-011 — Вынести save/load/reward/prestige в сервисы
+- Status: `partial`
+- Note: создан `src/Application/GameSave/GameSaveService.php`, в него вынесены save/load/reward/prestige операции; `ajax/save.php` стал thin adapter только частично, потому что security/rate-limit/transport-обвязка ещё остаётся в endpoint.
 - Priority: `P0`
 - Agent: `Backend Extraction`
 - Goal: нормализовать серверную игровую логику
@@ -224,6 +238,8 @@
   - структура данных читаема и типизирована
 
 ### TASK-013 — Ввести единый формат API-ответов
+- Status: `partial`
+- Note: добавлен `src/Http/ApiResponse.php` и часть AJAX-эндпоинтов уже использует его, но единый контракт для всех API и документация `docs/api/response-format.md` пока не завершены.
 - Priority: `P1`
 - Agent: `Backend Extraction`
 - Goal: привести API к предсказуемому контракту

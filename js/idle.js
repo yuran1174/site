@@ -5,6 +5,35 @@
 
 'use strict';
 
+const {
+  TICK_MS,
+  SAVE_INTERVAL,
+  SERVER_SAVE_INTERVAL,
+  createInitialState,
+  createInitialTempState,
+} = window.IdleRuntime;
+
+const {
+  fmt,
+  fmtTime,
+  getTotalBuildings,
+  getUpgradeCount,
+  getBuildingCost,
+  getBuildingCostN,
+  getClickMultiplier,
+  getBuildingCps,
+  getLocPerSecond,
+  getLocPerClick,
+  randomEventDelay,
+  getPrestigeRequirements,
+  getAccountLevel,
+  getAccountLevelTitle,
+  getPrestigeShopEffect,
+  hasPrestigeShopItem,
+  applyPrestigeShopEffects,
+  isBuildingUnlocked,
+} = window.IdleEconomy;
+
 // ================================================
 // GAME DATA DEFINITIONS
 // ================================================
@@ -300,224 +329,18 @@ const NEWS_MESSAGES = [
 // GAME STATE
 // ================================================
 
-let state = {
-  loc: 0,
-  totalLoc: 0,
-  locThisRun: 0,
-  totalClicks: 0,
-  buildings: {},           // { junior: 5, mid: 2, ... }
-  upgrades: {},            // { espresso: true, ... }
-  achievements: {},        // { first_loc: true, ... }
-  prestige: 0,
-  prestigeMulti: 1,
-  prestigePoints: 0,       // current spendable OO (Очки Опыта)
-  totalPrestigePoints: 0,  // total OO ever earned
-  prestigeShop: {},        // { coffee_iv: 2, veteran: 1, ... }
-  eventCount: 0,
-  maxOffline: 0,
-  story: {},               // { ch0: true, ch1: true, ... }
-  dungeonClears: 0,
-  lastSave: Date.now(),
-  lastTick: Date.now(),
-  version: 3,
-};
-
-// Temporary multipliers from events
-let tempState = {
-  globalMult: 1,
-  clickMult: 1,
-  buildingMult: {},    // { junior: 2 }
-  paused: false,
-  pauseUntil: 0,
-  activeEvent: null,
-  activeEventUntil: 0,
-};
+let state = createInitialState();
+let tempState = createInitialTempState();
 
 let tickCount = 0;
 let nextEventIn = randomEventDelay();
 let buyQty = 1;
 let newsIndex = 0;
 let newsTimer = 0;
-const TICK_MS = 50;
-const SAVE_INTERVAL = 10000;        // 10s local save
-const SERVER_SAVE_INTERVAL = 30000; // 30s server save
 let lastSaveTime       = Date.now();
 let lastServerSaveTime = Date.now();
 let lastTickTime       = Date.now();
 let hiddenAt           = null;
-
-// ================================================
-// HELPER FUNCTIONS
-// ================================================
-
-function fmt(n) {
-  if (n < 1000)  return Math.floor(n).toString();
-  if (n < 1e6)   return (n/1e3).toFixed(1) + 'K';
-  if (n < 1e9)   return (n/1e6).toFixed(2) + 'M';
-  if (n < 1e12)  return (n/1e9).toFixed(2) + 'B';
-  if (n < 1e15)  return (n/1e12).toFixed(2) + 'T';
-  if (n < 1e18)  return (n/1e15).toFixed(2) + 'Qa';
-  return n.toExponential(2);
-}
-
-function fmtTime(seconds) {
-  if (seconds < 60)   return Math.floor(seconds) + 'с';
-  if (seconds < 3600) return Math.floor(seconds/60) + 'м ' + (Math.floor(seconds)%60) + 'с';
-  return Math.floor(seconds/3600) + 'ч ' + Math.floor((seconds%3600)/60) + 'м';
-}
-
-function getTotalBuildings(s) {
-  return Object.values(s.buildings).reduce((a, b) => a + b, 0);
-}
-
-function getUpgradeCount(s) {
-  return Object.values(s.upgrades).filter(v => v).length;
-}
-
-function getBuildingCost(building, count) {
-  const shopDiscount = getPrestigeShopEffect('discount'); // 0..0.3
-  const multi = Math.max(0.1, 1 - shopDiscount);
-  return Math.ceil(building.baseCost * Math.pow(1.15, count) * multi);
-}
-
-function getBuildingCostN(building, currentCount, n) {
-  let total = 0;
-  for (let i = 0; i < n; i++) {
-    total += getBuildingCost(building, currentCount + i);
-  }
-  return total;
-}
-
-function getClickMultiplier() {
-  let mult = 1;
-  for (const upg of UPGRADES) {
-    if (upg.effect.type === 'click' && state.upgrades[upg.id]) {
-      mult *= upg.effect.mult;
-    }
-  }
-  // Prestige shop: coffee_iv
-  mult *= (1 + getPrestigeShopEffect('clickMulti'));
-  return mult * tempState.clickMult;
-}
-
-function getBuildingCps(building) {
-  let mult = 1;
-  // Per-building upgrades
-  for (const upg of UPGRADES) {
-    if (upg.effect.type === 'building' && upg.effect.id === building.id && state.upgrades[upg.id]) {
-      mult *= upg.effect.mult;
-    }
-  }
-  // Global upgrades
-  for (const upg of UPGRADES) {
-    if (upg.effect.type === 'global' && state.upgrades[upg.id]) {
-      mult *= upg.effect.mult;
-    }
-  }
-  // Prestige bonus
-  mult *= state.prestigeMulti;
-  // Temp event mult
-  mult *= tempState.globalMult;
-  if (tempState.buildingMult[building.id] !== undefined) {
-    mult *= tempState.buildingMult[building.id];
-  }
-  return building.baseCps * mult;
-}
-
-function getLocPerSecond() {
-  let total = 0;
-  for (const b of BUILDINGS) {
-    const count = state.buildings[b.id] || 0;
-    total += getBuildingCps(b) * count;
-  }
-  return total;
-}
-
-function getLocPerClick() {
-  const baseLpc = Math.max(1, getLocPerSecond() * 0.01);
-  return Math.max(1, baseLpc * getClickMultiplier());
-}
-
-function randomEventDelay() {
-  return 45000 + Math.random() * 45000; // 45-90 seconds
-}
-
-// ================================================
-// ACCOUNT LEVEL & PRESTIGE REQUIREMENTS
-// ================================================
-
-function getPrestigeRequirements() {
-  const n         = state.prestige;
-  const maxBTypes = BUILDINGS.filter(b => !b.requiresShop).length;
-  return {
-    locThisRun:    1e6 * Math.pow(10, n),           // 1M, 10M, 100M, 1B...
-    buildingTypes: Math.min(4 + n, maxBTypes),
-    upgrades:      Math.min(8 + n * 2, 22),
-  };
-}
-
-function getAccountLevel() {
-  const locPts     = Math.floor(Math.log10((state.totalLoc || 0) + 10)) * 2;
-  const prestigePts= (state.prestige || 0) * 10;
-  const achievePts = Object.values(state.achievements || {}).filter(Boolean).length * 2;
-  const dungeonPts = (state.dungeonClears || 0) * 3;
-  return Math.max(1, Math.floor((locPts + prestigePts + achievePts + dungeonPts) / 5));
-}
-
-const LEVEL_TITLES = [
-  [50, 'Легенда'],
-  [35, 'CTO'],
-  [25, 'Архитектор'],
-  [18, 'Тимлид'],
-  [12, 'Сеньор'],
-  [7,  'Мидл'],
-  [3,  'Джун'],
-  [1,  'Стажёр'],
-];
-
-function getAccountLevelTitle(lvl) {
-  for (const [min, t] of LEVEL_TITLES) {
-    if (lvl >= min) return t;
-  }
-  return 'Стажёр';
-}
-
-// ================================================
-// PRESTIGE SHOP EFFECTS
-// ================================================
-
-function getPrestigeShopEffect(effectId) {
-  const shop = state.prestigeShop || {};
-  switch (effectId) {
-    case 'clickMulti':   return 0.1 * (shop.coffee_iv   || 0); // +10% per level
-    case 'discount':     return 0.1 * (shop.discount     || 0); // -10% cost per level
-    case 'offlineHours': return 4   * (shop.offline_boost|| 0); // +4h per level
-    case 'eventLuckMult':return 0.25 * (shop.event_luck  || 0); // -25% bad chance per level
-    default: return 0;
-  }
-}
-
-function hasPrestigeShopItem(id) {
-  return (state.prestigeShop[id] || 0) >= 1;
-}
-
-function applyPrestigeShopEffects() {
-  // Called on prestige reset - applies one-time bonuses
-  const shop = state.prestigeShop || {};
-
-  // Veteran: start with 500 LOC × prestige level
-  if (shop.veteran >= 1 && state.prestige > 0) {
-    state.loc += 500 * state.prestige;
-    state.totalLoc += 500 * state.prestige;
-  }
-
-  // Automator: first junior is free (handled in buyBuilding)
-}
-
-function isBuildingUnlocked(building) {
-  if (!building.requiresShop) return true;
-  return hasPrestigeShopItem(building.requiresShop);
-}
 
 // ================================================
 // SAVE / LOAD

@@ -424,6 +424,8 @@
 ## Epic 5 — Frontend Decomposition
 
 ### TASK-023 — Разбить `js/idle.js` на модули
+- Status: `partial`
+- Note: начата безопасная декомпозиция без build step: runtime/state и economy/helper-логика вынесены в отдельные `js/idle-*.js`, но data/render/save-слои всё ещё остаются в `js/idle.js`.
 - Priority: `P0`
 - Agent: `Frontend Decomposition`
 - Goal: уменьшить связность и упростить развитие idle-ядра

@@ -5,6 +5,18 @@
 
 ---
 
+## 2026-03-12 — Dungeon v3: Phaser 3 подключён
+
+**Что сделано:**
+- `dungeon.php`: добавлен Phaser 3.87.0 CDN, `<canvas id="dungeonCanvas">` заменён на `<div id="gameCanvas">`
+- `css/dungeon.css`: `#dungeonCanvas` → `#gameCanvas` + `#gameCanvas canvas`, добавлены размеры контейнера 576×448
+
+**Файлы затронуты:**
+- `dungeon.php` (обновлён)
+- `css/dungeon.css` (обновлён)
+
+---
+
 ## 2026-03-12 — Dungeon v2: Кодовая база: Глубина
 
 **Что сделано:**

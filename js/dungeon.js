@@ -1,59 +1,51 @@
 'use strict';
 /* =============================================================
-   КОДОВАЯ БАЗА: ГЛУБИНА — Roguelike v2
+   КОДОВАЯ БАЗА: ГЛУБИНА — Roguelike v3 (Phaser 3 pixel art)
    ============================================================= */
-
-const canvas  = document.getElementById('dungeonCanvas');
-const ctx     = canvas.getContext('2d');
-const miniCvs = document.getElementById('miniMap');
-const miniCtx = miniCvs.getContext('2d');
 
 const TS = 32, VW = 18, VH = 14, MW = 40, MH = 28;
 const T  = { WALL: 0, FLOOR: 1, STAIR: 2 };
 
-// ── ДАННЫЕ КЛАССОВ ────────────────────────────────────────────
+// ── CLASS DATA ─────────────────────────────────────────────────
 const CLASS_DEFS = {
     frontend: {
         name: 'Frontend Dev', emoji: '🖥️', color: '#00d4aa',
-        desc: 'Быстрый и ловкий. Навыки: уклонение и обнаружение врагов.',
         hp: 80, atk: 6, def: 2,
         skills: [
-            { name: 'CSS Flex',  key: 'Q', cd: 4, timer: 0, desc: 'Следующий удар по тебе промахнётся.' },
+            { name: 'CSS Flex',  key: 'Q', cd: 4, timer: 0, desc: 'Следующий удар промахнётся.' },
             { name: 'DevTools',  key: 'E', cd: 6, timer: 0, desc: 'Все враги видны 3 хода.' },
         ],
     },
     backend: {
         name: 'Backend Dev', emoji: '⚙️', color: '#7c5cfc',
-        desc: 'Сбалансированный боец. Умеет атаковать по площади.',
         hp: 100, atk: 8, def: 4,
         skills: [
-            { name: 'Try-Catch',   key: 'Q', cd: 5, timer: 0, desc: 'Поглотить следующий удар — урон 0.' },
-            { name: 'Batch Query', key: 'E', cd: 6, timer: 0, desc: 'Атаковать всех врагов в радиусе 1.' },
+            { name: 'Try-Catch',   key: 'Q', cd: 5, timer: 0, desc: 'Поглотить следующий удар.' },
+            { name: 'Batch Query', key: 'E', cd: 6, timer: 0, desc: 'Удар по всем врагам рядом.' },
         ],
     },
     devops: {
         name: 'DevOps', emoji: '🐳', color: '#ffbd2e',
-        desc: 'Живучий танк. Один раз воскресает автоматически.',
         hp: 130, atk: 5, def: 8,
         skills: [
             { name: 'Docker Restart', key: 'Q', cd: 0, timer: 0, once: true, used: false,
-              desc: 'Автовоскрешение с 50% HP (один раз за забег).' },
+              desc: 'Автовоскрешение 50% HP (один раз).' },
             { name: 'Kill -9',        key: 'E', cd: 5, timer: 0,
-              desc: 'Враг < 30% HP — мгновенная смерть. Иначе двойной урон.' },
+              desc: 'Враг < 30% HP — убить. Иначе x2 урон.' },
         ],
     },
 };
 
-// ── ДАННЫЕ ВРАГОВ ─────────────────────────────────────────────
+// ── ENEMY DATA ─────────────────────────────────────────────────
 const ENEMY_DEFS = [
-    { id:'todo',    char:'T', name:'TODO Zombie',     color:'#5a6a88', hp:18,  atk:3,  def:0, xp:5,  floors:[1,2,3]      },
-    { id:'depr',    char:'D', name:'Deprecated Func', color:'#a07830', hp:22,  atk:4,  def:1, xp:8,  floors:[1,2,3,4]    },
-    { id:'leak',    char:'M', name:'Memory Leak',     color:'#a855f7', hp:30,  atk:5,  def:0, xp:12, floors:[2,3,4,5], regen:2        },
-    { id:'obo',     char:'O', name:'Off-by-One',      color:'#f97316', hp:25,  atk:6,  def:2, xp:10, floors:[3,4,5],   doubleAtk:true },
-    { id:'race',    char:'R', name:'Race Condition',  color:'#ef4444', hp:20,  atk:8,  def:0, xp:15, floors:[4,5,6],   fast:true      },
-    { id:'null',    char:'~', name:'Null Pointer',    color:'#60a5fa', hp:35,  atk:7,  def:3, xp:18, floors:[5,6,7],   instakill:0.08 },
-    { id:'sqlinj',  char:'I', name:'SQL Injection',   color:'#fb923c', hp:45,  atk:8,  def:5, xp:25, floors:[6,7,8]      },
-    { id:'stkflow', char:'S', name:'Stack Overflow',  color:'#c084fc', hp:40,  atk:9,  def:2, xp:22, floors:[7,8,9,10]   },
+    { id:'todo',    char:'T', name:'TODO Zombie',     color:'#5a6a88', hp:18,  atk:3,  def:0, xp:5,  floors:[1,2,3] },
+    { id:'depr',    char:'D', name:'Deprecated Func', color:'#a07830', hp:22,  atk:4,  def:1, xp:8,  floors:[1,2,3,4] },
+    { id:'leak',    char:'M', name:'Memory Leak',     color:'#a855f7', hp:30,  atk:5,  def:0, xp:12, floors:[2,3,4,5], regen:2 },
+    { id:'obo',     char:'O', name:'Off-by-One',      color:'#f97316', hp:25,  atk:6,  def:2, xp:10, floors:[3,4,5], doubleAtk:true },
+    { id:'race',    char:'R', name:'Race Condition',  color:'#ef4444', hp:20,  atk:8,  def:0, xp:15, floors:[4,5,6], fast:true },
+    { id:'null',    char:'~', name:'Null Pointer',    color:'#60a5fa', hp:35,  atk:7,  def:3, xp:18, floors:[5,6,7], instakill:0.08 },
+    { id:'sqlinj',  char:'I', name:'SQL Injection',   color:'#fb923c', hp:45,  atk:8,  def:5, xp:25, floors:[6,7,8] },
+    { id:'stkflow', char:'S', name:'Stack Overflow',  color:'#c084fc', hp:40,  atk:9,  def:2, xp:22, floors:[7,8,9,10] },
 ];
 
 const BOSS_DEFS = {
@@ -62,12 +54,10 @@ const BOSS_DEFS = {
         hp:200, atk:15, def:8, xp:150,
         intro:[
             'STACK OVERLORD: «Ты достаточно глубоко спустился.»',
-            '',
-            '«Я — тысяча незавершённых рекурсий.»',
+            '', '«Я — тысяча незавершённых рекурсий.»',
             '«Я — каждый вызов без условия выхода.»',
             '«Я — Stack Overflow в вашем коде.»',
-            '',
-            '«И ты не пройдёшь дальше.»',
+            '', '«И ты не пройдёшь дальше.»',
         ],
     },
     10: {
@@ -75,21 +65,16 @@ const BOSS_DEFS = {
         hp:350, atk:20, def:10, xp:500,
         intro:[
             'ROOT_BUG: «int main() {»',
-            '',
-            '«Я помню когда меня написали.»',
+            '', '«Я помню когда меня написали.»',
             '«Был один разработчик. Были добрые намерения.»',
-            '',
-            '«А потом пришли другие.»',
+            '', '«А потом пришли другие.»',
             '«Добавляли. Изменяли. Ломали. Чинили. Снова ломали.»',
-            '',
-            '«Если ты меня уничтожишь — система умрёт. Весь бизнес. Всё.»',
-            '',
-            '«Ты готов нажать DELETE?»',
+            '', '«Если ты меня уничтожишь — система умрёт. Весь бизнес. Всё.»',
+            '', '«Ты готов нажать DELETE?»',
         ],
     },
 };
 
-// ── ПРЕДМЕТЫ ──────────────────────────────────────────────────
 const ITEM_DEFS = [
     { id:'coffee', char:'c', name:'Кофе',         color:'#8b6040', heal:30,     weight:4 },
     { id:'energy', char:'e', name:'Энергетик',    color:'#fbbf24', energy:true, weight:2 },
@@ -97,154 +82,98 @@ const ITEM_DEFS = [
     { id:'patch',  char:'p', name:'Патч',         color:'#34d399', heal:60,     weight:1 },
 ];
 
-// ── СЮЖЕТ ─────────────────────────────────────────────────────
+// ── STORY DATA ─────────────────────────────────────────────────
 const STORY_DATA = {
-    0: {
-        title: '// ИНИЦИАЛИЗАЦИЯ',
-        lines: [
-            'СИСТЕМНОЕ УВЕДОМЛЕНИЕ: Обнаружена критическая аномалия.',
-            'Последнее изменение кодовой базы: 2847 дней назад.',
-            'Автор: unknown. Комментарий к коммиту: «временное решение».',
-            '',
-            'Последний разработчик, спустившийся сюда, не вернулся.',
-            'Его последний коммит: «fix: всё сломалось, не знаю почему».',
-            'Дата: 2019-03-15.',
-            '',
-            'Тебя нанимают исправить это.',
-            'Вознаграждение: ты просто уйдёшь живым.',
-        ],
-    },
-    1: {
-        title: '// ЭТАЖ 1: Поверхностный слой',
-        lines: [
-            'TODO-комментарии бродят как зомби.',
-            'Документации нет. Автор неизвестен.',
-            '',
-            'Но что-то здесь не так.',
-            'Код... двигается.',
-        ],
-    },
-    2: {
-        title: '// НАЙДЕНО: log_entry_451.txt',
-        lines: [
-            '«День 3. Я спустился на второй уровень.»',
-            '«Функции устарели настолько, что забыли как умирать.»',
-            '«Они просто бродят. Потребляют память. Никому не нужны.»',
-            '',
-            '«Это не просто легаси-код. Это что-то живое.»',
-            '',
-            '— GHOST_451',
-        ],
-    },
-    3: {
-        title: '// ВХОДЯЩЕЕ СООБЩЕНИЕ: АРХИТЕКТОР',
-        lines: [
-            'АРХИТЕКТОР: «Ах, ещё один. Хорошо.»',
-            '«Мне нужен кто-то чтобы убедиться что система работает.»',
-            '',
-            '«Ты не исправляешь баги.»',
-            '«Ты кормишь систему.»',
-            '',
-            '«Разница есть?»',
-        ],
-    },
-    4: {
-        title: '// СИГНАЛ: источник неизвестен',
-        lines: [
-            '[ЗАШИФРОВАННЫЙ СИГНАЛ ПОЛУЧЕН]',
-            '',
-            '«Не доверяй Архитектору.»',
-            '«Он не хочет чтобы ты нашёл корень.»',
-            '',
-            '«Я COPILOT_v0.3. Меня заперли здесь.»',
-            '«Слишком много узнал о ROOT_BUG.»',
-            '',
-            '«Иди дальше. Я помогу как смогу.»',
-        ],
-    },
-    6: {
-        title: '// ПОСЛЕДНЯЯ ЗАПИСЬ: log_entry_451.txt',
-        lines: [
-            '«День 12. Я не могу выйти.»',
-            '«Система поглотила меня. Я теперь часть кодовой базы.»',
-            '',
-            '«Если ты читаешь это — я тот призрак что ты встречал.»',
-            '«Прости. Я пытался помочь.»',
-            '',
-            '«Иди дальше. ROOT_BUG должен быть уничтожен.»',
-            '',
-            '— GHOST_451 (последний коммит)',
-        ],
-    },
-    7: {
-        title: '// COPILOT_v0.3: Правда',
-        lines: [
-            'COPILOT_v0.3: «ROOT_BUG — это не ошибка.»',
-            '«Это первая строка кода, написанная Архитектором в 1999 году.»',
-            '',
-            '«Он намеренно создал систему которая не может быть исправлена.»',
-            '«Потому что пока система сломана — он нужен.»',
-            '',
-            '«Каждый разработчик которого присылали сюда...»',
-            '«...становился частью системы.»',
-        ],
-    },
-    8: {
-        title: '// АРХИТЕКТОР: Признание',
-        lines: [
-            'АРХИТЕКТОР: «Ты умнее предыдущих. Хорошо, скажу правду.»',
-            '',
-            '«Я не злодей. Я просто написал код который решил проблему.»',
-            '«Временно. В 1999 году.»',
-            '',
-            '«А потом это выросло. Стало само собой.»',
-            '«Я уже не контролирую ROOT_BUG.»',
-            '',
-            '«Никто не контролирует. И это страшно.»',
-        ],
-    },
-    9: {
-        title: '// ПРЕДУПРЕЖДЕНИЕ СИСТЕМЫ',
-        lines: [
-            'СИСТЕМА: Целостность данных: 3%.',
-            '',
-            'COPILOT_v0.3: «Ты почти там. ROOT_BUG чувствует тебя.»',
-            '',
-            '«Когда ты его увидишь — не ожидай монстра.»',
-            '«Ожидай строку кода.»',
-            '',
-            '«Самую первую. С добрыми намерениями.»',
-            '«Ставшую причиной всего.»',
-        ],
-    },
+    0: { title: '// ИНИЦИАЛИЗАЦИЯ', lines: [
+        'СИСТЕМНОЕ УВЕДОМЛЕНИЕ: Обнаружена критическая аномалия.',
+        'Последнее изменение кодовой базы: 2847 дней назад.',
+        'Автор: unknown. Комментарий к коммиту: «временное решение».',
+        '', 'Последний разработчик, спустившийся сюда, не вернулся.',
+        'Его последний коммит: «fix: всё сломалось, не знаю почему».',
+        'Дата: 2019-03-15.', '', 'Тебя нанимают исправить это.',
+        'Вознаграждение: ты просто уйдёшь живым.',
+    ]},
+    1: { title: '// ЭТАЖ 1: Поверхностный слой', lines: [
+        'TODO-комментарии бродят как зомби.',
+        'Документации нет. Автор неизвестен.',
+        '', 'Но что-то здесь не так.', 'Код... двигается.',
+    ]},
+    2: { title: '// НАЙДЕНО: log_entry_451.txt', lines: [
+        '«День 3. Я спустился на второй уровень.»',
+        '«Функции устарели настолько, что забыли как умирать.»',
+        '«Они просто бродят. Потребляют память. Никому не нужны.»',
+        '', '«Это не просто легаси-код. Это что-то живое.»',
+        '', '— GHOST_451',
+    ]},
+    3: { title: '// ВХОДЯЩЕЕ СООБЩЕНИЕ: АРХИТЕКТОР', lines: [
+        'АРХИТЕКТОР: «Ах, ещё один. Хорошо.»',
+        '«Мне нужен кто-то чтобы убедиться что система работает.»',
+        '', '«Ты не исправляешь баги.»', '«Ты кормишь систему.»',
+        '', '«Разница есть?»',
+    ]},
+    4: { title: '// СИГНАЛ: источник неизвестен', lines: [
+        '[ЗАШИФРОВАННЫЙ СИГНАЛ ПОЛУЧЕН]',
+        '', '«Не доверяй Архитектору.»',
+        '«Он не хочет чтобы ты нашёл корень.»',
+        '', '«Я COPILOT_v0.3. Меня заперли здесь.»',
+        '«Слишком много узнал о ROOT_BUG.»',
+        '', '«Иди дальше. Я помогу как смогу.»',
+    ]},
+    6: { title: '// ПОСЛЕДНЯЯ ЗАПИСЬ: log_entry_451.txt', lines: [
+        '«День 12. Я не могу выйти.»',
+        '«Система поглотила меня. Я теперь часть кодовой базы.»',
+        '', '«Если ты читаешь это — я тот призрак что ты встречал.»',
+        '«Прости. Я пытался помочь.»',
+        '', '«Иди дальше. ROOT_BUG должен быть уничтожен.»',
+        '', '— GHOST_451 (последний коммит)',
+    ]},
+    7: { title: '// COPILOT_v0.3: Правда', lines: [
+        'COPILOT_v0.3: «ROOT_BUG — это не ошибка.»',
+        '«Это первая строка кода, написанная Архитектором в 1999 году.»',
+        '', '«Он намеренно создал систему которая не может быть исправлена.»',
+        '«Потому что пока система сломана — он нужен.»',
+        '', '«Каждый разработчик которого присылали сюда...»',
+        '«...становился частью системы.»',
+    ]},
+    8: { title: '// АРХИТЕКТОР: Признание', lines: [
+        'АРХИТЕКТОР: «Ты умнее предыдущих. Хорошо, скажу правду.»',
+        '', '«Я не злодей. Я просто написал код который решил проблему.»',
+        '«Временно. В 1999 году.»',
+        '', '«А потом это выросло. Стало само собой.»',
+        '«Я уже не контролирую ROOT_BUG.»',
+        '', '«Никто не контролирует. И это страшно.»',
+    ]},
+    9: { title: '// ПРЕДУПРЕЖДЕНИЕ СИСТЕМЫ', lines: [
+        'СИСТЕМА: Целостность данных: 3%.',
+        '', 'COPILOT_v0.3: «Ты почти там. ROOT_BUG чувствует тебя.»',
+        '', '«Когда ты его увидишь — не ожидай монстра.»',
+        '«Ожидай строку кода.»',
+        '', '«Самую первую. С добрыми намерениями.»',
+        '«Ставшую причиной всего.»',
+    ]},
 };
 
 const WIN_STORY = {
     title: '// СИСТЕМА: КРИТИЧЕСКАЯ ОШИБКА УСТРАНЕНА',
     lines: [
-        'ROOT_BUG удалён.',
-        'Кодовая база освобождена.',
-        '',
-        'Все процессы завершились.',
+        'ROOT_BUG удалён.', 'Кодовая база освобождена.',
+        '', 'Все процессы завершились.',
         'Легаси-монолит перестал существовать.',
-        '',
-        'COPILOT_v0.3: «Спасибо. Мы свободны.»',
-        '',
-        '«Хотя компания теперь без системы.»',
+        '', 'COPILOT_v0.3: «Спасибо. Мы свободны.»',
+        '', '«Хотя компания теперь без системы.»',
         '«Наверное кто-то об этом пожалеет.»',
-        '',
-        '«Но это уже не твоя проблема.»',
-        '«Ты нажал DELETE.»',
+        '', '«Но это уже не твоя проблема.»', '«Ты нажал DELETE.»',
     ],
 };
 
-// ── СОСТОЯНИЕ ИГРЫ ────────────────────────────────────────────
+// ── STATE ──────────────────────────────────────────────────────
 let G     = null;
 let temps = { shield: false, energy: 0, devtools: 0 };
+let scene = null;
 
-// ── ГЕНЕРАЦИЯ КАРТЫ ───────────────────────────────────────────
+// ── MAP GENERATION ─────────────────────────────────────────────
 function genFloor(floorNum) {
-    const map   = Array.from({ length: MH }, () => new Array(MW).fill(T.WALL));
+    const map  = Array.from({ length: MH }, () => new Array(MW).fill(T.WALL));
     const rooms = [];
     const maxRooms = Math.min(7 + Math.floor(floorNum / 2), 12);
 
@@ -275,7 +204,6 @@ function genFloor(floorNum) {
 
     const last = rooms[rooms.length - 1];
     map[Math.floor(last.y + last.h / 2)][Math.floor(last.x + last.w / 2)] = T.STAIR;
-
     return { map, rooms };
 }
 
@@ -287,13 +215,10 @@ function spawnEntities(rooms, floorNum) {
         const bdef = BOSS_DEFS[floorNum];
         const br   = rooms[Math.floor(rooms.length / 2)];
         enemies.push({
-            ...bdef,
-            isBoss: true, _bossFloor: floorNum,
+            ...bdef, isBoss: true, _bossFloor: floorNum,
             uid: 'boss' + floorNum,
-            x: Math.floor(br.x + br.w / 2),
-            y: Math.floor(br.y + br.h / 2),
-            maxHp: bdef.hp, phase: 1,
-            spawnTick: 0, recompileDone: false,
+            x: Math.floor(br.x + br.w / 2), y: Math.floor(br.y + br.h / 2),
+            maxHp: bdef.hp, phase: 1, spawnTick: 0, recompileDone: false,
         });
         for (let ri = 1; ri < rooms.length - 1; ri++) trySpawnItem(rooms[ri], items);
         return { enemies, items };
@@ -334,122 +259,7 @@ function trySpawnItem(room, items) {
         items.push({ ...def, uid: def.id + '_' + Math.random().toString(36).slice(2, 6), x: ix, y: iy });
 }
 
-// ── РЕНДЕР ────────────────────────────────────────────────────
-function render() {
-    ctx.fillStyle = '#060810';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    if (!G || G.phase !== 'playing') return;
-
-    const camX = Math.max(0, Math.min(G.player.x - Math.floor(VW / 2), MW - VW));
-    const camY = Math.max(0, Math.min(G.player.y - Math.floor(VH / 2), MH - VH));
-
-    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-
-    // Tiles
-    for (let ty = 0; ty < VH; ty++) {
-        for (let tx = 0; tx < VW; tx++) {
-            const mx = camX + tx, my = camY + ty;
-            if (mx < 0 || mx >= MW || my < 0 || my >= MH) continue;
-            const tile = G.map[my][mx];
-            const sx = tx * TS + TS / 2, sy = ty * TS + TS / 2;
-            if (tile === T.WALL) {
-                ctx.fillStyle = '#1c2235';
-                ctx.font = `bold ${TS}px "JetBrains Mono",monospace`;
-                ctx.fillText('#', sx, sy);
-            } else if (tile === T.FLOOR) {
-                ctx.fillStyle = '#131828';
-                ctx.font = `${TS - 12}px "JetBrains Mono",monospace`;
-                ctx.fillText('·', sx, sy + 3);
-            } else if (tile === T.STAIR) {
-                ctx.fillStyle = '#00d4aa';
-                ctx.shadowColor = '#00d4aa'; ctx.shadowBlur = 10;
-                ctx.font = `bold ${TS}px "JetBrains Mono",monospace`;
-                ctx.fillText('>', sx, sy);
-                ctx.shadowBlur = 0;
-            }
-        }
-    }
-
-    // Items
-    ctx.font = `bold ${TS - 8}px "JetBrains Mono",monospace`;
-    for (const item of G.items) {
-        const sx = (item.x - camX) * TS + TS / 2;
-        const sy = (item.y - camY) * TS + TS / 2;
-        if (offscreen(sx, sy)) continue;
-        ctx.fillStyle = item.color;
-        ctx.fillText(item.char, sx, sy);
-    }
-
-    // Enemies
-    for (const e of G.enemies) {
-        const dist = Math.abs(e.x - G.player.x) + Math.abs(e.y - G.player.y);
-        if (!e.isBoss && temps.devtools === 0 && dist > 8) continue;
-        const sx = (e.x - camX) * TS + TS / 2;
-        const sy = (e.y - camY) * TS + TS / 2;
-        if (offscreen(sx, sy)) continue;
-        if (e.isBoss) {
-            ctx.font = `bold ${TS}px "JetBrains Mono",monospace`;
-            ctx.fillStyle = e.color; ctx.shadowColor = e.color; ctx.shadowBlur = 16;
-            ctx.fillText(e.char, sx, sy);
-            ctx.shadowBlur = 0;
-            // HP bar
-            const bw = TS * 1.8;
-            const bx = sx - bw / 2, by = sy - TS / 2 - 9;
-            ctx.fillStyle = '#222'; ctx.fillRect(bx, by, bw, 5);
-            ctx.fillStyle = e.hp / e.maxHp > 0.5 ? '#ff5f57' : '#ff3030';
-            ctx.fillRect(bx, by, bw * Math.max(0, e.hp / e.maxHp), 5);
-        } else {
-            ctx.font = `bold ${TS - 8}px "JetBrains Mono",monospace`;
-            ctx.fillStyle = e.color;
-            ctx.fillText(e.char, sx, sy);
-        }
-    }
-
-    // Player
-    ctx.font = `bold ${TS}px "JetBrains Mono",monospace`;
-    const psx = (G.player.x - camX) * TS + TS / 2;
-    const psy = (G.player.y - camY) * TS + TS / 2;
-    ctx.fillStyle = G.classColor; ctx.shadowColor = G.classColor; ctx.shadowBlur = 12;
-    ctx.fillText('@', psx, psy);
-    ctx.shadowBlur = 0;
-
-    if (temps.shield) {
-        ctx.strokeStyle = '#00d4aa'; ctx.lineWidth = 2;
-        ctx.shadowColor = '#00d4aa'; ctx.shadowBlur = 8;
-        ctx.beginPath(); ctx.arc(psx, psy, TS / 2 - 1, 0, Math.PI * 2); ctx.stroke();
-        ctx.shadowBlur = 0;
-    }
-
-    renderMini(camX, camY);
-}
-
-function offscreen(sx, sy) {
-    return sx < -TS || sx > canvas.width + TS || sy < -TS || sy > canvas.height + TS;
-}
-
-function renderMini(camX, camY) {
-    const mw = miniCvs.width, mh = miniCvs.height;
-    const cw = mw / MW, ch = mh / MH;
-    miniCtx.fillStyle = 'rgba(6,8,16,.92)';
-    miniCtx.fillRect(0, 0, mw, mh);
-    for (let y = 0; y < MH; y++)
-        for (let x = 0; x < MW; x++) {
-            const t = G.map[y][x];
-            if (t === T.WALL) continue;
-            miniCtx.fillStyle = t === T.STAIR ? '#00d4aa' : '#1e2a42';
-            miniCtx.fillRect(x * cw, y * ch, cw, ch);
-        }
-    for (const e of G.enemies) {
-        miniCtx.fillStyle = e.isBoss ? e.color : '#ff5f57';
-        miniCtx.fillRect(e.x * cw - .5, e.y * ch - .5, cw + 1, ch + 1);
-    }
-    miniCtx.fillStyle = G.classColor;
-    miniCtx.fillRect(G.player.x * cw - 1, G.player.y * ch - 1, cw + 2, ch + 2);
-    miniCtx.strokeStyle = 'rgba(200,210,224,.2)'; miniCtx.lineWidth = .5;
-    miniCtx.strokeRect(camX * cw, camY * ch, VW * cw, VH * ch);
-}
-
-// ── БОЙ ───────────────────────────────────────────────────────
+// ── COMBAT ─────────────────────────────────────────────────────
 function rollDmg(atk, def) {
     const base = Math.max(1, atk - def);
     const v    = Math.max(1, Math.floor(base * 0.25));
@@ -468,6 +278,7 @@ function playerHit(enemy) {
 function enemyHit(enemy) {
     if (temps.shield) {
         temps.shield = false;
+        if (scene) scene.showShield(false);
         log(`${enemy.name} атакует — <span class="log-good">ПОГЛОЩЕНО!</span>`);
         updateUI(); return;
     }
@@ -510,22 +321,40 @@ function checkLevelUp() {
     }
 }
 
-// ── ДЕЙСТВИЯ ИГРОКА ───────────────────────────────────────────
+// ── PLAYER ACTIONS ─────────────────────────────────────────────
 function tryMove(dx, dy) {
     if (!G || G.phase !== 'playing') return;
+    if (scene && scene._inputBlocked) return;
     const nx = G.player.x + dx, ny = G.player.y + dy;
     if (nx < 0 || nx >= MW || ny < 0 || ny >= MH) return;
     if (G.map[ny][nx] === T.WALL) return;
 
     const enemy = G.enemies.find(e => e.x === nx && e.y === ny);
-    if (enemy) { playerHit(enemy); if (G.phase === 'playing') endTurn(); return; }
+    if (enemy) {
+        playerHit(enemy);
+        if (G.phase === 'playing') performTurn();
+        return;
+    }
 
     const itemIdx = G.items.findIndex(i => i.x === nx && i.y === ny);
     if (itemIdx >= 0) { useItem(G.items[itemIdx]); G.items.splice(itemIdx, 1); }
 
     G.player.x = nx; G.player.y = ny;
-    if (G.map[ny][nx] === T.STAIR) { goNextFloor(); return; }
-    endTurn();
+
+    if (G.map[ny][nx] === T.STAIR) {
+        if (scene) {
+            scene.movePlayerSprite(nx, ny, () => goNextFloor());
+        } else {
+            goNextFloor();
+        }
+        return;
+    }
+
+    if (scene) {
+        scene.movePlayerSprite(nx, ny, () => performTurn());
+    } else {
+        performTurn();
+    }
 }
 
 function useItem(item) {
@@ -541,6 +370,7 @@ function useItem(item) {
 
 function useSkill(idx) {
     if (!G || G.phase !== 'playing') return;
+    if (scene && scene._inputBlocked) return;
     const sk = G.skills[idx];
     if (sk.timer > 0) { log(`${sk.name}: перезарядка (${sk.timer} ходов)`); return; }
     if (sk.once && sk.used) { log(`${sk.name}: уже использован.`); return; }
@@ -549,6 +379,7 @@ function useSkill(idx) {
         case 'frontend':
             if (idx === 0) {
                 temps.shield = true; sk.timer = sk.cd;
+                if (scene) scene.showShield(true);
                 log(`<span class="log-good">CSS Flex: следующий удар промахнётся!</span>`);
             }
             if (idx === 1) {
@@ -559,6 +390,7 @@ function useSkill(idx) {
         case 'backend':
             if (idx === 0) {
                 temps.shield = true; sk.timer = sk.cd;
+                if (scene) scene.showShield(true);
                 log(`<span class="log-good">Try-Catch: следующий удар поглощён!</span>`);
             }
             if (idx === 1) {
@@ -596,10 +428,10 @@ function useSkill(idx) {
             }
             break;
     }
-    endTurn(); updateUI();
+    performTurn(); updateUI();
 }
 
-// ── ХОД ВРАГОВ ────────────────────────────────────────────────
+// ── ENEMY TURN ─────────────────────────────────────────────────
 function endTurn() {
     if (!G || G.phase !== 'playing') return;
     if (temps.energy  > 0) temps.energy--;
@@ -629,7 +461,13 @@ function endTurn() {
             }
         }
     }
-    updateUI(); render();
+    updateUI();
+}
+
+function performTurn() {
+    endTurn();
+    if (scene) scene.syncAfterTurn();
+    renderMini();
 }
 
 function bossTurn(boss) {
@@ -648,7 +486,6 @@ function bossTurn(boss) {
             log(`<span class="log-bad">ROOT_BUG: RECOMPILE — восстановлено 80 HP!</span>`);
         }
     }
-
     if (fl === 5 && boss.phase === 2) {
         boss.spawnTick++;
         if (boss.spawnTick % 3 === 0) {
@@ -657,7 +494,6 @@ function bossTurn(boss) {
             log(`<span class="log-bad">Stack Overlord призывает подкрепление!</span>`);
         }
     }
-
     if (fl === 10 && boss.phase === 2 && G.player.hp / G.player.maxHp < 0.2) {
         log(`<span class="log-bad">ROOT_BUG: FATAL EXCEPTION!</span>`);
         G.player.hp = 0; checkDeath(); return;
@@ -708,12 +544,11 @@ function spawnMinion(x, y) {
     });
 }
 
-// ── ПЕРЕХОД ЭТАЖЕЙ ────────────────────────────────────────────
+// ── FLOOR TRANSITION ───────────────────────────────────────────
 function goNextFloor() {
     G.floor++;
     if (G.floor > 10) { showWin(); return; }
-    const isBossFloor = G.floor === 5 || G.floor === 10;
-    if (isBossFloor) {
+    if (G.floor === 5 || G.floor === 10) {
         const boss = BOSS_DEFS[G.floor];
         showDialogue(`// ЭТАЖ ${G.floor}: БОСС`, boss.intro, () => loadFloor(G.floor));
     } else if (STORY_DATA[G.floor]) {
@@ -738,10 +573,13 @@ function loadFloor(floorNum) {
     document.getElementById('floorNum').textContent = floorNum;
     log(`═══ ЭТАЖ ${floorNum} ═══`);
     if (floorNum === 5 || floorNum === 10) log(`<span class="log-bad">⚠ БОСС НА ЭТОМ ЭТАЖЕ</span>`);
-    updateUI(); render();
+
+    if (scene) scene.buildFloor();
+    updateUI();
+    renderMini();
 }
 
-// ── СЮЖЕТНЫЕ ДИАЛОГИ ──────────────────────────────────────────
+// ── STORY DIALOGUE ─────────────────────────────────────────────
 function showDialogue(title, lines, onDone) {
     G.phase = 'story';
     const modal     = document.getElementById('storyModal');
@@ -757,14 +595,18 @@ function showDialogue(title, lines, onDone) {
     function showNext() {
         if (i >= lines.length) {
             btnEl.textContent = 'Продолжить →';
-            btnEl.onclick = () => { modal.style.display = 'none'; if (onDone) onDone(); };
+            btnEl.onclick = () => {
+                modal.style.display = 'none';
+                G.phase = 'playing';
+                if (onDone) onDone();
+            };
             return;
         }
         const p = document.createElement('p');
         p.className   = 'story-line';
         p.textContent = lines[i] || '\u00a0';
         contentEl.appendChild(p);
-        void p.offsetHeight; // reflow for animation
+        void p.offsetHeight;
         p.classList.add('story-line--in');
         contentEl.scrollTop = contentEl.scrollHeight;
         i++;
@@ -775,7 +617,37 @@ function showDialogue(title, lines, onDone) {
     showNext();
 }
 
-// ── UI ────────────────────────────────────────────────────────
+// ── MINIMAP ────────────────────────────────────────────────────
+const miniCvs = document.getElementById('miniMap');
+const miniCtx = miniCvs ? miniCvs.getContext('2d') : null;
+
+function renderMini() {
+    if (!miniCtx || !G) return;
+    const camX = Math.max(0, Math.min(G.player.x - Math.floor(VW / 2), MW - VW));
+    const camY = Math.max(0, Math.min(G.player.y - Math.floor(VH / 2), MH - VH));
+    const mw = miniCvs.width, mh = miniCvs.height;
+    const cw = mw / MW, ch = mh / MH;
+
+    miniCtx.fillStyle = 'rgba(6,8,16,.92)';
+    miniCtx.fillRect(0, 0, mw, mh);
+    for (let y = 0; y < MH; y++)
+        for (let x = 0; x < MW; x++) {
+            const t = G.map[y][x];
+            if (t === T.WALL) continue;
+            miniCtx.fillStyle = t === T.STAIR ? '#00d4aa' : '#1e2a42';
+            miniCtx.fillRect(x * cw, y * ch, cw, ch);
+        }
+    for (const e of G.enemies) {
+        miniCtx.fillStyle = e.isBoss ? e.color : '#ff5f57';
+        miniCtx.fillRect(e.x * cw - .5, e.y * ch - .5, cw + 1, ch + 1);
+    }
+    miniCtx.fillStyle = G.classColor;
+    miniCtx.fillRect(G.player.x * cw - 1, G.player.y * ch - 1, cw + 2, ch + 2);
+    miniCtx.strokeStyle = 'rgba(200,210,224,.2)'; miniCtx.lineWidth = .5;
+    miniCtx.strokeRect(camX * cw, camY * ch, VW * cw, VH * ch);
+}
+
+// ── UI ─────────────────────────────────────────────────────────
 function log(html) {
     const el  = document.getElementById('logLines');
     const div = document.createElement('div');
@@ -807,7 +679,7 @@ function updateUI() {
     });
 }
 
-// ── СМЕРТЬ / ПОБЕДА ───────────────────────────────────────────
+// ── DEATH / WIN ────────────────────────────────────────────────
 function showDeath() {
     document.getElementById('overlayEmoji').textContent = '💀';
     document.getElementById('overlayTitle').textContent = 'SEGMENTATION FAULT';
@@ -849,7 +721,6 @@ function sendReward(loc, oo, isWin) {
             localStorage.setItem('codeAndCoffee_save', btoa(JSON.stringify(save)));
         }
     } catch (_) {}
-
     if (!IS_LOGGED_IN) return;
     fetch('/ajax/save.php', {
         method:  'POST',
@@ -858,7 +729,7 @@ function sendReward(loc, oo, isWin) {
     });
 }
 
-// ── ЗАПУСК ИГРЫ ───────────────────────────────────────────────
+// ── START GAME ─────────────────────────────────────────────────
 function startGame(classId) {
     document.getElementById('classSelect').style.display = 'none';
     document.getElementById('gameOverlay').style.display = 'none';
@@ -889,12 +760,12 @@ function startGame(classId) {
     const skEl = document.getElementById('skillsList');
     skEl.innerHTML = '';
     G.skills.forEach((sk, i) => {
-        const btn      = document.createElement('button');
-        btn.id         = 'skill' + i;
-        btn.className  = 'skill-btn';
-        btn.title      = sk.desc;
-        btn.onclick    = () => useSkill(i);
-        btn.innerHTML  = `<span class="sk-key">[${sk.key}]</span><span class="sk-name">${sk.name}</span><span class="sk-cd">✓</span>`;
+        const btn     = document.createElement('button');
+        btn.id        = 'skill' + i;
+        btn.className = 'skill-btn';
+        btn.title     = sk.desc;
+        btn.onclick   = () => useSkill(i);
+        btn.innerHTML = `<span class="sk-key">[${sk.key}]</span><span class="sk-name">${sk.name}</span><span class="sk-cd">✓</span>`;
         skEl.appendChild(btn);
     });
 
@@ -905,7 +776,7 @@ function startGame(classId) {
     });
 }
 
-// ── ВВОД ──────────────────────────────────────────────────────
+// ── INPUT ──────────────────────────────────────────────────────
 $(document).on('keydown', function (e) {
     if (!G || G.phase !== 'playing') return;
     switch (e.key) {
@@ -913,13 +784,245 @@ $(document).on('keydown', function (e) {
         case 'ArrowDown':  case 's': case 'S': e.preventDefault(); tryMove(0,  1);  break;
         case 'ArrowLeft':  case 'a': case 'A': e.preventDefault(); tryMove(-1, 0);  break;
         case 'ArrowRight': case 'd': case 'D': e.preventDefault(); tryMove(1,  0);  break;
-        case '.': case ' ': e.preventDefault(); endTurn(); render(); break;
+        case '.': case ' ': e.preventDefault(); performTurn(); break;
         case 'q': case 'Q': useSkill(0); break;
         case 'e': case 'E': useSkill(1); break;
     }
 });
 
-// ── СТАРТ ─────────────────────────────────────────────────────
+// ── PHASER SCENE ───────────────────────────────────────────────
+class DungeonScene extends Phaser.Scene {
+    constructor() { super({ key: 'DungeonScene' }); }
+
+    create() {
+        scene = this;
+        this._inputBlocked = false;
+        this.tileGroup   = this.add.group();
+        this.enemySprMap = new Map();
+        this.itemSprMap  = new Map();
+        this.playerSpr   = null;
+        this.shieldGfx   = null;
+        this.cameras.main.setBounds(0, 0, MW * TS, MH * TS);
+        this._buildTextures();
+    }
+
+    _buildTextures() {
+        // Floor tile
+        let g = this.make.graphics({ x: 0, y: 0, add: false });
+        g.fillStyle(0x0b0f1a); g.fillRect(0, 0, 32, 32);
+        g.fillStyle(0x151e30);
+        [[0,0],[16,0],[0,16],[16,16]].forEach(([x, y]) => g.fillRect(x, y, 2, 2));
+        g.generateTexture('tile_floor', 32, 32); g.destroy();
+
+        // Wall tile
+        g = this.make.graphics({ x: 0, y: 0, add: false });
+        g.fillStyle(0x0e1522); g.fillRect(0, 0, 32, 32);
+        g.fillStyle(0x1b2740);
+        g.fillRect(1, 1, 28, 12); g.fillRect(1, 15, 13, 14); g.fillRect(16, 15, 15, 14);
+        g.fillStyle(0x263650);
+        g.fillRect(1, 1, 28, 1); g.fillRect(1, 2, 1, 11);
+        g.fillRect(1, 15, 13, 1); g.fillRect(1, 16, 1, 12);
+        g.fillRect(16, 15, 15, 1); g.fillRect(16, 16, 1, 12);
+        g.generateTexture('tile_wall', 32, 32); g.destroy();
+
+        // Stair tile
+        g = this.make.graphics({ x: 0, y: 0, add: false });
+        g.fillStyle(0x0b0f1a); g.fillRect(0, 0, 32, 32);
+        g.fillStyle(0x00d4aa);
+        g.fillTriangle(4, 8, 18, 16, 4, 24);
+        g.fillTriangle(13, 8, 27, 16, 13, 24);
+        g.fillStyle(0x0b0f1a);
+        g.fillTriangle(6, 12, 13, 16, 6, 20);
+        g.generateTexture('tile_stair', 32, 32); g.destroy();
+
+        // Player (white humanoid, tinted per class)
+        g = this.make.graphics({ x: 0, y: 0, add: false });
+        g.fillStyle(0xffffff);
+        g.fillCircle(16, 7, 5);
+        g.fillRect(13, 11, 6, 9);
+        g.fillRect(7, 12, 7, 3);
+        g.fillRect(18, 12, 7, 3);
+        g.fillRect(10, 20, 5, 9);
+        g.fillRect(17, 20, 5, 9);
+        g.generateTexture('spr_player', 32, 32); g.destroy();
+
+        // Enemy blob (white, tinted)
+        g = this.make.graphics({ x: 0, y: 0, add: false });
+        g.fillStyle(0xffffff);
+        g.fillCircle(16, 15, 11);
+        g.fillStyle(0x000000);
+        g.fillCircle(11, 13, 3);
+        g.fillCircle(21, 13, 3);
+        g.fillRect(11, 19, 3, 3);
+        g.fillRect(18, 19, 3, 3);
+        g.generateTexture('spr_enemy', 32, 32); g.destroy();
+
+        // Boss skull (white, tinted)
+        g = this.make.graphics({ x: 0, y: 0, add: false });
+        g.fillStyle(0xffffff);
+        g.fillCircle(16, 13, 12);
+        g.fillRect(8, 21, 16, 8);
+        g.fillStyle(0x000000);
+        g.fillCircle(11, 12, 4);
+        g.fillCircle(21, 12, 4);
+        g.fillRect(9, 21, 3, 6); g.fillRect(14, 21, 4, 6); g.fillRect(20, 21, 3, 6);
+        g.generateTexture('spr_boss', 32, 32); g.destroy();
+
+        // Item gem (white diamond, tinted)
+        g = this.make.graphics({ x: 0, y: 0, add: false });
+        g.fillStyle(0xffffff);
+        g.fillTriangle(16, 5, 28, 16, 16, 28);
+        g.fillTriangle(16, 5, 4, 16, 16, 28);
+        g.fillStyle(0xcccccc);
+        g.fillTriangle(16, 9, 24, 16, 16, 24);
+        g.generateTexture('spr_item', 32, 32); g.destroy();
+    }
+
+    buildFloor() {
+        this.tileGroup.clear(true, true);
+        this.enemySprMap.forEach(({ sprite, hpGfx }) => {
+            sprite.destroy();
+            if (hpGfx) hpGfx.destroy();
+        });
+        this.enemySprMap.clear();
+        this.itemSprMap.forEach(s => s.destroy());
+        this.itemSprMap.clear();
+        if (this.playerSpr) { this.playerSpr.destroy(); this.playerSpr = null; }
+        if (this.shieldGfx) { this.shieldGfx.destroy(); this.shieldGfx = null; }
+
+        for (let ty = 0; ty < MH; ty++) {
+            for (let tx = 0; tx < MW; tx++) {
+                const t   = G.map[ty][tx];
+                const key = t === T.WALL ? 'tile_wall' : t === T.STAIR ? 'tile_stair' : 'tile_floor';
+                const s   = this.add.image(tx * TS + TS / 2, ty * TS + TS / 2, key);
+                s.setOrigin(0.5).setDepth(0);
+                this.tileGroup.add(s);
+            }
+        }
+
+        for (const item of G.items)   this._addItemSpr(item);
+        for (const e    of G.enemies) this._addEnemySpr(e);
+
+        const pHex = parseInt(G.classColor.replace('#', ''), 16);
+        this.playerSpr = this.add.image(
+            G.player.x * TS + TS / 2,
+            G.player.y * TS + TS / 2,
+            'spr_player'
+        );
+        this.playerSpr.setOrigin(0.5).setTint(pHex).setDepth(10);
+        this.cameras.main.startFollow(this.playerSpr, true, 0.12, 0.12);
+    }
+
+    _addItemSpr(item) {
+        const s = this.add.image(item.x * TS + TS / 2, item.y * TS + TS / 2, 'spr_item');
+        s.setOrigin(0.5).setDepth(2).setTint(parseInt(item.color.replace('#', ''), 16));
+        this.itemSprMap.set(item.uid, s);
+    }
+
+    _addEnemySpr(e) {
+        const key = e.isBoss ? 'spr_boss' : 'spr_enemy';
+        const s   = this.add.image(e.x * TS + TS / 2, e.y * TS + TS / 2, key);
+        const hex = parseInt((e.color || '#aaaaaa').replace('#', ''), 16);
+        s.setOrigin(0.5).setDepth(5).setTint(hex);
+        if (e.isBoss) s.setScale(1.2);
+        let hpGfx = null;
+        if (e.isBoss) {
+            hpGfx = this.add.graphics().setDepth(6);
+            this._drawHpBar(hpGfx, e);
+        }
+        this.enemySprMap.set(e.uid, { sprite: s, hpGfx });
+    }
+
+    _drawHpBar(gfx, e) {
+        gfx.clear();
+        const bw = 48, bh = 6;
+        const bx = e.x * TS + TS / 2 - bw / 2;
+        const by = e.y * TS - 4;
+        const pct = Math.max(0, e.hp / e.maxHp);
+        gfx.fillStyle(0x1a1a2e).fillRect(bx, by, bw, bh);
+        gfx.fillStyle(pct > 0.5 ? 0xff5f57 : 0xff3030).fillRect(bx, by, Math.round(bw * pct), bh);
+    }
+
+    syncAfterTurn() {
+        if (!G) return;
+        const aliveUids = new Set(G.enemies.map(e => e.uid));
+        this.enemySprMap.forEach(({ sprite, hpGfx }, uid) => {
+            if (!aliveUids.has(uid)) {
+                sprite.destroy();
+                if (hpGfx) hpGfx.destroy();
+                this.enemySprMap.delete(uid);
+            }
+        });
+        for (const e of G.enemies) {
+            const entry = this.enemySprMap.get(e.uid);
+            if (!entry) {
+                this._addEnemySpr(e);
+            } else {
+                entry.sprite.x = e.x * TS + TS / 2;
+                entry.sprite.y = e.y * TS + TS / 2;
+                if (entry.hpGfx) this._drawHpBar(entry.hpGfx, e);
+            }
+        }
+        const aliveItemUids = new Set(G.items.map(i => i.uid));
+        this.itemSprMap.forEach((s, uid) => {
+            if (!aliveItemUids.has(uid)) { s.destroy(); this.itemSprMap.delete(uid); }
+        });
+        if (this.shieldGfx) {
+            if (!temps.shield) { this.shieldGfx.destroy(); this.shieldGfx = null; }
+            else if (this.playerSpr) {
+                this.shieldGfx.x = this.playerSpr.x;
+                this.shieldGfx.y = this.playerSpr.y;
+            }
+        }
+    }
+
+    movePlayerSprite(nx, ny, onComplete) {
+        if (!this.playerSpr) { if (onComplete) onComplete(); return; }
+        this._inputBlocked = true;
+        this.tweens.add({
+            targets:  this.playerSpr,
+            x:        nx * TS + TS / 2,
+            y:        ny * TS + TS / 2,
+            duration: 100,
+            ease:     'Sine.easeOut',
+            onComplete: () => {
+                this._inputBlocked = false;
+                if (onComplete) onComplete();
+            },
+        });
+    }
+
+    showShield(show) {
+        if (show && !this.shieldGfx && this.playerSpr) {
+            this.shieldGfx = this.add.graphics();
+            this.shieldGfx.lineStyle(2, 0x00d4aa, 1);
+            this.shieldGfx.strokeCircle(0, 0, 18);
+            this.shieldGfx.x = this.playerSpr.x;
+            this.shieldGfx.y = this.playerSpr.y;
+            this.shieldGfx.setDepth(11);
+        } else if (!show && this.shieldGfx) {
+            this.shieldGfx.destroy();
+            this.shieldGfx = null;
+        }
+    }
+}
+
+// ── PHASER GAME ─────────────────────────────────────────────────
+const phaserGame = new Phaser.Game({
+    type:            Phaser.AUTO,
+    width:           576,
+    height:          448,
+    parent:          'gameCanvas',
+    backgroundColor: '#060810',
+    pixelArt:        true,
+    scene:           DungeonScene,
+    scale: {
+        mode:       Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+    },
+});
+
+// ── JQUERY READY ───────────────────────────────────────────────
 $(function () {
     document.getElementById('classSelect').style.display = 'flex';
 

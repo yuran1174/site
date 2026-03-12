@@ -100,7 +100,14 @@ html, body {
   flex-shrink: 0;
 }
 
-#dungeonCanvas {
+#gameCanvas {
+  display: block;
+  width: 576px;
+  height: 448px;
+  line-height: 0;
+}
+
+#gameCanvas canvas {
   display: block;
   border: 1px solid var(--border);
   border-radius: 8px;
@@ -108,7 +115,6 @@ html, body {
   image-rendering: pixelated;
   image-rendering: crisp-edges;
   image-rendering: -moz-crisp-edges;
-  background: #06080e;
 }
 
 #miniMap {
@@ -580,7 +586,7 @@ html, body {
     max-width: 576px;
   }
 
-  #dungeonCanvas {
+  #gameCanvas canvas {
     width: 100%;
     max-width: 576px;
     height: auto;

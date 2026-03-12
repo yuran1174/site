@@ -134,7 +134,7 @@ if ($isLoggedIn) {
 
     <!-- CANVAS -->
     <div id="canvasWrap">
-      <canvas id="dungeonCanvas" width="576" height="448"></canvas>
+      <div id="gameCanvas"></div>
       <canvas id="miniMap" width="120" height="90"></canvas>
     </div>
 
@@ -195,6 +195,7 @@ if ($isLoggedIn) {
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/phaser@3.87.0/dist/phaser.min.js"></script>
 <script>
   const IS_LOGGED_IN  = <?= $isLoggedIn ? 'true' : 'false' ?>;
   const ACCOUNT_LEVEL = <?= (int)$accountLevel ?>;

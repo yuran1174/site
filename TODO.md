@@ -64,6 +64,8 @@
   - у каждого риска есть краткое последствие и рекомендуемое действие
 
 ### TASK-003 — Зафиксировать продуктовую модель
+- Status: `done`
+- Note: созданы `docs/product/game-loop.md` и `docs/product/monetization-outline.md`; зафиксированы core loop, meta progression, active/passive активности и безопасный контур монетизации без pay-to-win как основной стратегии.
 - Priority: `P0`
 - Agent: `Product Analyst`
 - Goal: описать core loop и целевую траекторию продукта
@@ -82,6 +84,8 @@
   - зафиксированы возможные направления заработка без pay-to-win на раннем этапе
 
 ### TASK-004 — Зафиксировать baseline-метрики
+- Status: `done`
+- Note: создан `docs/product/metrics.md` с baseline KPI, определениями activation, retention, average session length, login conversion, prestige conversion и dungeon engagement, а также правилами расчёта.
 - Priority: `P1`
 - Agent: `Product Analyst`
 - Goal: определить, что считается успехом продукта

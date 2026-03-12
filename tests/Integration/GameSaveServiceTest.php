@@ -166,6 +166,7 @@ final class GameSaveServiceTest extends DatabaseTestCase
         $service = $this->createService();
 
         $existing = $service->defaultData();
+        $existing['prestigePoints'] = 10;
         $existing['totalPrestigePoints'] = 10;
 
         $sanitized = $service->sanitizePayload([
@@ -175,6 +176,41 @@ final class GameSaveServiceTest extends DatabaseTestCase
 
         self::assertSame(110, $sanitized['totalPrestigePoints']);
         self::assertSame(110, $sanitized['prestigePoints']);
+    }
+
+    public function testSanitizePayloadDoesNotOverwriteServerRewardWithStaleSave(): void
+    {
+        $service = $this->createService();
+
+        $existing = $service->defaultData();
+        $existing['totalLoc'] = 1250;
+        $existing['prestige'] = 2;
+        $existing['prestigePoints'] = 12;
+        $existing['totalPrestigePoints'] = 12;
+        $existing['prestigeShop'] = ['offline_boost' => 1];
+        $existing['dungeonClears'] = 1;
+        $existing['achievements'] = ['first_loc' => true];
+        $existing['story'] = ['chapter_1' => true];
+
+        $sanitized = $service->sanitizePayload([
+            'loc' => 50,
+            'totalLoc' => 1000,
+            'prestige' => 2,
+            'prestigePoints' => 10,
+            'totalPrestigePoints' => 10,
+            'prestigeShop' => [],
+            'dungeonClears' => 0,
+            'achievements' => [],
+            'story' => [],
+        ], $existing);
+
+        self::assertEquals(1250.0, $sanitized['totalLoc']);
+        self::assertSame(12, $sanitized['prestigePoints']);
+        self::assertSame(12, $sanitized['totalPrestigePoints']);
+        self::assertSame(['offline_boost' => 1], $sanitized['prestigeShop']);
+        self::assertSame(1, $sanitized['dungeonClears']);
+        self::assertTrue($sanitized['achievements']['first_loc']);
+        self::assertTrue($sanitized['story']['chapter_1']);
     }
 
     private function createUser(string $username): int

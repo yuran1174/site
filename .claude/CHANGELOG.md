@@ -1,3 +1,45 @@
+## 2026-03-13 — Исправлено затирание наград из мини-игр и подземелья
+
+**Что сделано:**
+- Исправлен merge save-состояния в `GameSaveService`: более старый клиентский `save` больше не затирает уже начисленные на сервере награды, dungeon clears, OO, story/achievement progress и уровни prestige shop
+- Добавлена серверная reconciliation-логика для `totalLoc`, `totalPrestigePoints`, `prestigePoints`, `dungeonClears`, `maxOffline` и persistent-флагов прогресса
+- Исправлен client-side merge в `js/idle-save.js`: при загрузке из более нового local save теперь подмешиваются `prestigePoints`, `totalPrestigePoints`, `prestige`, `prestigeShop` и `maxOffline`
+- Добавлен регрессионный интеграционный тест на сценарий, где reward уже применён на сервере, а затем приходит устаревший `save`
+
+**Файлы затронуты:**
+- `src/Application/GameSave/GameSaveService.php` (обновлён)
+- `js/idle-save.js` (обновлён)
+- `tests/Integration/GameSaveServiceTest.php` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
+## 2026-03-13 — Закрыт TASK-024: повторяющиеся PHP UI-фрагменты вынесены в partials
+
+**Что сделано:**
+- Добавлены `templates/partials/app-head.php`, `templates/partials/page-nav.php` и `templates/partials/logout-script.php`
+- Общий `<head>` с шрифтами, favicon, стилями и опциональными head-вставками больше не дублируется по страницам
+- Повторяющийся `page-nav` вынесен из `profile.php` и `leaderboard.php` в общий partial с конфигом через массив ссылок
+- Дублирующийся logout-скрипт убран из `idle.php`, `profile.php` и `leaderboard.php`
+- В `TODO.md` задача `TASK-024` переведена в `done`
+
+**Файлы затронуты:**
+- `templates/partials/app-head.php` (создан)
+- `templates/partials/page-nav.php` (создан)
+- `templates/partials/logout-script.php` (создан)
+- `auth.php` (обновлён)
+- `index.php` (обновлён)
+- `game.php` (обновлён)
+- `dungeon.php` (обновлён)
+- `minigame.php` (обновлён)
+- `profile.php` (обновлён)
+- `leaderboard.php` (обновлён)
+- `idle.php` (обновлён)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
 ## 2026-03-13 — Завершён TASK-021 по серверной валидации и anti-cheat baseline
 
 **Что сделано:**
@@ -10,6 +52,22 @@
 - `src/Application/GameSave/GameSaveService.php` (обновлён)
 - `tests/Integration/GameSaveServiceTest.php` (обновлён)
 - `docs/security/anti-cheat-baseline.md` (обновлён)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
+## 2026-03-13 — Закрыт TASK-035: зафиксирован baseline продуктовой аналитики событий
+
+**Что сделано:**
+- Создан `docs/product/analytics-events.md` с каталогом продуктовых событий первой очереди: `session_started`, `idle_activated`, `building_purchased`, `upgrade_purchased`, `prestige_started`, `prestige_completed`, `prestige_shop_purchase`, `minigame_started`, `minigame_finished`, `minigame_reward_applied`, `dungeon_started`, `dungeon_finished`, `auth_registered`, `auth_logged_in`, `save_succeeded`
+- Для каждого события зафиксированы trigger, обязательные payload-поля, actor scope и привязка к KPI из `docs/product/metrics.md`
+- Создан `docs/data/analytics-events-storage.md` с отдельной storage strategy для analytics: append-only таблица `analytics_events`, индексы первой очереди, правила идентичности, дедупликации и границы отделения от `game_saves`/`security.log`
+- В `TODO.md` задача `TASK-035` переведена в `done`
+
+**Файлы затронуты:**
+- `docs/product/analytics-events.md` (создан)
+- `docs/data/analytics-events-storage.md` (создан)
 - `TODO.md` (обновлён)
 - `.claude/CHANGELOG.md` (обновлён)
 

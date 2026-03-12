@@ -1,6 +1,20 @@
 'use strict';
 
 (function () {
+  function mergePrestigeShop(serverShop, localShop) {
+    const merged = Object.assign({}, serverShop || {});
+
+    for (const [itemId, level] of Object.entries(localShop || {})) {
+      const safeLevel = Math.max(0, parseInt(level, 10) || 0);
+      if (safeLevel <= 0) {
+        continue;
+      }
+      merged[itemId] = Math.max(parseInt(merged[itemId] || 0, 10), safeLevel);
+    }
+
+    return merged;
+  }
+
   function buildSaveData() {
     return {
       loc: state.loc,
@@ -155,10 +169,15 @@
         merged.buildings = localData.buildings;
         merged.upgrades = localData.upgrades;
         merged.achievements = localData.achievements;
+        merged.prestige = Math.max(serverData.prestige || 0, localData.prestige || 0);
+        merged.prestigeMulti = Math.max(serverData.prestigeMulti || 1, localData.prestigeMulti || 1);
+        merged.prestigePoints = Math.max(serverData.prestigePoints || 0, localData.prestigePoints || 0);
+        merged.totalPrestigePoints = Math.max(serverData.totalPrestigePoints || 0, localData.totalPrestigePoints || 0);
+        merged.prestigeShop = mergePrestigeShop(serverData.prestigeShop, localData.prestigeShop);
         merged.eventCount = localData.eventCount;
         merged.story = localData.story;
         merged.dungeonClears = localData.dungeonClears;
-        merged.maxOffline = localData.maxOffline;
+        merged.maxOffline = Math.max(serverData.maxOffline || 0, localData.maxOffline || 0);
       }
 
       if (json.dungeonClears !== undefined) {

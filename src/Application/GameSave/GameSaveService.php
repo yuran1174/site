@@ -157,7 +157,7 @@ final class GameSaveService
             $clean['prestigePoints'] = $clean['totalPrestigePoints'];
         }
 
-        return $clean;
+        return $this->reconcileWithExisting($clean, $existing);
     }
 
     public function upsertRow(int $userId, array $saveData): void
@@ -382,6 +382,110 @@ final class GameSaveService
         }
 
         return $clean;
+    }
+
+    private function reconcileWithExisting(array $clean, array $existing): array
+    {
+        $incomingCurrentOo = $clean['prestigePoints'];
+        $incomingTotalOo = $clean['totalPrestigePoints'];
+
+        $clean['totalLoc'] = max(
+            $clean['totalLoc'],
+            $this->floatValue($existing['totalLoc'] ?? 0, 0, 1.0e18),
+        );
+        $clean['totalClicks'] = max(
+            $clean['totalClicks'],
+            $this->intValue($existing['totalClicks'] ?? 0, 0, 1000000000),
+        );
+        $clean['eventCount'] = max(
+            $clean['eventCount'],
+            $this->intValue($existing['eventCount'] ?? 0, 0, 1000000),
+        );
+        $clean['prestige'] = max(
+            $clean['prestige'],
+            $this->intValue($existing['prestige'] ?? 0, 0, 1000),
+        );
+        $clean['prestigeMulti'] = round((float) pow(1.5, $clean['prestige']), 8);
+        $clean['totalPrestigePoints'] = max(
+            $clean['totalPrestigePoints'],
+            $this->intValue($existing['totalPrestigePoints'] ?? 0, 0, 100000),
+        );
+        $clean['dungeonClears'] = max(
+            $clean['dungeonClears'],
+            $this->intValue($existing['dungeonClears'] ?? 0, 0, 10000),
+        );
+        $clean['maxOffline'] = max(
+            $clean['maxOffline'],
+            $this->intValue($existing['maxOffline'] ?? 0, 0, $this->allowedMaxOfflineSeconds($clean['prestigeShop'])),
+        );
+        $clean['prestigeShop'] = $this->mergePrestigeShop(
+            $clean['prestigeShop'],
+            $existing['prestigeShop'] ?? [],
+        );
+        $clean['achievements'] = $this->mergeBoolMaps(
+            $clean['achievements'],
+            $existing['achievements'] ?? [],
+        );
+        $clean['story'] = $this->mergeBoolMaps(
+            $clean['story'],
+            $existing['story'] ?? [],
+        );
+
+        $existingCurrentOo = $this->intValue($existing['prestigePoints'] ?? 0, 0, 100000);
+        $existingTotalOo = $this->intValue($existing['totalPrestigePoints'] ?? 0, 0, 100000);
+        $incomingSpentOo = max(0, $incomingTotalOo - $incomingCurrentOo);
+        $existingSpentOo = max(0, $existingTotalOo - $existingCurrentOo);
+        $spentOo = max($incomingSpentOo, $existingSpentOo);
+
+        $clean['prestigePoints'] = max(0, $clean['totalPrestigePoints'] - $spentOo);
+
+        if ($clean['loc'] > $clean['totalLoc']) {
+            $clean['loc'] = $clean['totalLoc'];
+        }
+        if ($clean['locThisRun'] > $clean['totalLoc']) {
+            $clean['locThisRun'] = $clean['totalLoc'];
+        }
+
+        return $clean;
+    }
+
+    private function mergePrestigeShop(array $incoming, mixed $existing): array
+    {
+        $merged = $incoming;
+        if (!is_array($existing)) {
+            return $merged;
+        }
+
+        foreach (self::PRESTIGE_SHOP_ITEMS as $itemId => $item) {
+            $merged[$itemId] = max(
+                $this->intValue($merged[$itemId] ?? 0, 0, (int) $item['maxLevel']),
+                $this->intValue($existing[$itemId] ?? 0, 0, (int) $item['maxLevel']),
+            );
+
+            if ($merged[$itemId] <= 0) {
+                unset($merged[$itemId]);
+            }
+        }
+
+        return $merged;
+    }
+
+    private function mergeBoolMaps(array $incoming, mixed $existing): array
+    {
+        if (!is_array($existing)) {
+            return $incoming;
+        }
+
+        foreach ($existing as $key => $value) {
+            if (!is_string($key) || !preg_match('/^[a-zA-Z0-9_]{1,64}$/', $key)) {
+                continue;
+            }
+            if ((bool) $value) {
+                $incoming[$key] = true;
+            }
+        }
+
+        return $incoming;
     }
 
     private function allowedMaxOfflineSeconds(array $prestigeShop): int

@@ -189,8 +189,8 @@
   - подключение БД идёт через единый слой
 
 ### TASK-010 — Вынести auth-логику в сервисы и контроллеры
-- Status: `partial`
-- Note: создан `src/Application/Auth/AuthService.php`, `ajax/auth.php` стал заметно тоньше; endpoint всё ещё хранит HTTP/security-обвязку и пока не выделен в отдельный controller-класс.
+- Status: `done`
+- Note: созданы `src/Application/Auth/AuthService.php` и `src/Application/Auth/AuthController.php`; `ajax/auth.php` использует thin controller и сохраняет совместимое поведение endpoint.
 - Priority: `P0`
 - Agent: `Backend Extraction`
 - Goal: убрать бизнес-логику из `ajax/auth.php`
@@ -208,8 +208,8 @@
   - логика не живёт внутри PHP-страницы/эндпоинта
 
 ### TASK-011 — Вынести save/load/reward/prestige в сервисы
-- Status: `partial`
-- Note: создан `src/Application/GameSave/GameSaveService.php`, в него вынесены save/load/reward/prestige операции; `ajax/save.php` стал thin adapter только частично, потому что security/rate-limit/transport-обвязка ещё остаётся в endpoint.
+- Status: `done`
+- Note: созданы `src/Application/GameSave/GameSaveService.php` и `src/Application/GameSave/GameSaveController.php`; `ajax/save.php` делегирует save/load/reward/prestige поведение в новый слой приложения.
 - Priority: `P0`
 - Agent: `Backend Extraction`
 - Goal: нормализовать серверную игровую логику
@@ -227,6 +227,8 @@
   - расчёт и валидация наград централизованы
 
 ### TASK-012 — Ввести репозитории и доменные DTO
+- Status: `done`
+- Note: добавлены `UserRepository`, `GameSaveRepository`, `LeaderboardRepository`, а также DTO `UserData`, `GameSaveRecord`, `LeaderboardRecord`.
 - Priority: `P1`
 - Agent: `Backend Extraction`
 - Goal: отделить SQL и доменные данные от контроллеров
@@ -243,8 +245,8 @@
   - структура данных читаема и типизирована
 
 ### TASK-013 — Ввести единый формат API-ответов
-- Status: `partial`
-- Note: добавлен `src/Http/ApiResponse.php` и часть AJAX-эндпоинтов уже использует его, но единый контракт для всех API и документация `docs/api/response-format.md` пока не завершены.
+- Status: `done`
+- Note: добавлен `src/Http/ApiResponse.php`, AJAX-эндпоинты используют единый response helper, а контракт описан в `docs/api/response-format.md`.
 - Priority: `P1`
 - Agent: `Backend Extraction`
 - Goal: привести API к предсказуемому контракту

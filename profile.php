@@ -109,26 +109,91 @@ $SHOP_ITEMS = [
 ];
 
 $ACHIEVEMENTS_DATA = [
-    ['id'=>'first_loc',   'name'=>'Hello World',          'emoji'=>'👋'],
-    ['id'=>'loc_100',     'name'=>'Stack Overflow Lurker', 'emoji'=>'🔍'],
-    ['id'=>'loc_1k',      'name'=>'TODO Маньяк',           'emoji'=>'📝'],
-    ['id'=>'loc_10k',     'name'=>'Настоящий Программист', 'emoji'=>'💻'],
-    ['id'=>'loc_100k',    'name'=>'10x Developer',         'emoji'=>'🚀'],
-    ['id'=>'loc_1m',      'name'=>'Principal Engineer',    'emoji'=>'🏆'],
-    ['id'=>'loc_1b',      'name'=>'Мифический Программист','emoji'=>'🐉'],
-    ['id'=>'clicks_100',  'name'=>'Кнопкодав',             'emoji'=>'🖱️'],
-    ['id'=>'clicks_1000', 'name'=>'Карпальный Туннель',    'emoji'=>'🤕'],
-    ['id'=>'first_junior','name'=>'Первый найм',            'emoji'=>'🐣'],
-    ['id'=>'ten_juniors', 'name'=>'Джун-ферма',             'emoji'=>'🏭'],
-    ['id'=>'first_senior','name'=>'Серьёзный человек',     'emoji'=>'🧙'],
-    ['id'=>'first_cto',   'name'=>'Мы серьёзная компания', 'emoji'=>'👔'],
-    ['id'=>'total_50',    'name'=>'Стартап',                'emoji'=>'🏢'],
-    ['id'=>'prestige_1',  'name'=>'Переписать с нуля',      'emoji'=>'🔄'],
-    ['id'=>'prestige_5',  'name'=>'Синдром перфекциониста', 'emoji'=>'♾️'],
-    ['id'=>'upgrade_10',  'name'=>'Шопоголик',              'emoji'=>'🛍️'],
-    ['id'=>'cps_1000',    'name'=>'Фабрика Кода',           'emoji'=>'⚙️'],
-    ['id'=>'event_10',    'name'=>'Закалённый Боевым',      'emoji'=>'🔥'],
-    ['id'=>'offline_1h',  'name'=>'Работал Пока Спал',      'emoji'=>'😴'],
+    // LOC
+    ['id'=>'first_loc',   'name'=>'Hello World',              'emoji'=>'👋', 'desc'=>'Написать первую строку кода'],
+    ['id'=>'loc_100',     'name'=>'Stack Overflow Lurker',    'emoji'=>'🔍', 'desc'=>'Накопить 100 ЛОК'],
+    ['id'=>'loc_1k',      'name'=>'TODO Маньяк',              'emoji'=>'📝', 'desc'=>'Накопить 1 000 ЛОК'],
+    ['id'=>'loc_10k',     'name'=>'Настоящий Программист',    'emoji'=>'💻', 'desc'=>'Накопить 10 000 ЛОК'],
+    ['id'=>'loc_100k',    'name'=>'10x Developer',            'emoji'=>'🚀', 'desc'=>'Накопить 100 000 ЛОК'],
+    ['id'=>'loc_1m',      'name'=>'Principal Engineer',       'emoji'=>'🏆', 'desc'=>'Накопить 1 000 000 ЛОК'],
+    ['id'=>'loc_10m',     'name'=>'Фабрика кода',             'emoji'=>'🏭', 'desc'=>'10 миллионов ЛОК'],
+    ['id'=>'loc_1b',      'name'=>'Мифический Программист',   'emoji'=>'🐉', 'desc'=>'Накопить 1 миллиард ЛОК'],
+    ['id'=>'loc_1t',      'name'=>'Бог кода',                 'emoji'=>'⚡', 'desc'=>'1 триллион ЛОК'],
+    // LOC per run
+    ['id'=>'run_1m',      'name'=>'Миллион за ран',           'emoji'=>'💰', 'desc'=>'1М ЛОК за один перезапуск'],
+    ['id'=>'run_10m',     'name'=>'Десять миллионов',         'emoji'=>'💎', 'desc'=>'10М ЛОК за один перезапуск'],
+    ['id'=>'run_100m',    'name'=>'Сотня миллионов',          'emoji'=>'👑', 'desc'=>'100М ЛОК за один перезапуск'],
+    ['id'=>'run_1b',      'name'=>'Миллиард за ран',          'emoji'=>'🌟', 'desc'=>'1B ЛОК за один перезапуск'],
+    // Clicks
+    ['id'=>'clicks_100',  'name'=>'Кнопкодав',                'emoji'=>'🖱️', 'desc'=>'Кликнуть 100 раз'],
+    ['id'=>'clicks_1000', 'name'=>'Карпальный Туннель',       'emoji'=>'🤕', 'desc'=>'Кликнуть 1 000 раз'],
+    ['id'=>'clicks_10k',  'name'=>'Туннельный синдром',       'emoji'=>'🤕', 'desc'=>'10 000 кликов'],
+    ['id'=>'clicks_100k', 'name'=>'Киборг',                   'emoji'=>'🦾', 'desc'=>'100 000 кликов'],
+    ['id'=>'clicks_1m',   'name'=>'Тренированный палец',      'emoji'=>'🦾', 'desc'=>'1 000 000 кликов'],
+    // Buildings
+    ['id'=>'first_junior','name'=>'Первый найм',              'emoji'=>'🐣', 'desc'=>'Нанять первого джуна'],
+    ['id'=>'ten_juniors', 'name'=>'Джун-ферма',               'emoji'=>'🏭', 'desc'=>'10 джунов'],
+    ['id'=>'25_juniors',  'name'=>'Джун-армия',               'emoji'=>'🐣', 'desc'=>'25 джунов в команде'],
+    ['id'=>'first_senior','name'=>'Серьёзный человек',        'emoji'=>'🧙', 'desc'=>'Нанять первого сеньора'],
+    ['id'=>'10_seniors',  'name'=>'Совет старейшин',          'emoji'=>'🧙', 'desc'=>'10 сеньоров'],
+    ['id'=>'first_cto',   'name'=>'Мы серьёзная компания',    'emoji'=>'👔', 'desc'=>'Нанять CTO'],
+    ['id'=>'5_cto',       'name'=>'Слишком много боссов',     'emoji'=>'👔', 'desc'=>'5 CTO одновременно'],
+    ['id'=>'50_mid',      'name'=>'Армия мидлов',             'emoji'=>'👨‍💻','desc'=>'50 мидлов'],
+    ['id'=>'10_techlead', 'name'=>'Паноптикум тимлидов',      'emoji'=>'📋', 'desc'=>'10 тимлидов'],
+    ['id'=>'5_devops',    'name'=>'k8s-армия',                'emoji'=>'🐳', 'desc'=>'5 DevOps инженеров'],
+    ['id'=>'3_architect', 'name'=>'Архитектурный совет',      'emoji'=>'📐', 'desc'=>'3 архитектора'],
+    ['id'=>'total_50',    'name'=>'Стартап',                  'emoji'=>'🏢', 'desc'=>'50 сотрудников'],
+    ['id'=>'100_total',   'name'=>'Корпорация',               'emoji'=>'🏙️', 'desc'=>'100 сотрудников'],
+    ['id'=>'200_total',   'name'=>'Единорог',                 'emoji'=>'🦄', 'desc'=>'200 сотрудников'],
+    ['id'=>'500_total',   'name'=>'Корпорация мечты',         'emoji'=>'🌆', 'desc'=>'500 сотрудников'],
+    ['id'=>'all_types',   'name'=>'Полная команда',           'emoji'=>'🏢', 'desc'=>'Купить хотя бы 1 каждого типа'],
+    // Upgrades
+    ['id'=>'upgrade_10',  'name'=>'Шопоголик',                'emoji'=>'🛍️', 'desc'=>'Купить 10 улучшений'],
+    // LPS
+    ['id'=>'cps_1000',    'name'=>'Фабрика Кода',             'emoji'=>'⚙️', 'desc'=>'1 000 ЛОК/с'],
+    ['id'=>'lps_100',     'name'=>'Конвейер',                 'emoji'=>'🚂', 'desc'=>'100 ЛОК/с'],
+    ['id'=>'lps_10k',     'name'=>'Реактор',                  'emoji'=>'⚛️', 'desc'=>'10 000 ЛОК/с'],
+    ['id'=>'lps_100k',    'name'=>'Гиперпроизводство',        'emoji'=>'🚀', 'desc'=>'100 000 ЛОК/с'],
+    ['id'=>'lps_1m',      'name'=>'Сингулярность',            'emoji'=>'🌀', 'desc'=>'1 000 000 ЛОК/с'],
+    // Prestige
+    ['id'=>'prestige_1',  'name'=>'Переписать с нуля',        'emoji'=>'🔄', 'desc'=>'Первый престиж'],
+    ['id'=>'prestige_2',  'name'=>'Дважды с нуля',            'emoji'=>'🔁', 'desc'=>'2 перезапуска'],
+    ['id'=>'prestige_3',  'name'=>'Перфекционист',            'emoji'=>'🔁', 'desc'=>'3 перезапуска'],
+    ['id'=>'prestige_5',  'name'=>'Синдром перфекциониста',   'emoji'=>'♾️', 'desc'=>'5 перезапусков'],
+    ['id'=>'prestige_7',  'name'=>'Семикратный',              'emoji'=>'✨', 'desc'=>'7 перезапусков'],
+    ['id'=>'prestige_10', 'name'=>'Сизиф IT',                 'emoji'=>'⛰️', 'desc'=>'10 перезапусков'],
+    ['id'=>'prestige_15', 'name'=>'Бесконечный цикл',         'emoji'=>'♾️', 'desc'=>'15 перезапусков'],
+    ['id'=>'prestige_20', 'name'=>'git reset --hard HEAD~∞',  'emoji'=>'💀', 'desc'=>'20 перезапусков'],
+    // Prestige shop
+    ['id'=>'shop_5items', 'name'=>'Шопоголик престижа',       'emoji'=>'🛍️', 'desc'=>'5 предметов в магазине'],
+    ['id'=>'shop_all',    'name'=>'Всё по чуть-чуть',         'emoji'=>'🛒', 'desc'=>'По 1 уровню всех предметов'],
+    // Events
+    ['id'=>'event_10',    'name'=>'Закалённый Боевым',        'emoji'=>'🔥', 'desc'=>'Пережить 10 событий'],
+    ['id'=>'events_25',   'name'=>'Всё видел',                'emoji'=>'😮', 'desc'=>'25 событий'],
+    ['id'=>'events_50',   'name'=>'Бывалый',                  'emoji'=>'💪', 'desc'=>'50 событий'],
+    ['id'=>'events_100',  'name'=>'Ничто не удивляет',        'emoji'=>'😐', 'desc'=>'100 событий'],
+    ['id'=>'events_200',  'name'=>'Выгорание',                'emoji'=>'😑', 'desc'=>'200 событий'],
+    // Offline
+    ['id'=>'offline_1h',  'name'=>'Работал Пока Спал',        'emoji'=>'😴', 'desc'=>'Оффлайн-прогресс за 1+ час'],
+    // Account level
+    ['id'=>'lvl_5',       'name'=>'Начинающий',               'emoji'=>'⬆️', 'desc'=>'Уровень аккаунта 5'],
+    ['id'=>'lvl_10',      'name'=>'Уверенный старт',          'emoji'=>'🔥', 'desc'=>'Уровень аккаунта 10'],
+    ['id'=>'lvl_25',      'name'=>'Профессионал',             'emoji'=>'⭐', 'desc'=>'Уровень аккаунта 25'],
+    ['id'=>'lvl_50',      'name'=>'Ветеран IT',               'emoji'=>'🎖️', 'desc'=>'Уровень аккаунта 50'],
+    // Story
+    ['id'=>'story_ch1',   'name'=>'Традиции священны',        'emoji'=>'📜', 'desc'=>'Узнать о первом баге'],
+    ['id'=>'story_ch3',   'name'=>'Менеджер по документации', 'emoji'=>'📚', 'desc'=>'Дорасти до главы о команде'],
+    ['id'=>'story_ch4',   'name'=>'Паразиты рынка',           'emoji'=>'⚔️', 'desc'=>'Столкнуться с конкурентами'],
+    ['id'=>'story_ch6',   'name'=>'Не трогай это, человек',   'emoji'=>'🤖', 'desc'=>'Разбудить ИИ Копилота'],
+    ['id'=>'story_ch7',   'name'=>'Корпоративный апогей',     'emoji'=>'🏙️', 'desc'=>'Достичь апогея компании'],
+    ['id'=>'story_ch8',   'name'=>'Статья в Forbes',          'emoji'=>'📰', 'desc'=>'Стать легендой индустрии'],
+    ['id'=>'story_end',   'name'=>'Легенда индустрии',        'emoji'=>'🌟', 'desc'=>'Прочитать все главы'],
+    // Dungeon
+    ['id'=>'dungeon_win', 'name'=>'Баг-охотник',              'emoji'=>'🏰', 'desc'=>'Пройти подземелье'],
+    ['id'=>'dungeon_5',   'name'=>'Исследователь кода',       'emoji'=>'🗺️', 'desc'=>'Пройти подземелье 5 раз'],
+    ['id'=>'dungeon_10',  'name'=>'Охотник на глубины',       'emoji'=>'⚔️', 'desc'=>'Пройти подземелье 10 раз'],
+    ['id'=>'dungeon_25',  'name'=>'Легенда подземелья',       'emoji'=>'🏆', 'desc'=>'Пройти подземелье 25 раз'],
+    ['id'=>'dungeon_50',  'name'=>'Повелитель багов',         'emoji'=>'🐉', 'desc'=>'Пройти подземелье 50 раз'],
 ];
 ?>
 <!DOCTYPE html>
@@ -263,7 +328,6 @@ $ACHIEVEMENTS_DATA = [
   </div>
 
   <!-- ACHIEVEMENTS SHOWCASE -->
-  <?php if ($achieveCount > 0): ?>
   <div class="section">
     <div class="section-header">
       <h2 class="section-title">🏆 Достижения</h2>
@@ -272,16 +336,18 @@ $ACHIEVEMENTS_DATA = [
     <div class="achieve-showcase">
       <?php foreach ($ACHIEVEMENTS_DATA as $ach):
         $earned = !empty($achievements[$ach['id']]);
+        $desc   = htmlspecialchars($ach['desc'] ?? '');
       ?>
-      <div class="ach-pill <?= $earned ? 'ach-earned' : 'ach-locked' ?>"
-           title="<?= htmlspecialchars($ach['name']) ?>">
-        <span class="ach-icon"><?= $ach['emoji'] ?></span>
-        <span class="ach-name"><?= htmlspecialchars($ach['name']) ?></span>
+      <div class="ach-pill <?= $earned ? 'ach-earned' : 'ach-locked' ?>">
+        <span class="ach-icon"><?= $earned ? $ach['emoji'] : '🔒' ?></span>
+        <div class="ach-info">
+          <span class="ach-name"><?= $earned ? htmlspecialchars($ach['name']) : '???' ?></span>
+          <span class="ach-desc"><?= $earned ? $desc : htmlspecialchars($ach['desc'] ?? '') ?></span>
+        </div>
       </div>
       <?php endforeach; ?>
     </div>
   </div>
-  <?php endif; ?>
 
 </div><!-- /page-wrap -->
 

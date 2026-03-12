@@ -1,17 +1,18 @@
 <?php
 declare(strict_types=1);
-header('Content-Type: application/json; charset=utf-8');
+require_once __DIR__ . '/../bootstrap/app.php';
+
+use App\Http\ApiResponse;
+
+\App\Bootstrap\AppBootstrap::bootApi();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    echo json_encode(['error' => 'Method not allowed']);
-    exit;
+    ApiResponse::error('Method not allowed', 405);
 }
 
 $situation = trim($_POST['situation'] ?? '');
 if (mb_strlen($situation) < 3) {
-    echo json_encode(['excuse' => 'Ситуация слишком проста даже для отмазки.']);
-    exit;
+    ApiResponse::json(['excuse' => 'Ситуация слишком проста даже для отмазки.']);
 }
 
 // Templates — PHP generates a custom excuse based on keywords
@@ -69,7 +70,4 @@ if (!$excuse) {
     $excuse = $defaults[array_rand($defaults)];
 }
 
-echo json_encode(
-    ['excuse' => $excuse],
-    JSON_UNESCAPED_UNICODE
-);
+ApiResponse::json(['excuse' => $excuse]);

@@ -1,3 +1,24 @@
+## 2026-03-12 — Вынесены auth/save сервисы и DB переведена на infrastructure layer
+
+**Что сделано:**
+- `db.php` переведён в thin wrapper над `App\Infrastructure\Database\DatabaseManager`
+- `bootstrap/app.php` получил fallback PSR-4 autoload, чтобы новый слой в `src/` работал даже без `vendor/autoload.php`
+- `ajax/auth.php` переведён на `App\Application\Auth\AuthService` с сохранением текущих CSRF, rate limit и security log проверок
+- Добавлен `src/Application/GameSave/GameSaveService.php`, в который вынесены чтение/нормализация/сохранение save payload, leaderboard update и reward flow
+- `ajax/save.php` стал тоньше: security-проверки остались в endpoint, а save/domain-поведение делегировано сервису
+- `ajax/excuse.php` переведён на единый bootstrap/API response слой
+
+**Файлы затронуты:**
+- `bootstrap/app.php` (обновлён)
+- `db.php` (обновлён)
+- `ajax/auth.php` (обновлён)
+- `ajax/save.php` (обновлён)
+- `ajax/excuse.php` (обновлён)
+- `src/Application/GameSave/GameSaveService.php` (создан)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
 ## 2026-03-12 — Усилены security-потоки auth/save и добавлен anti-cheat baseline
 
 **Что сделано:**

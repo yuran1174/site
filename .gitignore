@@ -19,3 +19,4 @@ vendor/
 .php-cs-fixer.cache
 .phpunit.cache/
 storage/tmp/
+storage/ratelimits/

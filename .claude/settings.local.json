@@ -29,7 +29,10 @@
       "Bash(cd \"D:/OSPanel/site\" && bash .claude/push.sh \"fix: #5 — timeAgo в лидерборде: недели, дата, нулевой timestamp\")",
       "Bash(cd \"D:/OSPanel/site\" && bash .claude/push.sh \"fix: #6 — убраны кнопки экспорт/импорт/сброс, importModal, все обработчики\")",
       "Bash(bash .claude/push.sh \"fix: исправлены награды из активностей — неверный ключ localStorage, race condition, sync после применения\")",
-      "Bash(bash .claude/push.sh \"feat: мобильная адаптация — D-pad для подземелья, TG SDK, hover:none, touch targets\")"
+      "Bash(bash .claude/push.sh \"feat: мобильная адаптация — D-pad для подземелья, TG SDK, hover:none, touch targets\")",
+      "Bash(cd /mnt/d/OSPanel/site && php -l dungeon.php && php -l idle.php && php -l minigame.php && php -l ajax/save.php)",
+      "Bash(cd \"D:/OSPanel/site\" && php -l dungeon.php && php -l idle.php && php -l minigame.php && php -l ajax/save.php)",
+      "Bash(bash .claude/push.sh \"fix: TG SDK async чтобы не блокировал загрузку на локальном сервере\")"
     ]
   }
 }

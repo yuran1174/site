@@ -424,8 +424,8 @@
 ## Epic 5 — Frontend Decomposition
 
 ### TASK-023 — Разбить `js/idle.js` на модули
-- Status: `partial`
-- Note: безопасная декомпозиция идёт без build step: runtime, economy, save/load и render/toast/tabs уже вынесены в отдельные `js/idle-*.js`; в `js/idle.js` пока остаются игровые данные, события, покупки, престиж и основной loop.
+- Status: `done`
+- Note: `idle.js` перестал быть монолитом: данные вынесены в `data/game/idle-balance.js` и `js/idle-data.js`, игровые действия в `js/idle-actions.js`, а runtime/economy/save/render слои уже живут в отдельных `js/idle-*.js`.
 - Priority: `P0`
 - Agent: `Frontend Decomposition`
 - Goal: уменьшить связность и упростить развитие idle-ядра

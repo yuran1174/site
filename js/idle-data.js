@@ -94,4 +94,7 @@
     EVENTS,
     NEWS_MESSAGES,
   };
+
+  // Temporary compatibility bridge for split idle modules that still read data as globals.
+  Object.assign(window, window.IdleData);
 })();

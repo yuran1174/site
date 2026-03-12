@@ -201,10 +201,10 @@ if ($hour >= 5 && $hour < 12) {
 </script>
 <script src="data/game/idle-balance.js"></script>
 <script src="js/idle-runtime.js"></script>
+<script src="js/idle-data.js"></script>
 <script src="js/idle-economy.js"></script>
 <script src="js/idle-save.js"></script>
 <script src="js/idle-render.js"></script>
-<script src="js/idle-data.js"></script>
 <script src="js/idle-actions.js"></script>
 <script src="js/idle.js"></script>
 <script>

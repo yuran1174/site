@@ -45,6 +45,8 @@ const {
   BUILDINGS,
   UPGRADES,
   STORY_CHAPTERS,
+  ACHIEVEMENTS,
+  EVENTS,
   NEWS_MESSAGES,
 } = window.IdleData;
 
@@ -96,6 +98,14 @@ Object.defineProperties(window, {
   STORY_CHAPTERS: {
     configurable: true,
     get: () => STORY_CHAPTERS,
+  },
+  ACHIEVEMENTS: {
+    configurable: true,
+    get: () => ACHIEVEMENTS,
+  },
+  EVENTS: {
+    configurable: true,
+    get: () => EVENTS,
   },
   NEWS_MESSAGES: {
     configurable: true,

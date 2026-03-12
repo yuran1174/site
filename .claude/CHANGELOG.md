@@ -56,6 +56,26 @@
 
 ---
 
+## 2026-03-13 — Закрыт TASK-023: idle frontend разложен на data/actions/runtime/render/save слои
+
+**Что сделано:**
+- Подключён отдельный источник игровых данных `data/game/idle-balance.js` и добавлен адаптер `js/idle-data.js`, который превращает raw balance data в runtime-структуры `BUILDINGS`, `UPGRADES`, `ACHIEVEMENTS`, `EVENTS` и `STORY_CHAPTERS`
+- Добавлен `js/idle-actions.js` с игровыми действиями: random events, prestige, покупки, click handler, story/achievement checks
+- `js/idle.js` сокращён до orchestration-слоя: состояние, compatibility bridge, tick loop, visibility/focus hooks, autosave и bootstrap страницы
+- `idle.php` теперь подключает баланс, data и actions слои до основного `js/idle.js`
+- В `TODO.md` задача `TASK-023` переведена в `done`
+
+**Файлы затронуты:**
+- `data/game/idle-balance.js` (используется как источник игровых данных)
+- `js/idle-data.js` (создан)
+- `js/idle-actions.js` (создан)
+- `js/idle.js` (обновлён)
+- `idle.php` (обновлён)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
 ## 2026-03-13 — Приведён PHP-код к текущему formatter baseline
 
 **Что сделано:**

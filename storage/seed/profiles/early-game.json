@@ -1,0 +1,27 @@
+{
+  "username": "junior_dev",
+  "password": "devpass123",
+  "save": {
+    "loc": 1800,
+    "totalLoc": 3200,
+    "locThisRun": 1400,
+    "totalClicks": 95,
+    "buildings": {
+      "intern": 5,
+      "junior": 2
+    },
+    "upgrades": {
+      "first_commit": true,
+      "coffee_machine": true
+    },
+    "achievements": {
+      "first_loc": true
+    },
+    "story": {
+      "intro": true
+    },
+    "eventCount": 3,
+    "maxOffline": 600,
+    "version": 3
+  }
+}

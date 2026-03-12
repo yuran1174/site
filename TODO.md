@@ -322,6 +322,8 @@
   - определён момент, когда переход становится обязательным
 
 ### TASK-017 — Подготовить dev seed и тестовые данные
+- Status: `done`
+- Note: добавлены `scripts/seed/dev-seed.php` и `storage/seed/profiles/*.json` с тремя стадиями прогрессии; локальный разработчик может быстро заполнить SQLite тестовыми аккаунтами через `composer seed:dev`.
 - Priority: `P1`
 - Agent: `Data Migration`
 - Goal: ускорить локальную разработку и тестирование

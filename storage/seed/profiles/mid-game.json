@@ -1,0 +1,44 @@
+{
+  "username": "teamlead_bot",
+  "password": "devpass123",
+  "save": {
+    "loc": 125000,
+    "totalLoc": 310000,
+    "locThisRun": 86000,
+    "totalClicks": 4200,
+    "buildings": {
+      "intern": 25,
+      "junior": 15,
+      "middle": 8,
+      "teamlead": 3
+    },
+    "upgrades": {
+      "first_commit": true,
+      "coffee_machine": true,
+      "ide_macros": true,
+      "ci_pipeline": true
+    },
+    "achievements": {
+      "first_loc": true,
+      "first_upgrade": true,
+      "first_prestige": true,
+      "automation": true
+    },
+    "prestige": 2,
+    "prestigePoints": 4,
+    "totalPrestigePoints": 7,
+    "prestigeShop": {
+      "coffee_iv": 2,
+      "discount": 1
+    },
+    "story": {
+      "intro": true,
+      "chapter_1": true,
+      "chapter_2": true
+    },
+    "eventCount": 21,
+    "maxOffline": 3600,
+    "dungeonClears": 1,
+    "version": 3
+  }
+}

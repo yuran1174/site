@@ -23,6 +23,7 @@
     "sort-packages": true
   },
   "scripts": {
+    "seed:dev": "@php scripts/seed/dev-seed.php",
     "test": "vendor/bin/phpunit --configuration phpunit.xml.dist",
     "lint": [
       "@lint:php",

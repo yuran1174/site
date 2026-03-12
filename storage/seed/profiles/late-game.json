@@ -1,0 +1,55 @@
+{
+  "username": "architect_hero",
+  "password": "devpass123",
+  "save": {
+    "loc": 1800000,
+    "totalLoc": 7600000,
+    "locThisRun": 540000,
+    "totalClicks": 28500,
+    "buildings": {
+      "intern": 50,
+      "junior": 45,
+      "middle": 30,
+      "teamlead": 18,
+      "architect": 8
+    },
+    "upgrades": {
+      "first_commit": true,
+      "coffee_machine": true,
+      "ide_macros": true,
+      "ci_pipeline": true,
+      "smart_debugger": true,
+      "rubber_duck": true
+    },
+    "achievements": {
+      "first_loc": true,
+      "first_upgrade": true,
+      "first_prestige": true,
+      "automation": true,
+      "dungeon_runner": true,
+      "night_shift": true,
+      "legacy_coder": true
+    },
+    "prestige": 6,
+    "prestigePoints": 11,
+    "totalPrestigePoints": 29,
+    "prestigeShop": {
+      "coffee_iv": 4,
+      "discount": 3,
+      "offline_boost": 2,
+      "event_luck": 1,
+      "legacy": 1
+    },
+    "story": {
+      "intro": true,
+      "chapter_1": true,
+      "chapter_2": true,
+      "chapter_3": true,
+      "chapter_4": true
+    },
+    "eventCount": 88,
+    "maxOffline": 21600,
+    "dungeonClears": 7,
+    "version": 3
+  }
+}

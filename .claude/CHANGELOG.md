@@ -1,3 +1,23 @@
+## 2026-03-13 — Добавлен dev seed baseline и закрыт TASK-017
+
+**Что сделано:**
+- Добавлен `scripts/seed/dev-seed.php`, который создаёт или обновляет тестовых пользователей и их save/leaderboard данные в SQLite
+- Добавлены seed-профили `storage/seed/profiles/early-game.json`, `mid-game.json`, `late-game.json` для трёх стадий прогрессии
+- Добавлена документация `storage/seed/README.md` и composer-команда `composer seed:dev`
+- В `TODO.md` задача `TASK-017` переведена в `done`
+
+**Файлы затронуты:**
+- `scripts/seed/dev-seed.php` (создан)
+- `storage/seed/README.md` (создан)
+- `storage/seed/profiles/early-game.json` (создан)
+- `storage/seed/profiles/mid-game.json` (создан)
+- `storage/seed/profiles/late-game.json` (создан)
+- `composer.json` (обновлён)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
 ## 2026-03-13 — Зафиксирована стратегия роста БД и закрыт TASK-016
 
 **Что сделано:**

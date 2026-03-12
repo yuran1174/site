@@ -56,6 +56,34 @@
 
 ---
 
+## 2026-03-13 — Извлечён backend-слой: config, repositories, controllers и формат API
+
+**Что сделано:**
+- Дополнен `.env.example` переменной `DB_DRIVER` для явного описания драйвера БД
+- Добавлены DTO и репозитории для пользователей, сохранений и leaderboard в `src/Domain/` и `src/Infrastructure/Persistence/`
+- `AuthService` и `GameSaveService` переведены с прямого `PDO` на repositories
+- Добавлены `AuthController` и `GameSaveController`, после чего `ajax/auth.php` и `ajax/save.php` стали thin adapters
+- Добавлена документация `docs/api/response-format.md`
+
+**Файлы затронуты:**
+- `.env.example`
+- `ajax/auth.php`
+- `ajax/save.php`
+- `src/Application/Auth/AuthService.php`
+- `src/Application/Auth/AuthController.php`
+- `src/Application/GameSave/GameSaveService.php`
+- `src/Application/GameSave/GameSaveController.php`
+- `src/Domain/Auth/UserData.php`
+- `src/Domain/GameSave/GameSaveRecord.php`
+- `src/Domain/Leaderboard/LeaderboardRecord.php`
+- `src/Infrastructure/Persistence/UserRepository.php`
+- `src/Infrastructure/Persistence/GameSaveRepository.php`
+- `src/Infrastructure/Persistence/LeaderboardRepository.php`
+- `docs/api/response-format.md`
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
 ## 2026-03-12 — Усилены security-потоки auth/save и добавлен anti-cheat baseline
 
 **Что сделано:**

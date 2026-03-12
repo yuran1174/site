@@ -1,15 +1,16 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Application\Auth;
 
-use PDO;
+use App\Infrastructure\Persistence\UserRepository;
 use RuntimeException;
 
 final class AuthService
 {
-    public function __construct(private readonly PDO $db) {}
+    public function __construct(private readonly UserRepository $users)
+    {
+    }
 
     public function login(string $username, string $password): array
     {
@@ -18,24 +19,20 @@ final class AuthService
             throw new RuntimeException('Заполни все поля');
         }
 
-        $stmt = $this->db->prepare('SELECT id, username, password_hash FROM users WHERE username = ?');
-        $stmt->execute([$username]);
-        $user = $stmt->fetch();
-
-        if (!$user || !password_verify($password, $user['password_hash'])) {
+        $user = $this->users->findByUsername($username);
+        if ($user === null || !password_verify($password, $user->passwordHash)) {
             throw new RuntimeException('Неверный логин или пароль');
         }
 
-        $this->db->prepare('UPDATE users SET last_seen = strftime(\'%s\',\'now\') WHERE id = ?')
-            ->execute([$user['id']]);
+        $this->users->updateLastSeen($user->id);
 
         session_regenerate_id(true);
-        $_SESSION['user_id'] = (int) $user['id'];
-        $_SESSION['username'] = $user['username'];
+        $_SESSION['user_id'] = $user->id;
+        $_SESSION['username'] = $user->username;
         $_SESSION['_csrf_token'] = bin2hex(random_bytes(32));
 
         return [
-            'username' => htmlspecialchars($user['username']),
+            'username' => htmlspecialchars($user->username),
             'csrfToken' => function_exists('app_csrf_token') ? app_csrf_token() : (string) $_SESSION['_csrf_token'],
         ];
     }
@@ -56,25 +53,19 @@ final class AuthService
         if ($password !== $confirm) {
             throw new RuntimeException('Пароли не совпадают');
         }
-
-        $check = $this->db->prepare('SELECT id FROM users WHERE username = ?');
-        $check->execute([$username]);
-        if ($check->fetch()) {
+        if ($this->users->findByUsername($username) !== null) {
             throw new RuntimeException('Этот логин уже занят');
         }
 
-        $hash = password_hash($password, PASSWORD_BCRYPT);
-        $stmt = $this->db->prepare('INSERT INTO users (username, password_hash) VALUES (?, ?)');
-        $stmt->execute([$username, $hash]);
-        $userId = (int) $this->db->lastInsertId();
+        $user = $this->users->create($username, password_hash($password, PASSWORD_BCRYPT));
 
         session_regenerate_id(true);
-        $_SESSION['user_id'] = $userId;
-        $_SESSION['username'] = $username;
+        $_SESSION['user_id'] = $user->id;
+        $_SESSION['username'] = $user->username;
         $_SESSION['_csrf_token'] = bin2hex(random_bytes(32));
 
         return [
-            'username' => htmlspecialchars($username),
+            'username' => htmlspecialchars($user->username),
             'csrfToken' => function_exists('app_csrf_token') ? app_csrf_token() : (string) $_SESSION['_csrf_token'],
         ];
     }

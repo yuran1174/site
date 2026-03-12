@@ -1,23 +1,27 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Application\GameSave;
 
-use PDO;
+use App\Domain\GameSave\GameSaveRecord;
+use App\Domain\Leaderboard\LeaderboardRecord;
+use App\Infrastructure\Persistence\GameSaveRepository;
+use App\Infrastructure\Persistence\LeaderboardRepository;
+use App\Infrastructure\Persistence\UserRepository;
 use RuntimeException;
 
 final class GameSaveService
 {
-    public function __construct(private readonly PDO $db) {}
+    public function __construct(
+        private readonly GameSaveRepository $gameSaves,
+        private readonly LeaderboardRepository $leaderboard,
+        private readonly UserRepository $users,
+    ) {
+    }
 
-    public function readRow(int $userId): ?array
+    public function readRow(int $userId): ?GameSaveRecord
     {
-        $stmt = $this->db->prepare('SELECT save_data, updated_at FROM game_saves WHERE user_id = ?');
-        $stmt->execute([$userId]);
-        $row = $stmt->fetch();
-
-        return is_array($row) ? $row : null;
+        return $this->gameSaves->findByUserId($userId);
     }
 
     public function defaultData(): array
@@ -44,14 +48,27 @@ final class GameSaveService
         ];
     }
 
-    public function parseExisting(?array $row): array
+    public function parseExisting(?GameSaveRecord $row): array
     {
-        if (!$row || !isset($row['save_data'])) {
+        if ($row === null) {
             return $this->defaultData();
         }
 
-        $decoded = json_decode((string) $row['save_data'], true);
+        $decoded = json_decode($row->saveData, true);
         return is_array($decoded) ? $decoded : $this->defaultData();
+    }
+
+    public function save(int $userId, string $username, array $parsed): array
+    {
+        $existingRow = $this->readRow($userId);
+        $existingData = $this->parseExisting($existingRow);
+        $sanitized = $this->sanitizePayload($parsed, $existingData);
+
+        $this->touchUser($userId);
+        $this->upsertRow($userId, $sanitized);
+        $accountLevel = $this->updateLeaderboard($userId, $username, $sanitized);
+
+        return ['accountLevel' => $accountLevel];
     }
 
     public function sanitizePayload(array $parsed, array $existing): array
@@ -125,14 +142,7 @@ final class GameSaveService
             throw new RuntimeException('Save encoding failed');
         }
 
-        $stmt = $this->db->prepare('
-            INSERT INTO game_saves (user_id, save_data, updated_at)
-            VALUES (?, ?, strftime(\'%s\',\'now\'))
-            ON CONFLICT(user_id) DO UPDATE SET
-                save_data  = excluded.save_data,
-                updated_at = excluded.updated_at
-        ');
-        $stmt->execute([$userId, $json]);
+        $this->gameSaves->upsert($userId, $json);
     }
 
     public function updateLeaderboard(int $userId, string $username, array $saveData): int
@@ -146,45 +156,29 @@ final class GameSaveService
         $accountLevel = max(1, (int) (($locPts + $prestPts + $achPts + $dungPts) / 5));
         $dungeonClears = max(0, (int) ($saveData['dungeonClears'] ?? 0));
 
-        $stmt = $this->db->prepare('
-            INSERT INTO leaderboard (user_id, username, total_loc, prestige_count, account_level, dungeon_clears, updated_at)
-            VALUES (?, ?, ?, ?, ?, ?, strftime(\'%s\',\'now\'))
-            ON CONFLICT(user_id) DO UPDATE SET
-                username       = excluded.username,
-                total_loc      = excluded.total_loc,
-                prestige_count = excluded.prestige_count,
-                account_level  = excluded.account_level,
-                dungeon_clears = excluded.dungeon_clears,
-                updated_at     = excluded.updated_at
-        ');
-        $stmt->execute([$userId, $username, $totalLoc, $prestigeCount, $accountLevel, $dungeonClears]);
+        $this->leaderboard->upsert($userId, $username, $totalLoc, $prestigeCount, $accountLevel, $dungeonClears);
 
         return $accountLevel;
     }
 
     public function touchUser(int $userId): void
     {
-        $this->db->prepare('UPDATE users SET last_seen = strftime(\'%s\',\'now\') WHERE id = ?')->execute([$userId]);
+        $this->users->updateLastSeen($userId);
     }
 
     public function loadPayload(int $userId): array
     {
-        $stmt = $this->db->prepare('SELECT save_data FROM game_saves WHERE user_id = ?');
-        $stmt->execute([$userId]);
-        $row = $stmt->fetch();
-
-        if (!$row) {
+        $row = $this->readRow($userId);
+        if ($row === null) {
             return ['data' => null];
         }
 
-        $lbStmt = $this->db->prepare('SELECT account_level, dungeon_clears FROM leaderboard WHERE user_id = ?');
-        $lbStmt->execute([$userId]);
-        $lb = $lbStmt->fetch();
+        $lb = $this->leaderboard->findByUserId($userId);
 
         return [
-            'data' => $row['save_data'],
-            'accountLevel' => $lb ? (int) $lb['account_level'] : 1,
-            'dungeonClears' => $lb ? (int) $lb['dungeon_clears'] : 0,
+            'data' => $row->saveData,
+            'accountLevel' => $lb instanceof LeaderboardRecord ? $lb->accountLevel : 1,
+            'dungeonClears' => $lb instanceof LeaderboardRecord ? $lb->dungeonClears : 0,
         ];
     }
 

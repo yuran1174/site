@@ -58,7 +58,7 @@ Project root: `C:\Users\yuran\PhpstormProjects\site`
 ## After Completion
 
 1. Update `.claude/CHANGELOG.md`.
-2. Run `.claude/push.sh` with a commit message matching the work, for example: `fix: harden security flows`.
+2. Run `.claude/push.sh` with a commit message matching the work and pass only the files you changed, for example: `bash .claude/push.sh "fix: harden security flows" .claude/CHANGELOG.md path/to/security-file.php`.
 3. Report:
   - risks closed
   - residual risks

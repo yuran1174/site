@@ -58,5 +58,5 @@ Project root: `C:\Users\yuran\PhpstormProjects\site`
 ## After Completion
 
 1. Update `.claude/CHANGELOG.md`.
-2. Run `.claude/push.sh` with a commit message matching the work, for example: `docs: add architecture audit`.
+2. Run `.claude/push.sh` with a commit message matching the work and pass only the files you changed, for example: `bash .claude/push.sh "docs: add architecture audit" docs/architecture/current-state.md docs/audit/technical-risks.md .claude/CHANGELOG.md`.
 3. Provide a short summary of findings and top risks.

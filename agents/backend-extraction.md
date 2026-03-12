@@ -75,7 +75,7 @@ Project root: `C:\Users\yuran\PhpstormProjects\site`
 ## After Completion
 
 1. Update `.claude/CHANGELOG.md`.
-2. Run `.claude/push.sh` with a commit message matching the work, for example: `refactor: extract backend services`.
+2. Run `.claude/push.sh` with a commit message matching the work and pass only the files you changed, for example: `bash .claude/push.sh "refactor: extract backend services" composer.json .env.example ajax/auth.php ajax/save.php .claude/CHANGELOG.md`.
 3. Report:
   - what was extracted
   - what remains legacy

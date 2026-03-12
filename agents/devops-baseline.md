@@ -57,7 +57,7 @@ Project root: `C:\Users\yuran\PhpstormProjects\site`
 ## After Completion
 
 1. Update `.claude/CHANGELOG.md`.
-2. Run `.claude/push.sh` with a commit message matching the work, for example: `docs: add devops baseline`.
+2. Run `.claude/push.sh` with a commit message matching the work and pass only the files you changed, for example: `bash .claude/push.sh "docs: add devops baseline" README.md docs/devops/deploy.md docs/devops/monitoring.md .claude/CHANGELOG.md`.
 3. Report:
   - what is automated already
   - what is still only documented

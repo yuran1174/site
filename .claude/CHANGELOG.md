@@ -119,6 +119,29 @@
 
 ---
 
+## 2026-03-12 — Скрипт push переведён в безопасный режим staging по явным файлам
+
+**Что сделано:**
+- `.claude/push.sh` переписан без `git add -A`
+- Скрипт теперь стейджит только явно переданные пути или коммитит только уже staged-изменения
+- Во все инструкции агентов добавлено требование передавать в `push.sh` только изменённые ими файлы
+- В `.claude/CLAUDE.md` и `TODO.md` обновлены правила использования `push.sh`
+
+**Файлы затронуты:**
+- `.claude/push.sh` (обновлён)
+- `.claude/CLAUDE.md` (обновлён)
+- `agents/architecture-audit.md` (обновлён)
+- `agents/product-analyst.md` (обновлён)
+- `agents/refactor-plan.md` (обновлён)
+- `agents/backend-extraction.md` (обновлён)
+- `agents/security-hardening.md` (обновлён)
+- `agents/testing-bootstrap.md` (обновлён)
+- `agents/devops-baseline.md` (обновлён)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
 ## 2026-03-12 — Инструкции агентов дополнены требованием писать на русском
 
 **Что сделано:**

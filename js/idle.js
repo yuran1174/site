@@ -1662,6 +1662,8 @@ $(async function() {
       localStorage.removeItem('minigame_reward');
       updateTopBar();
       checkAchievements();
+      saveGame();
+      saveGameServer();
       const ooStr = r.oo > 0 ? ` и +${r.oo} ОО` : '';
       const sourceLabel = r.floorReached ? `🏰 Подземелье` : `🐛 Охота завершена`;
       const sourceDesc  = r.floorReached

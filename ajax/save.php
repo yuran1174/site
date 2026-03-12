@@ -223,6 +223,7 @@ switch ($action) {
             $saveData['prestigePoints']      = ($saveData['prestigePoints'] ?? 0) + $oo;
             $saveData['totalPrestigePoints'] = ($saveData['totalPrestigePoints'] ?? 0) + $oo;
         }
+        $saveData['lastSave'] = (int)(microtime(true) * 1000);
 
         $newSaveJson = json_encode($saveData);
         $upd = $db->prepare('
@@ -263,6 +264,7 @@ switch ($action) {
             $saveData['prestigePoints']      = ($saveData['prestigePoints']      ?? 0) + $oo;
             $saveData['totalPrestigePoints'] = ($saveData['totalPrestigePoints'] ?? 0) + $oo;
         }
+        $saveData['lastSave'] = (int)(microtime(true) * 1000);
 
         $newSave = json_encode($saveData);
         $upd = $db->prepare('UPDATE game_saves SET save_data = ?, updated_at = strftime(\'%s\',\'now\') WHERE user_id = ?');

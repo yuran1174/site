@@ -5,6 +5,20 @@
 
 ---
 
+## 2026-03-12 — Фикс: награды из активностей не зачислялись на аккаунт
+
+**Что сделано:**
+- `js/dungeon.js`: исправлен `sendReward()` — неправильный ключ `'codeAndCoffee_save'` → `'kodikofee_save'`, убрана ошибочная base64-кодировка (`atob`/`btoa`), добавлен `lastSave = Date.now()` для корректного merge
+- `ajax/save.php`: в `dungeon_clear` и `minigame_reward` добавлено `lastSave` в JSON сохранения — сервер всегда помечается как авторитетный после получения наград
+- `js/idle.js`: в `checkMinigameReward()` добавлен вызов `saveGame()` + `saveGameServer()` после применения награды
+
+**Файлы затронуты:**
+- `js/dungeon.js`
+- `ajax/save.php`
+- `js/idle.js`
+
+---
+
 ## 2026-03-12 — Блок активностей в idle-игре
 
 **Что сделано:**

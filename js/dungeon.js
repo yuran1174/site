@@ -708,17 +708,19 @@ function showWin() {
 
 function sendReward(loc, oo, isWin) {
     try {
-        const raw = localStorage.getItem('codeAndCoffee_save');
+        const raw = localStorage.getItem('kodikofee_save');
         if (raw) {
-            const save = JSON.parse(atob(raw));
-            save.loc      = (save.loc      || 0) + loc;
-            save.totalLoc = (save.totalLoc || 0) + loc;
+            const save = JSON.parse(raw);
+            save.loc        = (save.loc        || 0) + loc;
+            save.totalLoc   = (save.totalLoc   || 0) + loc;
+            save.locThisRun = (save.locThisRun || 0) + loc;
             if (isWin) save.dungeonClears = (save.dungeonClears || 0) + 1;
             if (oo > 0) {
                 save.prestigePoints      = (save.prestigePoints      || 0) + oo;
                 save.totalPrestigePoints = (save.totalPrestigePoints || 0) + oo;
             }
-            localStorage.setItem('codeAndCoffee_save', btoa(JSON.stringify(save)));
+            save.lastSave = Date.now();
+            localStorage.setItem('kodikofee_save', JSON.stringify(save));
         }
     } catch (_) {}
     if (!IS_LOGGED_IN) return;

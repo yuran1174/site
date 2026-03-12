@@ -444,6 +444,8 @@
   - крупный файл перестаёт быть единственной точкой логики
 
 ### TASK-024 — Выделить общие шаблоны и partials в PHP
+- Status: `done`
+- Note: добавлены `templates/partials/app-head.php`, `page-nav.php` и `logout-script.php`; повторяющиеся head/nav/logout-фрагменты вынесены из `idle.php`, `profile.php`, `leaderboard.php`, `auth.php`, `index.php`, `game.php`, `dungeon.php`, `minigame.php`.
 - Priority: `P1`
 - Agent: `Frontend Decomposition`
 - Goal: убрать дублирование в PHP-разметке
@@ -622,6 +624,8 @@
 ## Epic 8 — Analytics, Balance, Product Tooling
 
 ### TASK-035 — Встроить продуктовую аналитику событий
+- Status: `done`
+- Note: созданы `docs/product/analytics-events.md` и `docs/data/analytics-events-storage.md`; зафиксированы каталог событий первой очереди, обязательные payload-поля, точки истины для трекинга и отдельная append-only storage strategy через таблицу `analytics_events`.
 - Priority: `P1`
 - Agent: `Product Analyst`
 - Goal: начать видеть реальное поведение игроков

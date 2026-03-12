@@ -153,8 +153,8 @@
   - нет дублирования стартовой логики по файлам
 
 ### TASK-008 — Вынести конфиг в отдельный слой
-- Status: `partial`
-- Note: добавлены `.env.example` и базовый `config/` (`app.php`, `database.php`), но полноценное разделение dev/prod и замена всех захардкоженных значений по проекту ещё не завершены.
+- Status: `done`
+- Note: `.env.example` расширен, `config/` используется bootstrap и security-слоем; app/database/security/storage настройки больше не зашиты напрямую в runtime-логике.
 - Priority: `P0`
 - Agent: `Backend Extraction`
 - Goal: отделить конфигурацию от кода

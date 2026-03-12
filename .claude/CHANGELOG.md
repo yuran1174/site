@@ -1,3 +1,25 @@
+## 2026-03-12 — Доведён config-слой и закрыт TASK-008
+
+**Что сделано:**
+- Расширен `.env.example`: добавлены app/session/storage-переменные, которые реально используются рантаймом
+- Добавлены `config/security.php` и `config/storage.php`
+- `src/Bootstrap/Config.php` переведён на автозагрузку всех `config/*.php`, а `AppBootstrap` теперь использует config и для `log_errors`
+- `security.php` перестал держать session/storage-настройки как runtime-хардкоды и читает их через config-слой
+- В `TODO.md` `TASK-008` переведён в `done`
+
+**Файлы затронуты:**
+- `.env.example` (обновлён)
+- `config/app.php` (обновлён)
+- `config/security.php` (создан)
+- `config/storage.php` (создан)
+- `src/Bootstrap/Config.php` (обновлён)
+- `src/Bootstrap/AppBootstrap.php` (обновлён)
+- `security.php` (обновлён)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
 ## 2026-03-12 — Обновлены статусы TODO после завершения controller/repository/API слоя
 
 **Что сделано:**

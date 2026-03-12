@@ -54,7 +54,7 @@ final class AppBootstrap
 
         error_reporting(E_ALL);
         ini_set('display_errors', Config::get('app.display_errors', false) ? '1' : '0');
-        ini_set('log_errors', '1');
+        ini_set('log_errors', Config::get('app.log_errors', true) ? '1' : '0');
 
         $timezone = (string) Config::get('app.timezone', 'Europe/Moscow');
         if ($timezone !== '') {

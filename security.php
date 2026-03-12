@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+function app_config_value(string $key, mixed $default = null): mixed
+{
+    if (class_exists(\App\Bootstrap\Config::class)) {
+        return \App\Bootstrap\Config::get($key, $default);
+    }
+
+    return $default;
+}
+
 function app_is_https(): bool
 {
     if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
@@ -24,21 +33,25 @@ function app_start_session(): void
         return;
     }
 
-    ini_set('session.use_only_cookies', '1');
-    ini_set('session.use_strict_mode', '1');
-    ini_set('session.cookie_httponly', '1');
-    ini_set('session.cookie_samesite', 'Lax');
-    if (app_is_https()) {
+    $cookieSecure = (bool) app_config_value('security.session.cookie_secure', false);
+    $isSecure = $cookieSecure || app_is_https();
+    $sameSite = (string) app_config_value('security.session.cookie_samesite', 'Lax');
+
+    ini_set('session.use_only_cookies', app_config_value('security.session.use_only_cookies', true) ? '1' : '0');
+    ini_set('session.use_strict_mode', app_config_value('security.session.use_strict_mode', true) ? '1' : '0');
+    ini_set('session.cookie_httponly', app_config_value('security.session.cookie_httponly', true) ? '1' : '0');
+    ini_set('session.cookie_samesite', $sameSite);
+    if ($isSecure) {
         ini_set('session.cookie_secure', '1');
     }
 
     session_set_cookie_params([
         'lifetime' => 0,
-        'path' => '/',
-        'domain' => '',
-        'secure' => app_is_https(),
-        'httponly' => true,
-        'samesite' => 'Lax',
+        'path' => (string) app_config_value('security.session.cookie_path', '/'),
+        'domain' => (string) app_config_value('security.session.cookie_domain', ''),
+        'secure' => $isSecure,
+        'httponly' => (bool) app_config_value('security.session.cookie_httponly', true),
+        'samesite' => $sameSite,
     ]);
 
     session_start();
@@ -99,7 +112,8 @@ function app_verify_csrf(?string $token = null): bool
 
 function app_storage_path(string $relativePath = ''): string
 {
-    $base = __DIR__ . '/storage';
+    $configuredBase = (string) app_config_value('storage.base_path', 'storage');
+    $base = app_resolve_project_path($configuredBase);
     if (!is_dir($base)) {
         mkdir($base, 0755, true);
     }
@@ -109,6 +123,16 @@ function app_storage_path(string $relativePath = ''): string
     }
 
     return $base . '/' . ltrim(str_replace('\\', '/', $relativePath), '/');
+}
+
+function app_resolve_project_path(string $path): string
+{
+    $normalized = str_replace('\\', '/', $path);
+    if (preg_match('/^[A-Za-z]:\//', $normalized) === 1 || str_starts_with($normalized, '/')) {
+        return $normalized;
+    }
+
+    return __DIR__ . '/' . ltrim($normalized, '/');
 }
 
 function app_ensure_dir(string $path): void
@@ -140,7 +164,7 @@ function app_client_ip(): string
 
 function app_security_log(string $event, array $context = []): void
 {
-    $dir = app_storage_path('logs');
+    $dir = app_storage_path((string) app_config_value('storage.logs_path', 'logs'));
     app_ensure_dir($dir);
 
     $entry = [
@@ -162,7 +186,7 @@ function app_security_log(string $event, array $context = []): void
 
 function app_rate_limit(string $scope, int $limit, int $windowSeconds, ?string $identity = null): array
 {
-    $dir = app_storage_path('ratelimits');
+    $dir = app_storage_path((string) app_config_value('storage.ratelimits_path', 'ratelimits'));
     app_ensure_dir($dir);
 
     $id = $identity ?? app_client_ip();

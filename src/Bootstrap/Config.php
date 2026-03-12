@@ -15,11 +15,12 @@ final class Config
             return;
         }
 
-        foreach (['app', 'database'] as $file) {
-            $path = $rootPath . '/config/' . $file . '.php';
-            if (!is_file($path)) {
-                continue;
-            }
+        $configDir = $rootPath . '/config';
+        $paths = glob($configDir . '/*.php') ?: [];
+        sort($paths);
+
+        foreach ($paths as $path) {
+            $file = pathinfo($path, PATHINFO_FILENAME);
 
             $config = require $path;
             if (is_array($config)) {

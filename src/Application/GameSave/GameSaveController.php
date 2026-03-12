@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Application\GameSave;
@@ -8,9 +9,7 @@ use RuntimeException;
 
 final class GameSaveController
 {
-    public function __construct(private readonly GameSaveService $service)
-    {
-    }
+    public function __construct(private readonly GameSaveService $service) {}
 
     public function handle(string $method, int $userId, string $username, array $input, array $get): never
     {
@@ -46,6 +45,7 @@ final class GameSaveController
                 $this->rateLimitOrFail('save:load', 120, 60, 'load', $identityBase);
                 ApiResponse::success($this->service->loadPayload($userId));
 
+                // no break
             case 'buy_prestige':
                 if ($method !== 'POST') {
                     ApiResponse::error('Method not allowed', 405);
@@ -102,6 +102,7 @@ final class GameSaveController
 
                 ApiResponse::success($this->service->applyMinigameReward($userId, $username, $bugs, $loc, $oo));
 
+                // no break
             case 'dungeon_clear':
                 if ($method !== 'POST') {
                     ApiResponse::error('Method not allowed', 405);
@@ -125,6 +126,7 @@ final class GameSaveController
 
                 ApiResponse::success($this->service->applyDungeonClear($userId, $username, $loc, $oo));
 
+                // no break
             default:
                 $this->logAndFail('save_unknown_action', 'Unknown action', 400, ['action' => $action]);
         }

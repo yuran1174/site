@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Infrastructure\Persistence;
@@ -8,9 +9,7 @@ use PDO;
 
 final class LeaderboardRepository
 {
-    public function __construct(private readonly PDO $db)
-    {
-    }
+    public function __construct(private readonly PDO $db) {}
 
     public function findByUserId(int $userId): ?LeaderboardRecord
     {

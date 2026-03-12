@@ -1,3 +1,29 @@
+## 2026-03-13 — Приведён PHP-код к текущему formatter baseline
+
+**Что сделано:**
+- Прогнан `php-cs-fixer` по текущим PHP-файлам проекта
+- Исправлены расхождения со style baseline в `ajax/`, `bootstrap/`, `src/Application/`, `src/Domain/`, `src/Infrastructure/`
+- Повторно подтверждено, что `format:check`, PHPUnit, PHP lint и JS lint проходят успешно
+
+**Файлы затронуты:**
+- `ajax/auth.php` (обновлён)
+- `ajax/save.php` (обновлён)
+- `bootstrap/app.php` (обновлён)
+- `src/Application/Auth/AuthController.php` (обновлён)
+- `src/Application/Auth/AuthService.php` (обновлён)
+- `src/Application/GameSave/GameSaveController.php` (обновлён)
+- `src/Application/GameSave/GameSaveService.php` (обновлён)
+- `src/Domain/Auth/UserData.php` (обновлён)
+- `src/Domain/GameSave/GameSaveRecord.php` (обновлён)
+- `src/Domain/Leaderboard/LeaderboardRecord.php` (обновлён)
+- `src/Infrastructure/Database/MigrationRunner.php` (обновлён)
+- `src/Infrastructure/Persistence/GameSaveRepository.php` (обновлён)
+- `src/Infrastructure/Persistence/LeaderboardRepository.php` (обновлён)
+- `src/Infrastructure/Persistence/UserRepository.php` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
 ## 2026-03-13 — Добавлен dev seed baseline и закрыт TASK-017
 
 **Что сделано:**

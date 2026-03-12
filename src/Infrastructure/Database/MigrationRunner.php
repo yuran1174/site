@@ -12,8 +12,7 @@ final class MigrationRunner
     public function __construct(
         private readonly PDO $db,
         private readonly string $migrationsPath,
-    ) {
-    }
+    ) {}
 
     public function migrate(): void
     {
@@ -73,6 +72,6 @@ final class MigrationRunner
             return [];
         }
 
-        return array_fill_keys(array_map(static fn ($value): string => (string) $value, $rows), true);
+        return array_fill_keys(array_map(static fn($value): string => (string) $value, $rows), true);
     }
 }

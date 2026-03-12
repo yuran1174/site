@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Application\Auth;
@@ -8,9 +9,7 @@ use RuntimeException;
 
 final class AuthController
 {
-    public function __construct(private readonly AuthService $service)
-    {
-    }
+    public function __construct(private readonly AuthService $service) {}
 
     public function handle(string $method, array $input, array $post, array $get): never
     {
@@ -33,7 +32,7 @@ final class AuthController
                 try {
                     ApiResponse::success($this->service->login(
                         (string) ($input['username'] ?? $post['username'] ?? ''),
-                        (string) ($input['password'] ?? $post['password'] ?? '')
+                        (string) ($input['password'] ?? $post['password'] ?? ''),
                     ));
                 } catch (RuntimeException $e) {
                     $message = $e->getMessage();
@@ -55,7 +54,7 @@ final class AuthController
                     ApiResponse::success($this->service->register(
                         (string) ($input['username'] ?? $post['username'] ?? ''),
                         (string) ($input['password'] ?? $post['password'] ?? ''),
-                        (string) ($input['confirm'] ?? $post['confirm'] ?? '')
+                        (string) ($input['confirm'] ?? $post['confirm'] ?? ''),
                     ));
                 } catch (RuntimeException $e) {
                     $message = $e->getMessage();
@@ -85,6 +84,7 @@ final class AuthController
                 $this->service->logout();
                 ApiResponse::success();
 
+                // no break
             default:
                 app_security_log('auth_unknown_action', ['action' => $action]);
                 ApiResponse::error('Unknown action', 400);

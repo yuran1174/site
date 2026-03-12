@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Application\GameSave;
@@ -16,8 +17,7 @@ final class GameSaveService
         private readonly GameSaveRepository $gameSaves,
         private readonly LeaderboardRepository $leaderboard,
         private readonly UserRepository $users,
-    ) {
-    }
+    ) {}
 
     public function readRow(int $userId): ?GameSaveRecord
     {

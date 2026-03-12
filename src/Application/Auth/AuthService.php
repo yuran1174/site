@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Application\Auth;
@@ -8,9 +9,7 @@ use RuntimeException;
 
 final class AuthService
 {
-    public function __construct(private readonly UserRepository $users)
-    {
-    }
+    public function __construct(private readonly UserRepository $users) {}
 
     public function login(string $username, string $password): array
     {

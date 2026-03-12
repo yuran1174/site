@@ -39,6 +39,10 @@
   }
 
   function saveGame() {
+    if (window.__DEV_RESETTING_PROGRESS) {
+      return;
+    }
+
     const saveData = buildSaveData();
     try {
       localStorage.setItem('kodikofee_save', JSON.stringify(saveData));
@@ -49,6 +53,9 @@
 
   async function saveGameServer() {
     if (typeof IS_LOGGED_IN === 'undefined' || !IS_LOGGED_IN) {
+      return;
+    }
+    if (window.__DEV_RESETTING_PROGRESS) {
       return;
     }
 

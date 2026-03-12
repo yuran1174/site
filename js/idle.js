@@ -259,6 +259,9 @@ $(async function () {
 
   document.addEventListener('visibilitychange', function () {
     if (document.hidden) {
+      if (window.__DEV_RESETTING_PROGRESS) {
+        return;
+      }
       hiddenAt = Date.now();
       saveGame();
       return;
@@ -320,6 +323,10 @@ $(async function () {
   }, 100);
 
   window.addEventListener('beforeunload', () => {
+    if (window.__DEV_RESETTING_PROGRESS) {
+      return;
+    }
+
     saveGame();
     if (typeof IS_LOGGED_IN !== 'undefined' && IS_LOGGED_IN) {
       const saveData = buildSaveData();

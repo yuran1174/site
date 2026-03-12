@@ -219,6 +219,10 @@ require __DIR__ . '/templates/partials/app-head.php';
         throw new Error(data.error || 'Не удалось сбросить прогресс.');
       }
 
+      window.__DEV_RESETTING_PROGRESS = true;
+      if (window.IdleRuntime && typeof window.IdleRuntime.createInitialState === 'function') {
+        window.state = window.IdleRuntime.createInitialState();
+      }
       localStorage.removeItem('kodikofee_save');
       localStorage.removeItem('minigame_reward');
       window.location.reload();

@@ -341,6 +341,22 @@
 
 ---
 
+## 2026-03-13 — Исправлен dev-reset прогресса в браузере
+
+**Что сделано:**
+- Выяснено, что при `reload` старый прогресс успевал сохраняться обратно через autosave и `beforeunload`
+- В `js/idle-save.js` сохранения блокируются, если активен флаг `__DEV_RESETTING_PROGRESS`
+- В `js/idle.js` пропускаются `saveGame()` на `visibilitychange` и `beforeunload` во время dev-reset
+- В `idle.php` browser helper теперь включает `__DEV_RESETTING_PROGRESS`, сбрасывает in-memory state и только потом чистит `localStorage` и перезагружает страницу
+
+**Файлы затронуты:**
+- `js/idle-save.js` (обновлён)
+- `js/idle.js` (обновлён)
+- `idle.php` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
 ## 2026-03-13 — Добавлена браузерная dev-команда для сброса прогресса аккаунта
 
 **Что сделано:**

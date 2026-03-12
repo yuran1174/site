@@ -15,11 +15,15 @@ function fmtLoc(float $n): string {
 }
 
 function timeAgo(int $ts): string {
+    if ($ts <= 0) return 'давно';
     $diff = time() - $ts;
-    if ($diff < 60)     return 'только что';
-    if ($diff < 3600)   return floor($diff/60) . ' мин назад';
-    if ($diff < 86400)  return floor($diff/3600) . ' ч назад';
-    return floor($diff/86400) . ' д назад';
+    if ($diff < 0)       return 'только что';
+    if ($diff < 60)      return 'только что';
+    if ($diff < 3600)    return floor($diff / 60) . ' мин назад';
+    if ($diff < 86400)   return floor($diff / 3600) . ' ч назад';
+    if ($diff < 604800)  return floor($diff / 86400) . ' дн назад';
+    if ($diff < 2592000) return floor($diff / 604800) . ' нед назад';
+    return date('d.m.Y', $ts);
 }
 
 function accountLevelTitle(int $lvl): string {

@@ -25,7 +25,8 @@
       "Bash(cd \"D:/OSPanel/site\" && bash .claude/push.sh \"fix: #1 — last_seen при сохранении, beforeunload + sendBeacon, убран тост автосохранения\")",
       "Bash(cd \"D:/OSPanel/site\" && bash .claude/push.sh \"fix: #2 — prestigeShop не сбрасывается, merge-стратегия загрузки, lastSave в buy_prestige\")",
       "Bash(cd \"D:/OSPanel/site\" && bash .claude/push.sh \"fix: #3 — dungeon_clears в leaderboard, accountLevel в load-ответе, миграция БД\")",
-      "Bash(cd \"D:/OSPanel/site\" && bash .claude/push.sh \"fix: #4 — профиль: все достижения \\(70 шт\\), locked показываются с ???, grid-layout\")"
+      "Bash(cd \"D:/OSPanel/site\" && bash .claude/push.sh \"fix: #4 — профиль: все достижения \\(70 шт\\), locked показываются с ???, grid-layout\")",
+      "Bash(cd \"D:/OSPanel/site\" && bash .claude/push.sh \"fix: #5 — timeAgo в лидерборде: недели, дата, нулевой timestamp\")"
     ]
   }
 }

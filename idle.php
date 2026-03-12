@@ -65,11 +65,6 @@ else                                 $greeting = 'Ещё не спишь, кол
       <span class="prestige-badge">✨ Престиж <span id="tbPrestige">0</span></span>
       <span class="prestige-multi">×<span id="tbPrestigeMulti">1.0</span></span>
     </div>
-    <div class="tb-actions">
-      <button class="tb-btn" id="exportBtn" title="Экспорт сохранения"><i class="fas fa-download"></i></button>
-      <button class="tb-btn" id="importBtn" title="Импорт сохранения"><i class="fas fa-upload"></i></button>
-      <button class="tb-btn tb-btn-danger" id="resetBtn" title="Сбросить игру"><i class="fas fa-trash"></i></button>
-    </div>
   </div>
 </div>
 
@@ -190,17 +185,6 @@ else                                 $greeting = 'Ещё не спишь, кол
   </div>
 </div>
 
-<!-- IMPORT MODAL -->
-<div id="importModal" style="display:none;">
-  <div class="modal-inner">
-    <h3>Импорт сохранения</h3>
-    <textarea id="importText" placeholder="Вставь строку сохранения сюда..."></textarea>
-    <div class="modal-btns">
-      <button class="btn-primary" id="importConfirm">Импортировать</button>
-      <button class="btn-secondary" id="importCancel">Отмена</button>
-    </div>
-  </div>
-</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>

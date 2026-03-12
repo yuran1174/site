@@ -680,50 +680,6 @@ async function loadGameServer() {
   }
 }
 
-function exportSave() {
-  saveGame();
-  const raw = localStorage.getItem('kodikofee_save');
-  if (!raw) return;
-  const encoded = btoa(unescape(encodeURIComponent(raw)));
-  navigator.clipboard.writeText(encoded).then(() => {
-    showToast('export', '📋 Экспорт', 'Сохранение скопировано в буфер обмена!', 'info', 3000);
-  }).catch(() => {
-    // fallback
-    prompt('Скопируй строку сохранения:', encoded);
-  });
-}
-
-function importSave(encoded) {
-  try {
-    const raw = decodeURIComponent(escape(atob(encoded.trim())));
-    const data = JSON.parse(raw);
-    if (!data || !data.version) throw new Error('Invalid save');
-    localStorage.setItem('kodikofee_save', raw);
-    loadGame();
-    renderAll();
-    updateOODisplay();
-    showToast('import', '✅ Импорт', 'Сохранение загружено!', 'info', 3000);
-  } catch(e) {
-    showToast('import_err', '❌ Ошибка', 'Неверная строка сохранения.', 'bad', 3000);
-  }
-}
-
-function resetGame() {
-  if (!confirm('Сбросить игру полностью? Все данные будут удалены, включая достижения и престижи.')) return;
-  localStorage.removeItem('kodikofee_save');
-  state = {
-    loc: 0, totalLoc: 0, locThisRun: 0, totalClicks: 0,
-    buildings: {}, upgrades: {}, achievements: {},
-    prestige: 0, prestigeMulti: 1,
-    prestigePoints: 0, totalPrestigePoints: 0, prestigeShop: {},
-    eventCount: 0, maxOffline: 0,
-    story: {}, dungeonClears: 0,
-    lastSave: Date.now(), lastTick: Date.now(), version: 3,
-  };
-  tempState = { globalMult:1, clickMult:1, buildingMult:{}, paused:false, pauseUntil:0, activeEvent:null, activeEventUntil:0 };
-  renderAll();
-  showToast('reset', '🔄 Сброс', 'Игра сброшена. Начинаем с нуля!', 'neutral', 4000);
-}
 
 // ================================================
 // EVENTS
@@ -1665,29 +1621,6 @@ $(async function() {
 
   // Bind prestige button
   $('#prestigeBtn').on('click', doPrestige);
-
-  // Bind export/import/reset
-  $('#exportBtn').on('click', exportSave);
-  $('#importBtn').on('click', function() {
-    $('#importModal').show();
-    $('#importText').val('').focus();
-  });
-  $('#importConfirm').on('click', function() {
-    const val = $('#importText').val().trim();
-    if (val) {
-      importSave(val);
-      $('#importModal').hide();
-    }
-  });
-  $('#importCancel').on('click', function() {
-    $('#importModal').hide();
-  });
-  $('#resetBtn').on('click', resetGame);
-
-  // Close import modal on backdrop click
-  $('#importModal').on('click', function(e) {
-    if (e.target === this) $(this).hide();
-  });
 
   // Init tabs
   initTabs();

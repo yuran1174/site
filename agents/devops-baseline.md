@@ -33,6 +33,10 @@ Project root: `C:\Users\yuran\PhpstormProjects\site`
 3. Add a CI baseline if feasible.
 4. Document deploy strategy.
 5. Document basic monitoring and uptime strategy.
+6. Keep `TODO.md` in sync:
+   - ensure assigned tasks have `Status`
+   - set them to `in_progress` while working
+   - set them to `done`, `partial`, or `blocked` before completion
 
 ## Deliverables
 

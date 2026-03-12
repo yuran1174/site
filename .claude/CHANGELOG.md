@@ -205,6 +205,26 @@
 
 ---
 
+## 2026-03-12 — Правила статусов задач добавлены в TODO и инструкции агентов
+
+**Что сделано:**
+- В `TODO.md` добавлены правила ведения `Status` для задач
+- Зафиксированы допустимые статусы: `pending`, `in_progress`, `partial`, `done`, `blocked`
+- В инструкции агентов добавлено требование синхронизировать статус своих задач в `TODO.md`
+
+**Файлы затронуты:**
+- `TODO.md` (обновлён)
+- `agents/architecture-audit.md` (обновлён)
+- `agents/product-analyst.md` (обновлён)
+- `agents/refactor-plan.md` (обновлён)
+- `agents/backend-extraction.md` (обновлён)
+- `agents/security-hardening.md` (обновлён)
+- `agents/testing-bootstrap.md` (обновлён)
+- `agents/devops-baseline.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
 ## 2026-03-12 — Скрипт push переведён в безопасный режим staging по явным файлам
 
 **Что сделано:**

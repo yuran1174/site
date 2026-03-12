@@ -37,6 +37,10 @@ Project root: `C:\Users\yuran\PhpstormProjects\site`
 2. Document the core loop and meta progression.
 3. Prepare a safe monetization outline.
 4. Define the baseline KPI set.
+5. Keep `TODO.md` in sync:
+   - ensure assigned tasks have `Status`
+   - set them to `in_progress` while working
+   - set them to `done` or `partial` before completion
 
 ## Deliverables
 

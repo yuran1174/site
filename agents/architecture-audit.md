@@ -30,6 +30,10 @@ Project root: `C:\Users\yuran\PhpstormProjects\site`
 2. Create architecture documentation for the current state.
 3. Create a risk audit document with severity levels.
 4. Make only minimal documentation edits if needed for clarity.
+5. Keep `TODO.md` in sync:
+   - ensure assigned tasks have `Status`
+   - set them to `in_progress` while working
+   - set them to `done` or `partial` before completion
 
 ## Deliverables
 

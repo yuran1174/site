@@ -34,6 +34,10 @@ Project root: `C:\Users\yuran\PhpstormProjects\site`
 4. Strengthen server-side validation.
 5. Add baseline anti-cheat checks for save and reward flows.
 6. Add security and audit logging.
+7. Keep `TODO.md` in sync:
+   - ensure assigned tasks have `Status`
+   - set them to `in_progress` while working
+   - set them to `done`, `partial`, or `blocked` before completion
 
 ## Deliverables
 

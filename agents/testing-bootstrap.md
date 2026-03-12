@@ -37,6 +37,10 @@ Project root: `C:\Users\yuran\PhpstormProjects\site`
   - reward application
 4. Add formatter and linter baseline.
 5. Keep the setup practical and lightweight.
+6. Keep `TODO.md` in sync:
+   - ensure assigned tasks have `Status`
+   - set them to `in_progress` while working
+   - set them to `done`, `partial`, or `blocked` before completion
 
 ## Deliverables
 

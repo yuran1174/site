@@ -12,6 +12,11 @@
 - При спорных решениях агент должен сначала зафиксировать decision record, а уже потом менять код.
 - После завершения каждой задачи агент должен обновить `.claude/CHANGELOG.md`, сделать коммит и пуш через `.claude/push.sh`, передав в него только изменённые файлы по своей задаче.
 - Все сообщения пользователю, итоговые отчёты и пояснения агенты должны писать на русском языке.
+- Каждая задача в `TODO.md` должна иметь строку `Status`.
+- Допустимые значения `Status`: `pending`, `in_progress`, `partial`, `done`, `blocked`.
+- При старте своей задачи агент должен перевести её в `in_progress`, если она ещё не начата.
+- После завершения агент должен перевести задачу в `done` или `partial`, если работа выполнена не полностью.
+- Если задача не может быть завершена из-за внешней причины, агент должен поставить `blocked` и кратко указать причину в `Note`.
 
 ## Приоритеты
 
@@ -316,6 +321,8 @@
 ## Epic 4 — Security & Trust
 
 ### TASK-018 — Добавить CSRF-защиту
+- Status: `done`
+- Note: добавлен `security.php` с CSRF helper'ами; токен прокинут в auth/save/reward/purchase/logout запросы, а state-changing запросы без токена отклоняются сервером.
 - Priority: `P0`
 - Agent: `Security Hardening`
 - Goal: защитить state-changing запросы
@@ -329,6 +336,8 @@
   - фронт корректно передаёт токен
 
 ### TASK-019 — Добавить session hardening
+- Status: `done`
+- Note: безопасный старт сессии централизован через `app_start_session()`; настроены `httponly`, `samesite`, production-aware `secure`, strict/use_only_cookies и централизованная регенерация после login/register.
 - Priority: `P0`
 - Agent: `Security Hardening`
 - Goal: усилить защиту сессий
@@ -343,6 +352,8 @@
   - регенерация сессии централизована
 
 ### TASK-020 — Добавить rate limiting
+- Status: `done`
+- Note: добавлен файловый limiter в `security.php`; лимиты применены к `login/register/logout`, `save/load`, `buy_prestige`, `minigame_reward`, `dungeon_clear`.
 - Priority: `P0`
 - Agent: `Security Hardening`
 - Goal: защитить проект от спама и brute force
@@ -358,6 +369,8 @@
   - лимиты настраиваемы
 
 ### TASK-021 — Усилить серверную валидацию и античит
+- Status: `partial`
+- Note: добавлены cap'ы наград, нормализация save payload, серверный пересчёт `prestigeMulti`, логирование подозрительных скачков и `docs/security/anti-cheat-baseline.md`; полноценной серверно-авторитативной модели прогресса пока нет.
 - Priority: `P0`
 - Agent: `Security Hardening`
 - Goal: уменьшить доверие к клиенту
@@ -374,6 +387,8 @@
   - аномальные запросы логируются
 
 ### TASK-022 — Ввести security/audit logging
+- Status: `done`
+- Note: добавлен baseline security-log в `storage/logs/security.log` (JSONL); в лог попадают failed login, malformed payloads, CSRF failures, rate limit и suspicious reward/save cases.
 - Priority: `P1`
 - Agent: `Security Hardening`
 - Goal: иметь следы важных событий безопасности
@@ -456,6 +471,8 @@
 ## Epic 6 — Quality, Tests, CI
 
 ### TASK-027 — Поднять тестовый стек для PHP
+- Status: `done`
+- Note: подключены `phpunit/phpunit`, `phpunit.xml.dist`, `tests/bootstrap.php` и test bootstrap для временной SQLite/sessions; первые автотесты запускаются локально через `composer test`.
 - Priority: `P0`
 - Agent: `Testing Bootstrap`
 - Goal: начать покрывать критичные сценарии автоматически
@@ -469,6 +486,8 @@
   - можно запустить первые автоматические тесты локально
 
 ### TASK-028 — Покрыть критичные backend-сценарии
+- Status: `done`
+- Note: добавлены integration tests для `register`, `login`, `logout`, `save`, `load`, `buy_prestige`, `minigame_reward`, `dungeon_clear` и античит-нормализации в сервисном слое.
 - Priority: `P0`
 - Agent: `Testing Bootstrap`
 - Goal: проверить самые дорогие по риску места
@@ -485,6 +504,8 @@
   - критичные сценарии проверяются автоматически
 
 ### TASK-029 — Добавить линтеры и форматтеры
+- Status: `partial`
+- Note: добавлены PHP formatter/lint baseline (`php-cs-fixer`, `tests/Tools/php-lint.php`, composer scripts `lint`, `format`, `format:check`); JS linting strategy и конфиг пока не введены.
 - Priority: `P1`
 - Agent: `Testing Bootstrap`
 - Goal: стабилизировать стиль и базовое качество

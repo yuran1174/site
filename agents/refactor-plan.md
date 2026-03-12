@@ -39,6 +39,10 @@ Project root: `C:\Users\yuran\PhpstormProjects\site`
   - which files become adapters or entrypoints
 4. If safe, create the target directories.
 5. Document a phased migration plan.
+6. Keep `TODO.md` in sync:
+   - ensure assigned tasks have `Status`
+   - set them to `in_progress` while working
+   - set them to `done` or `partial` before completion
 
 ## Deliverables
 

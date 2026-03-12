@@ -46,6 +46,10 @@ Project root: `C:\Users\yuran\PhpstormProjects\site`
 7. Introduce repositories and DTOs where useful.
 8. Introduce a consistent API response format.
 9. Preserve current URLs and player flows.
+10. Keep `TODO.md` in sync:
+   - ensure assigned tasks have `Status`
+   - set them to `in_progress` while working
+   - set them to `done`, `partial`, or `blocked` before completion
 
 ## Expected Deliverables
 

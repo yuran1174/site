@@ -59,6 +59,25 @@
 
 ---
 
+## 2026-03-13 — Продолжен TASK-023: из idle.js вынесены save/load и render слой
+
+**Что сделано:**
+- Добавлены `js/idle-save.js` и `js/idle-render.js`
+- Вынесены local/server save, load, offline progress и merge логика гостевого/серверного сохранения
+- Вынесены render-функции вкладок, activities bar, toasts, ticker, topbar и tab wiring
+- `idle.php` теперь подключает runtime, economy, save и render слои до основного `js/idle.js`
+- `TODO.md` уточнён: `TASK-023` остаётся `partial`, так как в монолите ещё сидят игровые данные, покупки, события и основной loop
+
+**Файлы затронуты:**
+- `js/idle-save.js` (создан)
+- `js/idle-render.js` (создан)
+- `js/idle.js` (обновлён)
+- `idle.php` (обновлён)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
 ## 2026-03-13 — Начат TASK-023: idle.js разделён на runtime/economy слой
 
 **Что сделано:**

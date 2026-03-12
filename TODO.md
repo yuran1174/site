@@ -425,7 +425,7 @@
 
 ### TASK-023 — Разбить `js/idle.js` на модули
 - Status: `partial`
-- Note: начата безопасная декомпозиция без build step: runtime/state и economy/helper-логика вынесены в отдельные `js/idle-*.js`, но data/render/save-слои всё ещё остаются в `js/idle.js`.
+- Note: безопасная декомпозиция идёт без build step: runtime, economy, save/load и render/toast/tabs уже вынесены в отдельные `js/idle-*.js`; в `js/idle.js` пока остаются игровые данные, события, покупки, престиж и основной loop.
 - Priority: `P0`
 - Agent: `Frontend Decomposition`
 - Goal: уменьшить связность и упростить развитие idle-ядра

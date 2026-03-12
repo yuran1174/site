@@ -1,0 +1,37 @@
+/* ================================================
+   Shared Design Tokens
+   ================================================ */
+
+:root {
+  --bg: #0d0f14;
+  --bg2: #131720;
+  --bg3: #1a1f2e;
+  --bg4: #20273a;
+  --border: #252d3d;
+  --border2: #2e3850;
+  --text: #c9d1e0;
+  --dim: #6b7a99;
+  --text-dim: var(--dim);
+
+  --accent: #00d4aa;
+  --accent2: #00b894;
+  --purple: #7c5cfc;
+  --purple2: #6547e0;
+  --red: #ff5f57;
+  --yellow: #ffbd2e;
+  --green: #28c840;
+  --blue: #4a9eff;
+
+  --mono: 'JetBrains Mono', 'Courier New', monospace;
+  --sans: 'Inter', system-ui, sans-serif;
+
+  --radius: 10px;
+  --radius-lg: 16px;
+
+  --shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.45);
+  --glow-accent: 0 0 20px rgba(0, 212, 170, 0.3);
+  --glow-purple: 0 0 20px rgba(124, 92, 252, 0.3);
+
+  --transition: all 0.2s ease;
+}

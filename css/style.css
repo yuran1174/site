@@ -1,24 +1,14 @@
+@import url('./tokens.css');
+
 /* =============================================
    RESET & BASE
    ============================================= */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg:        #0d0f14;
-  --bg2:       #131720;
-  --bg3:       #1a1f2e;
-  --border:    #252d3d;
-  --text:      #c9d1e0;
-  --text-dim:  #6b7a99;
-  --accent:    #00d4aa;
   --accent2:   #7c5cfc;
-  --red:       #ff5f57;
-  --yellow:    #ffbd2e;
-  --green:     #28c840;
-  --mono:      'JetBrains Mono', monospace;
-  --sans:      'Inter', sans-serif;
   --radius:    12px;
-  --shadow:    0 8px 32px rgba(0,0,0,.45);
+  --shadow:    var(--shadow-lg);
 }
 
 html { scroll-behavior: smooth; }

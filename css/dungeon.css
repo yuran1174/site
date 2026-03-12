@@ -1,3 +1,5 @@
+@import url('./tokens.css');
+
 /* ================================================
    DUNGEON — Canvas Roguelike CSS
    Dark pixel-art terminal aesthetic
@@ -7,17 +9,7 @@
   --bg:      #0a0c12;
   --bg2:     #0d1018;
   --bg3:     #131720;
-  --border:  #252d3d;
-  --border2: #2e3850;
-  --text:    #c9d1e0;
-  --dim:     #6b7a99;
-  --accent:  #00d4aa;
-  --red:     #ff5f57;
-  --yellow:  #ffbd2e;
-  --green:   #28c840;
   --purple:  #a855f7;
-  --mono:    'JetBrains Mono', 'Courier New', monospace;
-  --sans:    'Inter', system-ui, sans-serif;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }

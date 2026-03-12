@@ -1,22 +1,11 @@
+@import url('./tokens.css');
+
 /* =============================================
    GAME CSS — День программиста
    ============================================= */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg:       #0d0f14;
-  --bg2:      #131720;
-  --bg3:      #1a1f2e;
-  --border:   #252d3d;
-  --text:     #c9d1e0;
-  --dim:      #6b7a99;
-  --accent:   #00d4aa;
-  --purple:   #7c5cfc;
-  --red:      #ff5f57;
-  --yellow:   #ffbd2e;
-  --green:    #28c840;
-  --mono:     'JetBrains Mono', monospace;
-  --sans:     'Inter', sans-serif;
   --radius:   16px;
 }
 

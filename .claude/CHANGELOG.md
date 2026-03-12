@@ -1,3 +1,26 @@
+## 2026-03-13 — Закрыт TASK-025: введён общий CSS token-layer и правила стилей
+
+**Что сделано:**
+- Добавлен общий слой токенов `css/tokens.css` с цветами, шрифтами, радиусами, тенями и transition baseline
+- `css/auth.css`, `css/idle.css`, `css/style.css`, `css/game.css`, `css/dungeon.css` и `css/minigame.css` переведены на импорт общих токенов
+- В page-level `:root` оставлены только осознанные overrides, где тема действительно отличается
+- Добавлен документ `docs/frontend/css-conventions.md` с правилами по токенам, overrides и дальнейшему росту CSS-структуры
+- В `TODO.md` задача `TASK-025` переведена в `done`
+
+**Файлы затронуты:**
+- `css/tokens.css` (создан)
+- `docs/frontend/css-conventions.md` (создан)
+- `css/auth.css` (обновлён)
+- `css/idle.css` (обновлён)
+- `css/style.css` (обновлён)
+- `css/game.css` (обновлён)
+- `css/dungeon.css` (обновлён)
+- `css/minigame.css` (обновлён)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
 ## 2026-03-13 — Исправлено затирание наград из мини-игр и подземелья
 
 **Что сделано:**

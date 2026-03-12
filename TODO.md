@@ -461,6 +461,8 @@
   - страницы читаются проще
 
 ### TASK-025 — Навести порядок в CSS-структуре
+- Status: `done`
+- Note: добавлен общий token-layer `css/tokens.css`, на него переведены базовые CSS-файлы (`auth.css`, `idle.css`, `style.css`, `game.css`, `dungeon.css`, `minigame.css`), а правила зафиксированы в `docs/frontend/css-conventions.md`.
 - Priority: `P1`
 - Agent: `Frontend Decomposition`
 - Goal: сделать стили управляемыми

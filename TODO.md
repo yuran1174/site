@@ -479,6 +479,8 @@
   - дублирование уменьшено
 
 ### TASK-026 — Принять решение по фронтенд-сборке
+- Status: `done`
+- Note: принято решение не вводить build step сейчас; стратегия и триггеры перехода зафиксированы в `docs/frontend/build-strategy.md`.
 - Priority: `P1`
 - Agent: `Frontend Decomposition`
 - Goal: решить, нужен ли build step сейчас

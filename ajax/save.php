@@ -45,6 +45,10 @@ switch ($action) {
         $dungPts    = (int)($parsed['dungeonClears'] ?? 0) * 3;
         $accountLvl = max(1, (int)(($locPts + $prestPts + $achPts + $dungPts) / 5));
 
+        // Update last_seen on every save
+        $db->prepare('UPDATE users SET last_seen = strftime(\'%s\',\'now\') WHERE id = ?')
+           ->execute([$userId]);
+
         // Upsert save
         $stmt = $db->prepare('
             INSERT INTO game_saves (user_id, save_data, updated_at)

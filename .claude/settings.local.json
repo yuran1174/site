@@ -21,7 +21,8 @@
       "Bash(cd \"D:/OSPanel/site\" && sed -n '42,55p' css/dungeon.css && sed -n '406,415p' css/dungeon.css)",
       "Bash(cd \"D:/OSPanel/site\" && bash .claude/push.sh \"feat: Dungeon v3 — Phaser 3 подключён, gameCanvas div, CSS обновлён\")",
       "Bash(cd \"D:/OSPanel/site\" && bash .claude/push.sh \"feat: блок активностей в idle — карточки с тултипами для заблокированных\")",
-      "Bash(cd \"D:/OSPanel/site\" && bash .claude/push.sh \"docs: добавлен TODO.md — план отладки idle-игры\")"
+      "Bash(cd \"D:/OSPanel/site\" && bash .claude/push.sh \"docs: добавлен TODO.md — план отладки idle-игры\")",
+      "Bash(cd \"D:/OSPanel/site\" && bash .claude/push.sh \"fix: #1 — last_seen при сохранении, beforeunload + sendBeacon, убран тост автосохранения\")"
     ]
   }
 }

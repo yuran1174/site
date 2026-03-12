@@ -564,10 +564,7 @@ async function saveGameServer() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'save', data: JSON.stringify(saveData) }),
     });
-    const json = await res.json();
-    if (json.success) {
-      showToast('cloud_save', '☁️ Сохранено', 'Прогресс сохранён на сервере', 'info', 2000);
-    }
+    await res.json();
   } catch(e) {
     // Silent fail - local save already done
   }
@@ -1799,5 +1796,18 @@ $(async function() {
       }
     }
   }, 100);
+
+  // Save on tab/browser close
+  window.addEventListener('beforeunload', () => {
+    saveGame();
+    if (typeof IS_LOGGED_IN !== 'undefined' && IS_LOGGED_IN) {
+      // sendBeacon — не блокирует закрытие, но гарантирует доставку
+      const saveData = buildSaveData();
+      navigator.sendBeacon('ajax/save.php', new Blob(
+        [JSON.stringify({ action: 'save', data: JSON.stringify(saveData) })],
+        { type: 'application/json' }
+      ));
+    }
+  });
 
 });

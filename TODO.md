@@ -943,6 +943,23 @@
 - Acceptance Criteria:
   - ясно, что новая версия остаётся idle-игрой
 - Status: `done`
+### TASK-074 — Собрать idle core loop spec для season 1
+- Status: `done`
+- Note: создан `docs/game/season-1-idle-core-loop-spec.md`; зафиксированы life modes, вечерние слоты, project/social priorities, auto-ticks, аварийные состояния, положительные устойчивые состояния и полный idle-цикл новой версии игры.
+- Priority: `P1`
+- Agent: `Game Systems`
+- Goal: перевести новый idle-вектор season 1 в конкретный механический контракт для реализации
+- Scope:
+  - фазы полного idle-цикла
+  - life modes и их эффекты
+  - управляемые слоты и фокусы
+  - авто-тикающие системы
+  - caps и аварийные состояния
+  - возвратный цикл игрока
+- Deliverables:
+  - `docs/game/season-1-idle-core-loop-spec.md`
+- Acceptance Criteria:
+  - ясно, из каких фаз состоит новый idle-loop
 - Note: добавлены отдельный entrypoint `/season1.php`, Laravel page adapter, изолированный UI/runtime vertical slice и feature test; реализованы 5 действий, day resolution loop, локальный state в `localStorage` и базовые unlock/guard conditions без вмешательства в `idle.php`.
 - Priority: `P1`
 - Agent: `Game Developer`

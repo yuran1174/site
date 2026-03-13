@@ -1,3 +1,17 @@
+## 2026-03-13 — Закрыт TASK-074: собран idle core loop spec для season 1
+
+**Что сделано:**
+- Добавлен `docs/game/season-1-idle-core-loop-spec.md`, который переводит новый season 1 idle-вектор в конкретный механический контракт
+- Зафиксированы фазы полного idle-цикла, `life_mode`, вечерние слоты, project/social priorities, auto-ticks, caps, аварийные состояния и positive states
+- Отдельно описан короткий возвратный цикл игрока и MVP-версия core loop для первого рабочего прототипа
+- В `TODO.md` добавлена и закрыта задача `TASK-074`
+
+**Файлы затронуты:**
+- `docs/game/season-1-idle-core-loop-spec.md` (создан)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
 ## 2026-03-13 — Закрыт TASK-073: зафиксирован idle redesign framework для season 1
 
 **Что сделано:**

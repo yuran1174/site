@@ -1,3 +1,18 @@
+## 2026-03-13 — Закрыт TASK-067: зафиксировано ядро игры для season 1
+
+**Что сделано:**
+- Добавлен `docs/game/season-1-core-systems.md` с описанием основного игрового ядра новой версии проекта
+- Зафиксированы шесть core systems: daily pressure loop, evening decision loop, project loop, relationship loop, group formation loop и room/life progression loop
+- Описаны player verbs, ресурсные трансформации, мягкие fail states, MVP system cut и базовая структура главного экрана
+- В `TODO.md` добавлена и закрыта задача `TASK-067`
+
+**Файлы затронуты:**
+- `docs/game/season-1-core-systems.md` (создан)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
 ## 2026-03-13 — Закрыт TASK-066: акт 1 разложен в progression map
 
 **Что сделано:**

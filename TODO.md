@@ -833,6 +833,22 @@
 - Acceptance Criteria:
   - понятно, как игрок проходит акт 1 от нулевой комнаты до решения собрать своих
 - Agent: `Operations`
+
+### TASK-067 — Собрать ядро игры для season 1
+- Status: `done`
+- Note: создан `docs/game/season-1-core-systems.md`, где зафиксированы основные игровые системы новой версии проекта: daily pressure loop, project loop, relationship loop, group loop, room progression, soft fail states и player verbs первой итерации.
+- Priority: `P1`
+- Agent: `Game Systems`
+- Goal: описать реальное игровое ядро новой игры до интерфейсов и баланса
+- Scope:
+  - primary systems
+  - player verbs
+  - resource transformations
+  - loop connections
+  - MVP system cut
+- Deliverables:
+  - `docs/game/season-1-core-systems.md`
+- Acceptance Criteria:
 - Goal: снизить юридические риски при публичном запуске
 - Scope:
   - privacy policy

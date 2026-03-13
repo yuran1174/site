@@ -76,6 +76,17 @@ php -S 127.0.0.1:8080
 composer test
 ```
 
+Сборка browser runtime для `/season1.php`:
+
+```bash
+cd laravel
+npm install
+cd ..
+composer build:season1
+```
+
+Команда компилирует `src/season1/*.ts` через локальный `typescript` из `laravel/node_modules`, обновляет `js/season1/*` и зеркалит runtime в `public/js/season1/*` плюс `public/css/season1.css`.
+
 PHP + JS lint:
 
 ```bash

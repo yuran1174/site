@@ -1,3 +1,17 @@
+## 2026-03-13 — Закрыт TASK-078: добавлен воспроизводимый build-flow для season 1 runtime
+
+**Что сделано:**
+- Добавлен `composer build:season1`, который запускает новый build script для browser runtime season 1
+- Добавлен `scripts/build-season1-runtime.mjs`: он компилирует `src/season1/*.ts` через локальный `typescript` из `laravel/node_modules`, затем зеркалит `js/season1/*` в `public/js/season1/*` и обновляет `public/css/season1.css`
+- `README.md` обновлён инструкцией по сборке `/season1.php` runtime одной командой после `npm install` в `laravel/`
+
+**Файлы затронуты:**
+- `composer.json` (обновлён)
+- `scripts/build-season1-runtime.mjs` (создан)
+- `README.md` (обновлён)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
 ## 2026-03-13 — Закрыт TASK-077: season 1 runtime переведён на `Phaser + TypeScript`
 
 **Что сделано:**

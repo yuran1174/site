@@ -25,6 +25,7 @@
   "scripts": {
     "dev:reset-account": "@php scripts/dev/reset-account-progress.php",
     "seed:dev": "@php scripts/seed/dev-seed.php",
+    "build:season1": "node scripts/build-season1-runtime.mjs",
     "test": "vendor/bin/phpunit --configuration phpunit.xml.dist",
     "lint": [
       "@lint:php",

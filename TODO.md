@@ -984,6 +984,25 @@
   - описано, что игрок видит первым и чем управляет
   - зафиксирован MVP cut главного экрана новой idle-версии
 
+### TASK-078 — Нормализовать build-flow для season 1 browser runtime
+- Status: `done`
+- Note: добавлен `composer build:season1` и `scripts/build-season1-runtime.mjs`; сборка компилирует `src/season1/*.ts` через локальный `typescript` из `laravel/node_modules` и зеркалит runtime в `public/`. README обновлён с инструкцией.
+- Priority: `P1`
+- Agent: `Game Developer`
+- Goal: убрать ручную сборку season1 runtime и сделать её воспроизводимой одной командой
+- Scope:
+  - script для компиляции TS runtime
+  - mirror `js/season1/*` -> `public/js/season1/*`
+  - краткая dev-документация по запуску
+- Deliverables:
+  - `composer build:season1`
+  - build script для season1 runtime
+  - обновлённый README
+- Acceptance Criteria:
+  - season1 runtime собирается одной командой
+  - обновление public mirror не делается вручную
+  - инструкция локального запуска зафиксирована в репозитории
+
 ### TASK-077 — Перевести season 1 runtime на `Phaser + TypeScript`
 - Status: `done`
 - Note: `/season1.php` и Laravel view переведены на новый screen contract с `Phaser` room stage, TS runtime вынесен в `src/season1/*`, собран в `js/season1/*` и зеркалирован в `public/js/season1/*`; проверены `tsc`, `php -l` и season1 feature test.

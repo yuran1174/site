@@ -1,3 +1,17 @@
+## 2026-03-13 — Закрыт TASK-080: собрана idle progression model для season 1
+
+**Что сделано:**
+- Добавлен `docs/game/season-1-idle-progression-model.md`, который переводит narrative idle core в конкретную модель прогрессии
+- Зафиксированы пять progression axes: `project line`, `build line`, `people line`, `automation line`, `studio vibe line`
+- Описаны production layers, типы билдов, персонажные modifiers и точки, где юмор, ирония и драма встроены прямо в progression
+- В `TODO.md` добавлена и закрыта задача `TASK-080`
+
+**Файлы затронуты:**
+- `docs/game/season-1-idle-progression-model.md` (создан)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
 ## 2026-03-13 — Закрыт TASK-079: зафиксирован narrative idle core для season 1
 
 **Что сделано:**

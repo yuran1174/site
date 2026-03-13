@@ -743,6 +743,209 @@
   - способности описаны как системный слой, а не набор разрозненных кнопок
   - их награды не ломают prestige pacing и не заменяют side modes
 
+### TASK-062 — Зафиксировать data-driven контракт active abilities
+- Status: `done`
+- Note: создан `docs/game/idle-abilities-schema.md` с конфиг-схемой для `data/game/idle-balance.js`, runtime-state моделью, server/save требованиями, analytics hooks и безопасным rollout-порядком для реализации active abilities.
+- Priority: `P2`
+- Agent: `Game Systems`
+- Goal: подготовить реализацию active abilities без архитектурного расползания
+- Scope:
+  - config schema для abilities, slots и unlock rules
+  - runtime state и save contract
+  - analytics events и UI contract
+  - rollout phases и implementation guardrails
+- Deliverables:
+  - `docs/game/idle-abilities-schema.md`
+- Acceptance Criteria:
+  - разработчику понятны структура данных и точки интеграции
+  - контракт не требует хардкода способностей по разным экранам
+
+### TASK-063 — Пересобрать продуктовую рамку под narrative season 1
+- Status: `done`
+- Note: создан `docs/game/season-1-design-framework.md`, в котором сценарный каркас `Скуф-пати` переведён в новый продуктовый тезис, core loop, ресурсы, прогрессию, seasonal structure и список систем, которые конфликтуют с новым направлением и требуют замены или переосмысления.
+- Priority: `P1`
+- Agent: `Game Systems`
+- Goal: превратить сценарий сезона в опорную игровую модель
+- Scope:
+  - narrative-to-systems translation
+  - новый core loop и meta loop
+  - ресурсы, прогрессия и типы активностей
+  - compatibility audit текущих механик
+  - правила для дальнейшего сценарного и системного дизайна
+- Deliverables:
+  - `docs/game/season-1-design-framework.md`
+- Acceptance Criteria:
+  - понятно, какая игра строится из сценария сезона
+  - явно перечислено, что из текущей модели нужно сохранить, убрать или пересобрать
+
+### TASK-064 — Описать цикл одного внутриигрового дня для season 1
+- Status: `done`
+- Note: создан `docs/game/season-1-day-loop.md` с фазами дня, базовыми ресурсами, обязательными решениями, типами активностей, fail states и правилами открытия сцен акта 1 через повседневный ритм героя.
+- Priority: `P1`
+- Agent: `Game Systems`
+- Goal: превратить новый тезис сезона в playable daily loop
+- Scope:
+  - day phases
+  - resource flow
+  - player decisions per day
+  - social/project actions
+  - narrative trigger model для акта 1
+- Deliverables:
+  - `docs/game/season-1-day-loop.md`
+- Acceptance Criteria:
+  - понятно, что игрок делает в течение одного дня
+  - daily loop поддерживает сценарный темп `по чуть-чуть`
+
+### TASK-065 — Описать roster персонажей как gameplay-юнитов season 1
+- Status: `done`
+- Note: создан `docs/game/season-1-character-roster.md`, где ключевые персонажи переведены в gameplay-юниты нового типа: для каждого зафиксированы unlock, системная роль, модификаторы, emotional hook, локальный риск и payoff для команды и проекта.
+- Priority: `P1`
+- Agent: `Game Systems`
+- Goal: сделать персонажей рабочими элементами прогрессии, а не только сценарием
+- Scope:
+  - gameplay role per character
+  - unlock and trigger model
+  - resource modifiers
+  - relationship payoff
+  - local quest potential
+- Deliverables:
+  - `docs/game/season-1-character-roster.md`
+- Acceptance Criteria:
+  - по каждому ключевому персонажу понятно, как он влияет на игру
+  - roster можно напрямую использовать для progression map и system design
+
+### TASK-066 — Разложить акт 1 в progression map
+- Status: `done`
+- Note: создан `docs/game/season-1-act-1-progression-map.md`, где акт 1 разложен в последовательность игровых узлов: состояние дня, доступные действия, сюжетная сцена, системный эффект и следующий unlock для перехода к следующему beat'у.
+- Priority: `P1`
+- Agent: `Game Systems`
+- Goal: превратить сценарный акт 1 в production-ready progression blueprint
+- Scope:
+  - sequence of beats
+  - unlock conditions
+  - available actions
+  - systemic rewards and penalties
+  - act-end transition
+- Deliverables:
+  - `docs/game/season-1-act-1-progression-map.md`
+- Acceptance Criteria:
+  - понятно, как игрок проходит акт 1 от нулевой комнаты до решения собрать своих
+  - каждая сцена имеет системный смысл, а не только narrative presence
+
+### TASK-067 — Собрать ядро игры для season 1
+- Status: `done`
+- Note: создан `docs/game/season-1-core-systems.md`, где зафиксированы основные игровые системы новой версии проекта: daily pressure loop, project loop, relationship loop, group loop, room progression, soft fail states и player verbs первой итерации.
+- Priority: `P1`
+- Agent: `Game Systems`
+- Goal: описать реальное игровое ядро новой игры до интерфейсов и баланса
+- Scope:
+  - primary systems
+  - player verbs
+  - resource transformations
+  - loop connections
+  - MVP system cut
+- Deliverables:
+  - `docs/game/season-1-core-systems.md`
+- Acceptance Criteria:
+  - ясно, какие 4-6 систем составляют ядро игры
+  - можно начинать прототипировать игру не от сюжета, а от системного каркаса
+
+### TASK-068 — Зафиксировать MVP game state schema для season 1
+- Status: `done`
+- Note: создан `docs/game/season-1-mvp-state-schema.md`, где описаны обязательные state-сущности, ресурсы дня, project/relationship/group/room блоки, progression flags, инварианты и минимальный save-shape для первой итерации новой игры.
+- Priority: `P1`
+- Agent: `Game Systems`
+- Goal: перевести ядро игры в конкретную модель состояния
+- Scope:
+  - state slices
+  - required fields
+  - invariants
+  - save/load shape
+  - MVP exclusions
+- Deliverables:
+  - `docs/game/season-1-mvp-state-schema.md`
+- Acceptance Criteria:
+  - разработчику понятно, какие данные реально нужны игре на старте
+  - state schema поддерживает day loop, relationships, project loop и progression акта 1
+
+### TASK-069 — Собрать information architecture главного экрана season 1
+- Status: `done`
+- Note: создан `docs/game/season-1-main-screen-ia.md`, где state schema и core systems разложены по зонам главного экрана, приоритетам внимания, CTA, desktop/mobile-структуре и правилам показа контента в течение дня.
+- Priority: `P1`
+- Agent: `Game Systems`
+- Goal: перевести системное ядро в структуру основного игрового экрана
+- Scope:
+  - screen regions
+  - information hierarchy
+  - action placement
+  - day-phase behavior
+  - mobile/desktop layout logic
+- Deliverables:
+  - `docs/game/season-1-main-screen-ia.md`
+- Acceptance Criteria:
+  - понятно, что игрок видит первым, что вторым и где делает главный выбор вечера
+  - главный экран обслуживает ядро игры без перегруза и без возврата к idle-dashboard паттерну
+
+### TASK-070 — Зафиксировать legacy systems cut list для новой версии игры
+- Status: `done`
+- Note: создан `docs/game/season-1-legacy-cut-list.md`, где текущие системы, страницы, валюты и режимы проекта разобраны на категории `удалить`, `не переносить в runtime`, `переиспользовать как технический слой` и `переосмыслить позже` для перехода к новой игре сезона 1.
+- Priority: `P1`
+- Agent: `Game Systems`
+- Goal: убрать двусмысленность в переходе от старой idle-игры к новой системе сезона 1
+- Scope:
+  - current pages and modes
+  - currencies and progression systems
+  - UI surfaces
+  - backend/save layers
+  - reuse vs removal decisions
+- Deliverables:
+  - `docs/game/season-1-legacy-cut-list.md`
+- Acceptance Criteria:
+  - команде ясно, что больше не является частью новой игры
+  - понятно, что можно оставить как инфраструктуру и что нужно переделывать с нуля
+
+### TASK-071 — Собрать MVP action catalog для season 1
+- Status: `done`
+- Note: создан `docs/game/season-1-mvp-action-catalog.md`; ядро новой игры переведено в каталог конкретных действий игрока с `availability`, `cost`, `effect`, `risk`, `state hooks` и минимальным набором для первого playable.
+- Priority: `P1`
+- Agent: `Game Systems`
+- Goal: превратить core loop новой игры в конкретный action layer
+- Scope:
+  - recovery actions
+  - money actions
+  - project actions
+  - relationship actions
+  - group actions
+  - MVP minimum set
+- Deliverables:
+  - `docs/game/season-1-mvp-action-catalog.md`
+- Acceptance Criteria:
+  - у ключевых действий есть `cost`, `effect`, `risk` и `state hooks`
+  - каталог покрывает базовый вечерний выбор игрока
+  - определён минимальный action set для ранней реализации
+
+### TASK-072 — Собрать первый playable vertical slice season 1
+- Status: `done`
+- Note: добавлены отдельный entrypoint `/season1.php`, Laravel page adapter, изолированный UI/runtime vertical slice и feature test; реализованы 5 действий, day resolution loop, локальный state в `localStorage` и базовые unlock/guard conditions без вмешательства в `idle.php`.
+- Priority: `P1`
+- Agent: `Game Developer`
+- Goal: поднять отдельный entrypoint новой игры и проверить day loop на реальном playable-срезе
+- Scope:
+  - отдельный route/page entrypoint новой игры
+  - минимальный state contract для `calendar`, `resources`, `hero`, `project`, `relationships`, `group`, `room`
+  - UI-скелет главного экрана
+  - минимум 5 рабочих действий из MVP action catalog
+  - day resolution loop с переходом между днями
+- Deliverables:
+  - отдельная playable-страница новой игры
+  - клиентский runtime vertical slice
+  - smoke/regression test на новый entrypoint
+- Acceptance Criteria:
+  - новая игра открывается отдельно от `idle.php`
+  - можно прожить несколько дней подряд
+  - ресурсы, проект, люди и состояние жизни реально меняются
+  - есть базовые unlock conditions для части действий
+
 ## Epic 10 — Monetization & Legal Readiness
 
 ### TASK-041 — Зафиксировать монетизационную стратегию
@@ -762,165 +965,15 @@
   - описано, что не продаётся
   - определены первые безопасные эксперименты
 
-### TASK-063 — Пересобрать продуктовую рамку под narrative season 1
-- Status: `done`
-- Note: создан `docs/game/season-1-design-framework.md`, в котором сценарный каркас `Скуф-пати` переведён в новый продуктовый тезис, core loop, ресурсы, прогрессию, seasonal structure и список систем, которые конфликтуют с новым направлением и требуют замены или переосмысления.
-- Priority: `P1`
-- Agent: `Game Systems`
-- Goal: превратить сценарий сезона в опорную игровую модель
-- Scope:
-  - narrative-to-systems translation
-  - новый core loop и meta loop
-  - ресурсы, прогрессия и типы активностей
-  - compatibility audit текущих механик
-  - правила для дальнейшего сценарного и системного дизайна
-- Deliverables:
-  - `docs/game/season-1-design-framework.md`
-- Acceptance Criteria:
-  - понятно, какая игра строится из сценария сезона
-
-
-### TASK-064 — Описать цикл одного внутриигрового дня для season 1
-- Status: `done`
-- Note: создан `docs/game/season-1-day-loop.md` с фазами дня, базовыми ресурсами, обязательными решениями, типами активностей, fail states и правилами открытия сцен акта 1 через повседневный ритм героя.
-- Priority: `P1`
-- Agent: `Game Systems`
-- Goal: превратить новый тезис сезона в playable daily loop
-- Scope:
-  - day phases
-  - resource flow
-  - player decisions per day
-  - social/project actions
-  - narrative trigger model для акта 1
-- Deliverables:
-  - `docs/game/season-1-day-loop.md`
-- Acceptance Criteria:
-  - понятно, что игрок делает в течение одного дня
 ### TASK-042 — Подготовить legal minimum
-
-### TASK-065 — Описать roster персонажей как gameplay-юнитов season 1
-- Status: `done`
-- Note: создан `docs/game/season-1-character-roster.md`, где ключевые персонажи переведены в gameplay-юниты нового типа: для каждого зафиксированы unlock, системная роль, модификаторы, emotional hook, локальный риск и payoff для команды и проекта.
-- Priority: `P1`
-- Agent: `Game Systems`
-- Goal: сделать персонажей рабочими элементами прогрессии, а не только сценарием
-- Scope:
-  - gameplay role per character
-  - unlock and trigger model
-  - resource modifiers
-  - relationship payoff
-  - local quest potential
-- Deliverables:
-  - `docs/game/season-1-character-roster.md`
-- Acceptance Criteria:
-  - по каждому ключевому персонажу понятно, как он влияет на игру
 - Priority: `P3`
-
-### TASK-066 — Разложить акт 1 в progression map
-- Status: `done`
-- Note: создан `docs/game/season-1-act-1-progression-map.md`, где акт 1 разложен в последовательность игровых узлов: состояние дня, доступные действия, сюжетная сцена, системный эффект и следующий unlock для перехода к следующему beat'у.
-- Priority: `P1`
-- Agent: `Game Systems`
-- Goal: превратить сценарный акт 1 в production-ready progression blueprint
-- Scope:
-  - sequence of beats
-  - unlock conditions
-  - available actions
-  - systemic rewards and penalties
-  - act-end transition
-- Deliverables:
-  - `docs/game/season-1-act-1-progression-map.md`
-- Acceptance Criteria:
-  - понятно, как игрок проходит акт 1 от нулевой комнаты до решения собрать своих
 - Agent: `Operations`
-
-### TASK-067 — Собрать ядро игры для season 1
-- Status: `done`
-- Note: создан `docs/game/season-1-core-systems.md`, где зафиксированы основные игровые системы новой версии проекта: daily pressure loop, project loop, relationship loop, group loop, room progression, soft fail states и player verbs первой итерации.
-- Priority: `P1`
-- Agent: `Game Systems`
-- Goal: описать реальное игровое ядро новой игры до интерфейсов и баланса
-- Scope:
-  - primary systems
-  - player verbs
-  - resource transformations
-  - loop connections
-  - MVP system cut
-- Deliverables:
-  - `docs/game/season-1-core-systems.md`
-- Acceptance Criteria:
 - Goal: снизить юридические риски при публичном запуске
 - Scope:
-
-### TASK-068 — Зафиксировать MVP game state schema для season 1
-- Status: `done`
-- Note: создан `docs/game/season-1-mvp-state-schema.md`, где описаны обязательные state-сущности, ресурсы дня, project/relationship/group/room блоки, progression flags, инварианты и минимальный save-shape для первой итерации новой игры.
-- Priority: `P1`
-- Agent: `Game Systems`
-- Goal: перевести ядро игры в конкретную модель состояния
-- Scope:
-  - state slices
-  - required fields
-  - invariants
-  - save/load shape
-  - MVP exclusions
-- Deliverables:
-  - `docs/game/season-1-mvp-state-schema.md`
-- Acceptance Criteria:
   - privacy policy
   - terms of use
-
-### TASK-069 — Собрать information architecture главного экрана season 1
-- Status: `done`
-- Note: создан `docs/game/season-1-main-screen-ia.md`, где state schema и core systems разложены по зонам главного экрана, приоритетам внимания, CTA, desktop/mobile-структуре и правилам показа контента в течение дня.
-- Priority: `P1`
-- Agent: `Game Systems`
-- Goal: перевести системное ядро в структуру основного игрового экрана
-- Scope:
-  - screen regions
-  - information hierarchy
-  - action placement
-  - day-phase behavior
-  - mobile/desktop layout logic
-- Deliverables:
-  - `docs/game/season-1-main-screen-ia.md`
-- Acceptance Criteria:
   - user data notice
 - Deliverables:
-
-### TASK-070 — Зафиксировать legacy systems cut list для новой версии игры
-- Status: `done`
-- Note: создан `docs/game/season-1-legacy-cut-list.md`, где текущие системы, страницы, валюты и режимы проекта разобраны на категории `удалить`, `не переносить в runtime`, `переиспользовать как технический слой` и `переосмыслить позже` для перехода к новой игре сезона 1.
-- Priority: `P1`
-- Agent: `Game Systems`
-- Goal: убрать двусмысленность в переходе от старой idle-игры к новой системе сезона 1
-- Scope:
-  - current pages and modes
-  - currencies and progression systems
-  - UI surfaces
-  - backend/save layers
-  - reuse vs removal decisions
-- Deliverables:
-  - `docs/game/season-1-legacy-cut-list.md`
-- Acceptance Criteria:
-### TASK-071 — Собрать MVP action catalog для season 1
-- Status: `done`
-- Note: создан `docs/game/season-1-mvp-action-catalog.md`; ядро новой игры переведено в каталог конкретных действий игрока с `availability`, `cost`, `effect`, `risk`, `state hooks` и минимальным набором для первого playable.
-- Priority: `P1`
-- Agent: `Game Systems`
-- Goal: превратить core loop новой игры в конкретный action layer
-- Scope:
-  - recovery actions
-  - money actions
-  - project actions
-  - relationship actions
-  - group actions
-  - MVP minimum set
-- Deliverables:
-  - `docs/game/season-1-mvp-action-catalog.md`
-- Acceptance Criteria:
-  - у ключевых действий есть `cost`, `effect`, `risk` и `state hooks`
-  - команде ясно, что больше не является частью новой игры
   - legal docs drafts
 - Acceptance Criteria:
   - есть минимальный набор документов для публичной эксплуатации
@@ -939,6 +992,321 @@
 - Acceptance Criteria:
   - определены первые каналы роста и публичная упаковка продукта
 
+## Epic 11 — Laravel Migration
+
+### TASK-044 — Зафиксировать стратегию перехода на Laravel
+- Status: `done`
+- Note: создан `docs/architecture/laravel-migration-plan.md` с фазами миграции, границами rewrite, стоп-сигналами и безопасным порядком переноса API/pages на Laravel без big-bang rewrite.
+- Priority: `P0`
+- Agent: `Refactor Plan`
+- Goal: принять управляемый план миграции на framework
+- Scope:
+  - migration phases
+  - compatibility boundaries
+  - rollout order
+  - rewrite guardrails
+- Deliverables:
+  - `docs/architecture/laravel-migration-plan.md`
+- Acceptance Criteria:
+  - переход разбит на небольшие фазы
+  - сохранены текущие URL и клиентские контракты как baseline
+  - определено, что не переписывается в first pass
+
+### TASK-045 — Зафиксировать Laravel decision record и freeze текущих контрактов
+- Status: `done`
+- Note: добавлены `docs/architecture/laravel-decision-record.md` и `docs/architecture/laravel-compatibility-checklist.md`; зафиксированы границы first-pass миграции, обязательные URL/JSON contracts и запрет на rewrite `idle.js`/core gameplay в этой волне.
+- Priority: `P0`
+- Agent: `Refactor Plan`
+- Goal: исключить хаотичный rewrite при переходе на Laravel
+- Scope:
+  - список совместимых URL
+  - JSON contracts
+  - список legacy-частей, остающихся на переходный период
+  - first-pass ограничения миграции
+- Deliverables:
+  - decision record
+  - compatibility checklist
+- Acceptance Criteria:
+  - есть явный список контрактов, которые нельзя ломать
+  - зафиксировано, что `idle.js` и core gameplay не переписываются в этой волне
+
+### TASK-046 — Поднять Laravel skeleton внутри текущего репозитория
+- Status: `done`
+- Note: Laravel 12 skeleton поднят в `laravel/` как параллельный runtime; `artisan` и базовый route доступны, а `.env` подготовлен для development-окружения без конфликта с legacy root layout.
+- Priority: `P0`
+- Agent: `Backend Extraction`
+- Goal: подготовить рабочий Laravel runtime рядом с текущим приложением
+- Scope:
+  - установка Laravel
+  - базовый `.env`
+  - app key
+  - SQLite connection
+  - smoke route
+- Deliverables:
+  - Laravel application skeleton
+- Acceptance Criteria:
+  - Laravel стартует локально
+  - приложение видит текущее окружение и БД
+
+### TASK-047 — Перенести инфраструктурный baseline в Laravel
+- Status: `done`
+- Note: добавлен `docs/architecture/laravel-bootstrap-baseline.md`; Laravel переведён на file sessions, dev SQLite и отдельный `legacy_sqlite` connection к `db/game.sqlite`, чтобы framework runtime уже видел текущие данные проекта без раннего вмешательства в игровую БД.
+- Priority: `P0`
+- Agent: `Backend Extraction`
+- Goal: убрать самописный bootstrap из критического пути
+- Scope:
+  - config
+  - sessions
+  - logging
+  - error handling
+  - migrations baseline
+  - test bootstrap
+- Deliverables:
+  - Laravel config baseline
+  - migration strategy
+- Acceptance Criteria:
+  - инфраструктурный запуск больше не зависит от legacy bootstrap как primary path
+  - Laravel покрывает env/config/session/logging baseline
+
+### TASK-048 — Перенести `ajax/auth.php` на Laravel route/controller
+- Status: `done`
+- Note: `ajax/auth.php` переведён в thin shim на `laravel/public/index.php`, а в `laravel/routes/web.php` добавлен совместимый route `/ajax/auth.php` с Laravel controller; для переходного периода сохранён native PHP session bridge, чтобы legacy страницы продолжали читать `$_SESSION` без смены клиентских URL.
+- Priority: `P0`
+- Agent: `Backend Extraction`
+- Goal: начать миграцию с ограниченного и хорошо тестируемого API-среза
+- Scope:
+  - login
+  - register
+  - logout
+  - me
+  - session auth compatibility
+- Deliverables:
+  - Laravel route/controller for auth API
+  - regression coverage
+- Acceptance Criteria:
+  - фронтенд авторизации работает без изменения клиентских URL
+  - ручной session bootstrap для auth API больше не нужен
+
+### TASK-049 — Перенести `ajax/save.php` на Laravel route/controller
+- Status: `done`
+- Note: `ajax/save.php` переведён в thin shim на Laravel; в `laravel/routes/web.php` добавлен совместимый route `/ajax/save.php`, а Laravel controller переиспользует существующий `GameSaveService` и persistence-слой через legacy bridge, сохраняя URL и основные save/load action contracts.
+- Priority: `P0`
+- Agent: `Backend Extraction`
+- Goal: перевести основной игровой API на Laravel без поломки idle-цикла
+- Scope:
+  - save
+  - load
+  - buy_prestige
+  - minigame_reward
+  - dungeon_clear
+  - reset_progress
+- Deliverables:
+  - Laravel route/controller for save API
+  - compatibility tests
+- Acceptance Criteria:
+  - idle/minigame/dungeon продолжают работать без изменения fetch-контрактов
+  - legacy save endpoint либо удалён, либо оставлен как thin compatibility shim
+
+### TASK-050 — Перенести page routes и рендеринг на Laravel
+- Status: `done`
+- Note: в `laravel/routes/web.php` добавлены page routes для `/`, `/index.php`, `/auth.php`, `/idle.php`, `/profile.php`, `/leaderboard.php`, `/game.php`, `/dungeon.php`, `/minigame.php`; Laravel page bridge рендерит существующие legacy PHP-страницы без переписывания HTML/JS и без смены asset paths.
+- Priority: `P1`
+- Agent: `Backend Extraction`
+- Goal: убрать root PHP pages из роли основных entrypoint'ов
+- Scope:
+  - `index.php`
+  - `auth.php`
+  - `idle.php`
+  - `profile.php`
+  - `leaderboard.php`
+  - `game.php`
+  - `dungeon.php`
+  - `minigame.php`
+- Deliverables:
+  - Laravel web routes
+  - controllers/views strategy
+- Acceptance Criteria:
+  - страницы открываются через Laravel routing
+  - текущие шаблоны и assets остаются совместимыми на переходный период
+
+### TASK-051 — Перевести проект на `public/` как единственный web root
+- Status: `done`
+- Note: в корневом `public/` собран compatibility web root: page-level `public/*.php`, `public/ajax/*.php`, Apache fallback через `public/.htaccess` и временный mirror `public/css`, `public/js`, `public/assets`; добавлена документация `docs/devops/public-web-root.md` и обновлены deploy/environment docs.
+- Priority: `P1`
+- Agent: `DevOps Baseline`
+- Goal: довести структуру до production-safe вида
+- Scope:
+  - public web root
+  - asset path compatibility
+  - OSPanel/local server reconfiguration
+  - deploy docs update
+- Deliverables:
+  - updated local/prod serving strategy
+- Acceptance Criteria:
+  - веб-сервер смотрит в `public/`
+  - внутренние PHP-файлы не доступны напрямую извне
+
+### TASK-052 — Выключить legacy bootstrap и root adapters
+- Status: `blocked`
+- Note: после `TASK-050` страницы уже идут через Laravel routing, но HTML всё ещё рендерится из legacy root page files, а API-контроллеры держатся на native session/security bridge; полное выключение legacy слоя отложено до выполнения `TASK-053`–`TASK-060`.
+- Priority: `P1`
+- Agent: `Backend Extraction`
+- Goal: завершить миграцию и убрать двойную архитектуру
+- Scope:
+  - legacy bootstrap
+  - root adapters
+  - obsolete helpers
+  - migration cleanup
+- Deliverables:
+  - cleaned runtime path
+- Acceptance Criteria:
+  - проект запускается без зависимости от старых entrypoint'ов
+  - dual-support слой удалён или сведён к минимуму
+
+### TASK-053 — Убрать дублирование native session/security bridge в Laravel API
+- Status: `done`
+- Note: добавлен общий `LegacyApiController`, который централизует native session bootstrap, CSRF, rate limit, auth guard и JSON response helpers для compatibility routes; `AuthApiController` и `SaveApiController` переведены на него без смены старых `/ajax/*.php` контрактов.
+- Priority: `P1`
+- Agent: `Backend Extraction`
+- Goal: перестать копировать ручной session/CSRF/rate-limit код по Laravel-контроллерам
+- Scope:
+  - общий session bootstrap для compatibility mode
+  - единая CSRF-проверка для legacy AJAX routes
+  - единая обвязка для rate limit и JSON error responses
+  - устранение дублирования между `AuthApiController` и `SaveApiController`
+- Deliverables:
+  - shared Laravel compatibility layer для legacy API
+  - обновлённые auth/save controllers без повторяющегося bootstrap-кода
+- Acceptance Criteria:
+  - в Laravel API-контроллерах нет копипасты `startNativeSession()` и однотипных response helper'ов
+  - CSRF/rate-limit/session behavior остаётся совместимым с текущим фронтендом
+
+### TASK-054 — Перевести auth flow с native `$_SESSION` bridge на Laravel session pipeline
+- Status: `done`
+- Note: добавлен `LegacySessionBridge`; `AuthApiController` и `SaveApiController` теперь читают auth/CSRF состояние из Laravel session как primary source и лишь синхронизируют его в native session для legacy pages. `public/ajax/auth.php` и `public/ajax/save.php` переведены на полный Laravel front controller, чтобы запросы шли через framework session middleware, а не мимо него.
+- Priority: `P0`
+- Agent: `Backend Extraction`
+- Goal: убрать ручное управление PHP-сессией из auth/save HTTP-слоя
+- Scope:
+  - Laravel session store
+  - login/register/logout/me
+  - bridge для чтения auth-состояния legacy страницами на переходный период
+  - совместимость cookie/session name
+- Deliverables:
+  - Laravel-based session auth implementation
+  - documented compatibility strategy для legacy page reads
+- Acceptance Criteria:
+  - auth API больше не вызывает manual `session_start()` как основной путь
+  - состояние логина переживает переход между Laravel route и legacy page render без регрессий
+  - `ajax/auth.php` и `ajax/save.php` используют один источник истины по auth state
+
+### TASK-055 — Вынести security/middleware-политику из контроллеров в Laravel middleware и requests
+- Status: `done`
+- Note: добавлены action-aware middleware `legacy.action`, `legacy.auth`, `legacy.csrf`, `legacy.throttle`, `legacy.validate` и request-классы `LegacyAuthRequest`/`LegacySaveRequest`; правила доступа, методов, CSRF, throttle и базовой input validation больше не живут в `AuthApiController` и `SaveApiController`, а централизованы на route pipeline.
+- Priority: `P0`
+- Agent: `Security Hardening`
+- Goal: использовать framework pipeline вместо ручных проверок внутри action-методов
+- Scope:
+  - auth guard middleware
+  - CSRF compatibility для legacy AJAX
+  - throttle policies
+  - request validation для auth/save actions
+  - единый exception-to-JSON mapping
+- Deliverables:
+  - middleware/form-request слой для legacy-compatible routes
+  - документация по новой HTTP-политике
+- Acceptance Criteria:
+  - контроллеры больше не содержат большую часть инфраструктурных проверок
+  - правила доступа, throttle и валидации централизованы и покрывают текущие action'ы
+
+### TASK-056 — Перенести shell-страницы на Laravel views без `require` root PHP-файлов
+- Status: `done`
+- Note: добавлены Laravel controllers для `/`, `/index.php`, `/auth.php`, `/profile.php`, `/leaderboard.php`, введён `PhpPageRenderer`, а HTML этих shell-страниц перенесён в `laravel/resources/views/legacy/pages/*`. Эти маршруты больше не рендерятся через `PageController -> require root file`, при этом сохранены текущие asset paths, nav/logout partials и совместимость с legacy session/auth state.
+- Priority: `P1`
+- Agent: `Backend Extraction`
+- Goal: убрать `PageController -> require root file` как основной механизм рендера
+- Scope:
+  - `/`, `/auth.php`, `/profile.php`, `/leaderboard.php`
+  - layout/head/nav/logout partials
+  - прокидывание auth/user view data из Laravel controller
+  - совместимость существующих CSS/JS asset paths
+- Deliverables:
+  - Laravel controllers/views для shell-страниц
+  - минимизированный или удалённый `PageController` bridge для этих маршрутов
+- Acceptance Criteria:
+  - перечисленные страницы рендерятся из `laravel/resources/views` или эквивалентного Laravel view-layer
+  - root `index.php`, `auth.php`, `profile.php`, `leaderboard.php` больше не нужны как renderer entrypoints
+
+### TASK-057 — Перенести `idle.php`, `dungeon.php`, `minigame.php`, `game.php` на Laravel page adapters
+- Status: `done`
+- Note: добавлены Laravel controllers для `/idle.php`, `/dungeon.php`, `/minigame.php`, `/game.php`; HTML этих gameplay-страниц перенесён в `laravel/resources/views/legacy/pages/*`, а route rendering больше не проходит через `PageController -> require root file`. Сохранены текущие JS/CSS/CDN подключения, auth/CSRF context и server-side page data вроде idle greeting и dungeon account level.
+- Priority: `P1`
+- Agent: `Backend Extraction`
+- Goal: убрать оставшиеся gameplay page entrypoint'ы из корня без переписывания клиентской логики
+- Scope:
+  - контроллеры и view adapters для игровых страниц
+  - server-side page data, которые сейчас готовятся в root PHP
+  - подключение существующих JS/CSS/CDN зависимостей
+  - совместимость ссылок и asset URL
+- Deliverables:
+  - Laravel-rendered activity/game pages
+  - список оставшихся legacy include/shim точек после переноса
+- Acceptance Criteria:
+  - игровые страницы открываются через Laravel views/controllers без `require` root PHP-файлов
+  - `idle.js`, `dungeon.js`, inline game/minigame scripts работают без смены URL-контрактов
+
+### TASK-058 — Перенести shared backend-слой в Laravel autoload/container и удалить `LegacyRuntime`
+- Status: `pending`
+- Priority: `P1`
+- Agent: `Backend Extraction`
+- Goal: избавиться от ручного подключения `src/` и `security.php` внутри Laravel runtime
+- Scope:
+  - PSR-4/autoload strategy для общего backend-кода
+  - binding сервисов и репозиториев в Laravel container
+  - перенос security helper'ов в framework-aware слой
+  - удаление `LegacyRuntime` и связанных require_once мостов
+- Deliverables:
+  - Laravel-native bootstrap для shared services
+  - обновлённая структура подключения backend-кода
+- Acceptance Criteria:
+  - Laravel runtime не зависит от `LegacyRuntime::initialize()`
+  - сервисы и репозитории резолвятся через container/configuration, а не через manual wiring в контроллерах
+
+### TASK-059 — Добавить Laravel feature/regression покрытие для migration compatibility
+- Status: `pending`
+- Priority: `P1`
+- Agent: `Testing Bootstrap`
+- Goal: зафиксировать переходный контракт до финального удаления legacy entrypoint'ов
+- Scope:
+  - feature tests для `/ajax/auth.php` и `/ajax/save.php`
+  - smoke tests для page routes
+  - проверки auth/session continuity между page и API routes
+  - проверки compatibility response shape и статусов
+- Deliverables:
+  - Laravel-side feature/regression tests
+  - documented smoke checklist для post-cutover проверки
+- Acceptance Criteria:
+  - критичные Laravel routes проверяются автотестами
+  - перед удалением legacy adapters есть автоматическая страховка на совместимость
+
+### TASK-060 — Закрыть cleanup-этап и завершить выключение legacy runtime
+- Status: `pending`
+- Priority: `P1`
+- Agent: `Backend Extraction`
+- Goal: довести миграцию до состояния single-runtime без двойной поддержки
+- Scope:
+  - удаление root adapters и obsolete shims
+  - удаление старого bootstrap/security glue, если он больше не нужен runtime
+  - обновление deploy/runbook/test docs под финальный Laravel flow
+  - финальная ревизия public entrypoints
+- Deliverables:
+  - cleaned Laravel-first runtime
+  - закрывающая документация по удалённым legacy-точкам
+- Acceptance Criteria:
+  - web/API runtime идёт через Laravel без обязательных root PHP adapters
+  - `TASK-052` можно перевести из `blocked` в `done`
+  - документация и smoke-check отражают финальное состояние проекта
+
 ## Рекомендуемый порядок запуска агентов
 
 1. `TASK-001` -> `TASK-002` -> `TASK-003`
@@ -950,8 +1318,10 @@
 7. `TASK-023` -> `TASK-024` -> `TASK-025` -> `TASK-026`
 8. `TASK-031` -> `TASK-032` -> `TASK-033` -> `TASK-034`
 9. `TASK-035` -> `TASK-036` -> `TASK-037`
-10. `TASK-038` -> `TASK-039` -> `TASK-040` -> `TASK-061`
+10. `TASK-038` -> `TASK-039` -> `TASK-040` -> `TASK-061` -> `TASK-062` -> `TASK-063` -> `TASK-064` -> `TASK-065` -> `TASK-066` -> `TASK-067` -> `TASK-068` -> `TASK-069` -> `TASK-070` -> `TASK-071`
 11. `TASK-041` -> `TASK-042` -> `TASK-043`
+12. `TASK-044` -> `TASK-045` -> `TASK-046` -> `TASK-047` -> `TASK-048` -> `TASK-049` -> `TASK-050` -> `TASK-051`
+13. `TASK-053` -> `TASK-054` -> `TASK-055` -> `TASK-056` -> `TASK-057` -> `TASK-058` -> `TASK-059` -> `TASK-060` -> `TASK-052`
 
 ## Definition of Done для любой задачи
 

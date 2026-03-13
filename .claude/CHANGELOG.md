@@ -1,3 +1,28 @@
+## 2026-03-13 — Закрыт TASK-072: собран первый playable vertical slice season 1
+
+**Что сделано:**
+- Добавлен отдельный entrypoint `/season1.php` через Laravel controller/view, не связанный с legacy `idle.php`
+- Собран играбельный vertical slice с минимальным state contract для `calendar`, `resources`, `hero`, `project`, `relationships`, `group`, `room`
+- Реализованы 5 действий из action catalog: `sleep_early`, `take_small_side_gig`, `capture_project_notes`, `message_max`, `friday_hangout`
+- Добавлены day resolution loop, базовые unlock/guard conditions и локальное сохранение прогресса в `localStorage`
+- Добавлен feature test на новый маршрут `/season1.php`
+
+**Файлы затронуты:**
+- `laravel/app/Http/Controllers/Legacy/SeasonOnePageController.php` (создан)
+- `laravel/resources/views/legacy/pages/season1.php` (создан)
+- `laravel/routes/web.php` (обновлён)
+- `laravel/tests/Feature/LegacyGameplayPagesTest.php` (обновлён)
+- `season1.php` (создан)
+- `public/season1.php` (создан)
+- `css/season1.css` (создан)
+- `public/css/season1.css` (создан)
+- `js/season1.js` (создан)
+- `public/js/season1.js` (создан)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
 ## 2026-03-13 — Добавлен агент Game Developer для vertical slice новой игры
 
 **Что сделано:**
@@ -10,6 +35,7 @@
 - `.claude/CHANGELOG.md` (обновлён)
 
 ---
+
 ## 2026-03-13 — Закрыт TASK-071: собран MVP action catalog для season 1
 
 **Что сделано:**
@@ -24,6 +50,21 @@
 - `.claude/CHANGELOG.md` (обновлён)
 
 ---
+
+## 2026-03-13 — Добавлен сценарный каркас сезона 1 для idle-части
+
+**Что сделано:**
+- Добавлен `docs/game/narrative-season-1.md` как единый narrative source of truth для сезона `Скуф-пати`
+- Зафиксированы драматургическая основа проекта, тон, тема сезона, главный антагонист и портрет протагониста
+- Описан стартовый каст: герой, кот Кэш, Макс, Денис, Жека, Вера, Ира
+- Зафиксированы порядок знакомства, high-level актовая рамка сезона 1 и блок handoff-ограничений для дальнейшей передачи в `agents/game-designer.md`
+
+**Файлы затронуты:**
+- `docs/game/narrative-season-1.md` (создан)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
 ## 2026-03-13 — Закрыт TASK-070: зафиксирован legacy systems cut list для новой игры
 
 **Что сделано:**
@@ -169,6 +210,334 @@
 
 **Файлы затронуты:**
 - `docs/game/idle-active-abilities.md` (создан)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
+## 2026-03-13 — Закрыт TASK-057: gameplay pages перенесены на Laravel page adapters
+
+**Что сделано:**
+- Добавлены page controllers:
+  - `IdlePageController`
+  - `DungeonPageController`
+  - `MinigamePageController`
+  - `GamePageController`
+- Маршруты `/idle.php`, `/dungeon.php`, `/minigame.php`, `/game.php` переведены с `PageController -> require root file` на новые Laravel controllers
+- Созданы/перенесены Laravel view templates:
+  - `laravel/resources/views/legacy/pages/idle.php`
+  - `laravel/resources/views/legacy/pages/dungeon.php`
+  - `laravel/resources/views/legacy/pages/minigame.php`
+  - `laravel/resources/views/legacy/pages/game.php`
+- Из gameplay views убраны зависимости от root bootstrap, `$_SESSION`, `app_csrf_token()` и root partial paths
+- Idle/dungeon/minigame страницы получают server-side context из Laravel controllers:
+  - idle greeting
+  - auth state / username
+  - CSRF token
+  - `APP_ENV`
+  - dungeon account level bonus
+- `game.php` перенесён в Laravel view-layer без переписывания scene/endings data и клиентской story-логики
+- Добавлен regression test `laravel/tests/Feature/LegacyGameplayPagesTest.php`
+- В `TODO.md` задача `TASK-057` переведена в `done`
+
+**Проверка:**
+- Feature tests проверяют `/idle.php`, `/dungeon.php`, `/minigame.php`, `/game.php`
+- Feature tests проверяют logged-in rendering для idle/dungeon страниц
+- Проверен combined regression suite для legacy API, shell pages и gameplay pages
+
+**Файлы затронуты:**
+- `laravel/app/Http/Controllers/Legacy/IdlePageController.php` (создан)
+- `laravel/app/Http/Controllers/Legacy/DungeonPageController.php` (создан)
+- `laravel/app/Http/Controllers/Legacy/MinigamePageController.php` (создан)
+- `laravel/app/Http/Controllers/Legacy/GamePageController.php` (создан)
+- `laravel/routes/web.php` (обновлён)
+- `laravel/resources/views/legacy/pages/idle.php` (создан)
+- `laravel/resources/views/legacy/pages/dungeon.php` (создан)
+- `laravel/resources/views/legacy/pages/minigame.php` (создан)
+- `laravel/resources/views/legacy/pages/game.php` (создан)
+- `laravel/tests/Feature/LegacyGameplayPagesTest.php` (создан)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
+## 2026-03-13 — Закрыт TASK-056: shell-страницы перенесены на Laravel view-layer
+
+**Что сделано:**
+- Добавлен `laravel/app/Support/PhpPageRenderer.php` для рендеринга PHP-view templates из `laravel/resources/views/legacy`
+- Добавлены page controllers:
+  - `LandingPageController`
+  - `AuthPageController`
+  - `ProfilePageController`
+  - `LeaderboardPageController`
+- Маршруты `/`, `/index.php`, `/auth.php`, `/profile.php`, `/leaderboard.php` переведены с `PageController -> require root file` на новые Laravel controllers
+- Созданы Laravel view templates:
+  - `laravel/resources/views/legacy/pages/index.php`
+  - `laravel/resources/views/legacy/pages/auth.php`
+  - `laravel/resources/views/legacy/pages/profile.php`
+  - `laravel/resources/views/legacy/pages/leaderboard.php`
+- Общие partials перенесены в `laravel/resources/views/legacy/partials/*`
+- Для `profile` и `leaderboard` server-side данные теперь готовятся в Laravel controllers, а не читаются прямо из root page files
+- `PageController` остаётся только для оставшихся gameplay pages (`idle.php`, `game.php`, `dungeon.php`, `minigame.php`)
+- Добавлен regression test `laravel/tests/Feature/LegacyShellPagesTest.php`
+- В `TODO.md` задача `TASK-056` переведена в `done`
+
+**Проверка:**
+- Feature tests проверяют рендер `/`, `/auth.php`, `/leaderboard.php`
+- Feature tests проверяют redirect guest -> `/auth.php` для `/profile.php`
+- Feature tests проверяют redirect logged-in user -> `idle.php` для `/auth.php`
+- Feature tests проверяют, что `/profile.php` рендерится для авторизованного пользователя через новый Laravel view-layer
+
+**Файлы затронуты:**
+- `laravel/app/Support/PhpPageRenderer.php` (создан)
+- `laravel/app/Http/Controllers/Legacy/LandingPageController.php` (создан)
+- `laravel/app/Http/Controllers/Legacy/AuthPageController.php` (создан)
+- `laravel/app/Http/Controllers/Legacy/ProfilePageController.php` (создан)
+- `laravel/app/Http/Controllers/Legacy/LeaderboardPageController.php` (создан)
+- `laravel/routes/web.php` (обновлён)
+- `laravel/resources/views/legacy/pages/index.php` (создан)
+- `laravel/resources/views/legacy/pages/auth.php` (создан)
+- `laravel/resources/views/legacy/pages/profile.php` (создан)
+- `laravel/resources/views/legacy/pages/leaderboard.php` (создан)
+- `laravel/resources/views/legacy/partials/app-head.php` (создан)
+- `laravel/resources/views/legacy/partials/page-nav.php` (создан)
+- `laravel/resources/views/legacy/partials/logout-script.php` (создан)
+- `laravel/tests/Feature/LegacyShellPagesTest.php` (создан)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
+## 2026-03-13 — Закрыт TASK-055: security/policy checks вынесены в Laravel middleware и request-layer
+
+**Что сделано:**
+- Добавлен `laravel/app/Support/LegacyActionCatalog.php` с action-aware конфигурацией для `/ajax/auth.php` и `/ajax/save.php`
+- Добавлены middleware:
+  - `BootstrapLegacyCompatibility`
+  - `EnsureLegacyAction`
+  - `RequireLegacyAuth`
+  - `VerifyLegacyCsrf`
+  - `ThrottleLegacyAction`
+  - `ValidateLegacyAction`
+- Добавлены request-классы:
+  - `laravel/app/Http/Requests/Legacy/LegacyAuthRequest.php`
+  - `laravel/app/Http/Requests/Legacy/LegacySaveRequest.php`
+- В `laravel/bootstrap/app.php` зарегистрированы middleware aliases для legacy-compatible route pipeline
+- В `laravel/routes/web.php` `/ajax/auth.php` и `/ajax/save.php` переведены на middleware pipeline, который централизует method policy, auth, CSRF, throttle и validation
+- `laravel/app/Http/Controllers/Legacy/AuthApiController.php` и `laravel/app/Http/Controllers/Legacy/SaveApiController.php` упрощены: инфраструктурные проверки убраны из action-методов
+- `laravel/tests/Feature/LegacyApiCompatibilityTest.php` расширен проверками, что CSRF и validation теперь отрабатывают на middleware-слое с сохранением legacy JSON shape
+- В `TODO.md` задача `TASK-055` переведена в `done`
+
+**Проверка:**
+- Laravel feature test проверяет guest/authorized `me` flow
+- Laravel feature test проверяет `401 Not authenticated` для `/ajax/save.php`
+- Laravel feature test проверяет `403 CSRF token invalid` для `/ajax/auth.php`
+- Laravel feature test проверяет `422 No data` для `/ajax/save.php?action=save`
+
+**Файлы затронуты:**
+- `laravel/app/Support/LegacyActionCatalog.php` (создан)
+- `laravel/app/Http/Middleware/BootstrapLegacyCompatibility.php` (создан)
+- `laravel/app/Http/Middleware/EnsureLegacyAction.php` (создан)
+- `laravel/app/Http/Middleware/RequireLegacyAuth.php` (создан)
+- `laravel/app/Http/Middleware/VerifyLegacyCsrf.php` (создан)
+- `laravel/app/Http/Middleware/ThrottleLegacyAction.php` (создан)
+- `laravel/app/Http/Middleware/ValidateLegacyAction.php` (создан)
+- `laravel/app/Http/Requests/Legacy/LegacyAuthRequest.php` (создан)
+- `laravel/app/Http/Requests/Legacy/LegacySaveRequest.php` (создан)
+- `laravel/bootstrap/app.php` (обновлён)
+- `laravel/routes/web.php` (обновлён)
+- `laravel/app/Http/Controllers/Legacy/LegacyApiController.php` (обновлён)
+- `laravel/app/Http/Controllers/Legacy/AuthApiController.php` (обновлён)
+- `laravel/app/Http/Controllers/Legacy/SaveApiController.php` (обновлён)
+- `laravel/tests/Feature/LegacyApiCompatibilityTest.php` (обновлён)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
+## 2026-03-13 — Закрыт TASK-054: auth/save HTTP-layer переведён на Laravel session pipeline
+
+**Что сделано:**
+- Добавлен `laravel/app/Support/LegacySessionBridge.php`
+- `LegacySessionBridge` делает две вещи:
+  - использует Laravel session как source of truth для `user_id`, `username`, `_csrf_token`
+  - синхронизирует эти значения в native PHP session для временной совместимости со старыми страницами
+- `laravel/app/Http/Controllers/Legacy/LegacyApiController.php` переведён на Laravel session access вместо прямого чтения `$_SESSION`
+- `laravel/app/Http/Controllers/Legacy/AuthApiController.php` теперь логинит/регистрирует/разлогинивает через Laravel session pipeline и bridge sync
+- `laravel/app/Http/Controllers/Legacy/SaveApiController.php` теперь авторизует и выполняет действия, читая identity из Laravel session
+- `public/ajax/auth.php` и `public/ajax/save.php` больше не обходят Laravel kernel и теперь прокидывают запросы в полноценный `laravel/public/index.php`
+- `laravel/tests/Feature/LegacyApiCompatibilityTest.php` расширен проверкой, что `/ajax/auth.php?action=me` читает auth state из Laravel session
+- В `TODO.md` задача `TASK-054` переведена в `done`
+
+**Проверка:**
+- Laravel feature test проверяет guest-режим `/ajax/auth.php?action=me`
+- Laravel feature test проверяет, что `/ajax/auth.php?action=me` читает `user_id`, `username`, `_csrf_token` из Laravel session
+- Laravel feature test проверяет, что `/ajax/save.php` без авторизации по-прежнему возвращает `401 Not authenticated`
+
+**Файлы затронуты:**
+- `laravel/app/Support/LegacySessionBridge.php` (создан)
+- `laravel/app/Http/Controllers/Legacy/LegacyApiController.php` (обновлён)
+- `laravel/app/Http/Controllers/Legacy/AuthApiController.php` (обновлён)
+- `laravel/app/Http/Controllers/Legacy/SaveApiController.php` (обновлён)
+- `public/ajax/auth.php` (обновлён)
+- `public/ajax/save.php` (обновлён)
+- `laravel/tests/Feature/LegacyApiCompatibilityTest.php` (обновлён)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
+## 2026-03-13 — Закрыт TASK-053: вынесен общий Laravel compatibility layer для legacy API
+
+**Что сделано:**
+- Добавлен `laravel/app/Http/Controllers/Legacy/LegacyApiController.php`
+- В общий базовый controller вынесены:
+  - native session bootstrap для compatibility mode
+  - CSRF verification
+  - rate limiting helper
+  - auth guard helper
+  - единый JSON response format для legacy API routes
+- `laravel/app/Http/Controllers/Legacy/AuthApiController.php` переведён на новый base controller
+- `laravel/app/Http/Controllers/Legacy/SaveApiController.php` переведён на новый base controller и больше не дублирует session/security glue
+- Добавлен Laravel feature test `laravel/tests/Feature/LegacyApiCompatibilityTest.php`
+- В `TODO.md` задача `TASK-053` переведена в `done`
+
+**Проверка:**
+- Laravel feature test проверяет, что `GET /ajax/auth.php?action=me` для гостя сохраняет совместимый JSON shape
+- Laravel feature test проверяет, что `POST /ajax/save.php` без сессии по-прежнему возвращает `401 Not authenticated`
+
+**Файлы затронуты:**
+- `laravel/app/Http/Controllers/Legacy/LegacyApiController.php` (создан)
+- `laravel/app/Http/Controllers/Legacy/AuthApiController.php` (обновлён)
+- `laravel/app/Http/Controllers/Legacy/SaveApiController.php` (обновлён)
+- `laravel/tests/Feature/LegacyApiCompatibilityTest.php` (создан)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
+## 2026-03-13 — Закрыты TASK-050 и TASK-051, TASK-052 отмечен как blocked
+
+**Что сделано:**
+- Добавлен `laravel/app/Http/Controllers/Legacy/PageController.php` и page bridge для старых URL страниц
+- В `laravel/routes/web.php` добавлены совместимые routes для `/`, `/index.php`, `/auth.php`, `/idle.php`, `/profile.php`, `/leaderboard.php`, `/game.php`, `/dungeon.php`, `/minigame.php`
+- Старые страницы теперь реально рендерятся через Laravel routing без переписывания HTML/JS и без смены asset paths
+- В корневом `public/` собран compatibility web root:
+  - `public/*.php` для page entrypoints
+  - `public/ajax/*.php` для API entrypoints
+  - `public/.htaccess` как Apache fallback
+  - mirrored `public/css`, `public/js`, `public/assets` для совместимости старых asset URLs
+- Добавлен `docs/devops/public-web-root.md`
+- Обновлены `docs/devops/deploy.md` и `docs/devops/environments.md` под режим web root = `/public`
+- В `TODO.md` задачи `TASK-050` и `TASK-051` переведены в `done`, `TASK-052` помечена `blocked`
+
+**Проверка:**
+- `GET /auth.php` через Laravel/public compatibility path возвращает HTML страницы авторизации
+- `GET /` через Laravel page bridge возвращает HTML главной страницы
+- `GET /ajax/save.php?action=load` через `public/ajax/save.php` возвращает ожидаемый JSON-ответ
+- Проверено наличие `public/css/auth.css`, `public/js/main.js`, `public/assets/dungeon/tilemap.png`
+
+**Файлы затронуты:**
+- `laravel/app/Http/Controllers/Legacy/PageController.php` (создан)
+- `laravel/routes/web.php` (обновлён)
+- `public/.htaccess` (создан)
+- `public/index.php` (создан)
+- `public/auth.php` (создан)
+- `public/idle.php` (создан)
+- `public/profile.php` (создан)
+- `public/leaderboard.php` (создан)
+- `public/game.php` (создан)
+- `public/dungeon.php` (создан)
+- `public/minigame.php` (создан)
+- `public/ajax/auth.php` (создан)
+- `public/ajax/save.php` (создан)
+- `public/ajax/excuse.php` (создан)
+- `public/css/*` (mirrored)
+- `public/js/*` (mirrored)
+- `public/assets/*` (mirrored)
+- `docs/devops/public-web-root.md` (создан)
+- `docs/devops/deploy.md` (обновлён)
+- `docs/devops/environments.md` (обновлён)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
+## 2026-03-13 — Закрыт TASK-049: `ajax/save.php` переведён на Laravel shim
+
+**Что сделано:**
+- Добавлен `laravel/app/Support/LegacyRuntime.php` для безопасного подключения legacy `src/` классов из Laravel runtime
+- Добавлен `laravel/app/Http/Controllers/Legacy/SaveApiController.php`, который обслуживает старый URL `/ajax/save.php` через Laravel
+- Контроллер переиспользует существующий `GameSaveService` и persistence-слой, а не дублирует игровую save-логику заново
+- `ajax/save.php` переведён в thin shim на `laravel/public/index.php`
+- В Laravel добавлен совместимый route `/ajax/save.php`
+- В `TODO.md` задача `TASK-049` переведена в `done`
+
+**Проверка:**
+- `laravel/artisan route:list --path=ajax/save.php` показывает route `GET|POST /ajax/save.php`
+- Smoke-check старого URL `ajax/save.php?action=load` без сессии возвращает JSON `401 Not authenticated`, а не HTML или exception
+
+**Файлы затронуты:**
+- `laravel/app/Support/LegacyRuntime.php` (создан)
+- `laravel/app/Http/Controllers/Legacy/SaveApiController.php` (создан)
+- `laravel/routes/web.php` (обновлён)
+- `laravel/bootstrap/app.php` (обновлён)
+- `ajax/save.php` (обновлён)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
+## 2026-03-13 — Закрыты TASK-045, TASK-046, TASK-047 и TASK-048 для Laravel migration
+
+**Что сделано:**
+- Добавлены `docs/architecture/laravel-decision-record.md` и `docs/architecture/laravel-compatibility-checklist.md` с decision record и freeze текущих URL/JSON-контрактов
+- В репозитории поднят Laravel 12 skeleton в каталоге `laravel/` как параллельный runtime для поэтапной миграции
+- Laravel `.env` и config приведены к baseline проекта: `Europe/Moscow`, `ru`, `file` sessions, `file` cache, `sync` queue, отдельный `legacy_sqlite` connection к `db/game.sqlite`
+- Добавлен `docs/architecture/laravel-bootstrap-baseline.md` с описанием переходного runtime baseline
+- `ajax/auth.php` переведён в thin shim на `laravel/public/index.php`
+- В Laravel добавлен совместимый route `/ajax/auth.php` и `Legacy\AuthApiController`, который обслуживает старый auth URL без смены клиентского fetch path
+- Для совместимости со старыми страницами введён native PHP session bridge и общий project-local session storage в `storage/sessions`
+- Обновлён `TODO.md`: `TASK-045`, `TASK-046`, `TASK-047`, `TASK-048` переведены в `done`
+
+**Проверка:**
+- `php -d sys_temp_dir=storage/tmp laravel/artisan about` показывает корректный `Timezone: Europe/Moscow`, `Locale: ru`, `Session: file`, `Queue: sync`, `Cache: file`
+- `laravel/artisan route:list --path=ajax/auth.php` показывает route `GET|POST /ajax/auth.php`
+- Smoke-check через старый URL `ajax/auth.php?action=me` возвращает JSON-ответ из Laravel runtime
+- Проверен доступ Laravel к legacy SQLite через отдельный bootstrap-запрос к connection `legacy_sqlite`
+
+**Файлы затронуты:**
+- `docs/architecture/laravel-decision-record.md` (создан)
+- `docs/architecture/laravel-compatibility-checklist.md` (создан)
+- `docs/architecture/laravel-bootstrap-baseline.md` (создан)
+- `docs/architecture/laravel-migration-plan.md` (создан)
+- `TODO.md` (обновлён)
+- `.env.example` (обновлён)
+- `config/storage.php` (обновлён)
+- `security.php` (обновлён)
+- `ajax/auth.php` (обновлён)
+- `laravel/.env` (создан и обновлён)
+- `laravel/.env.example` (создан и обновлён)
+- `laravel/bootstrap/app.php` (обновлён)
+- `laravel/config/app.php` (обновлён)
+- `laravel/config/database.php` (обновлён)
+- `laravel/config/session.php` (обновлён)
+- `laravel/config/logging.php` (обновлён)
+- `laravel/routes/web.php` (обновлён)
+- `laravel/app/Http/Controllers/Legacy/AuthApiController.php` (создан)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
+## 2026-03-13 — Зафиксирован план поэтапной миграции проекта на Laravel
+
+**Что сделано:**
+- Добавлен `docs/architecture/laravel-migration-plan.md` с фазами перехода, целевым состоянием, границами rewrite, стоп-сигналами и безопасным порядком миграции
+- В `TODO.md` добавлен новый `Epic 11 — Laravel Migration`
+- Зафиксирована выполненная архитектурная задача `TASK-044` и добавлен последовательный набор задач `TASK-045` ... `TASK-052` для дальнейшего поочерёдного выполнения
+
+**Файлы затронуты:**
+- `docs/architecture/laravel-migration-plan.md` (создан)
 - `TODO.md` (обновлён)
 - `.claude/CHANGELOG.md` (обновлён)
 

@@ -1,0 +1,345 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --s1-bg: #f3ecdd;
+  --s1-ink: #1f1a17;
+  --s1-muted: #6d6259;
+  --s1-line: rgba(49, 37, 28, 0.14);
+  --s1-panel: rgba(255, 249, 239, 0.82);
+  --s1-panel-strong: rgba(255, 247, 234, 0.95);
+  --s1-accent: #b4532a;
+  --s1-green: #2f7b57;
+  --s1-red: #9b4a3d;
+  --s1-shadow: 0 22px 45px rgba(65, 43, 25, 0.12);
+}
+
+body.season1-body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--s1-ink);
+  background:
+    radial-gradient(circle at top left, rgba(239, 196, 133, 0.85), transparent 32%),
+    radial-gradient(circle at right 20%, rgba(180, 83, 42, 0.18), transparent 24%),
+    linear-gradient(180deg, #f6efe2 0%, var(--s1-bg) 54%, #efe3d0 100%);
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+.s1-shell {
+  width: min(1240px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 28px 0 40px;
+}
+
+.s1-topbar,
+.s1-panel {
+  border: 1px solid var(--s1-line);
+  border-radius: 28px;
+  background: var(--s1-panel);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--s1-shadow);
+}
+
+.s1-topbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 28px;
+  margin-bottom: 20px;
+}
+
+.s1-topbar h1,
+.s1-panel h2 {
+  margin: 0;
+  font-family: "JetBrains Mono", monospace;
+}
+
+.s1-kicker,
+.s1-label {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--s1-accent);
+}
+
+.s1-subtitle,
+.s1-panel-copy,
+.s1-day-text,
+.s1-room-copy p {
+  margin: 10px 0 0;
+  line-height: 1.5;
+  color: var(--s1-muted);
+}
+
+.s1-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  color: var(--s1-ink);
+  text-decoration: none;
+}
+
+.s1-topbar-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.s1-pill,
+.s1-phase,
+.s1-stat-chip,
+.s1-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  padding: 9px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--s1-line);
+  background: rgba(255, 255, 255, 0.58);
+  font-size: 14px;
+}
+
+.s1-layout {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 20px;
+}
+
+.s1-panel {
+  padding: 22px;
+}
+
+.s1-day-panel,
+.s1-actions-panel,
+.s1-feed-panel {
+  grid-column: 1 / -1;
+}
+
+.s1-panel-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+
+.s1-stats-grid,
+.s1-inline-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.s1-stat-chip {
+  min-width: 124px;
+  justify-content: space-between;
+}
+
+.s1-stat-chip strong {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 16px;
+}
+
+.s1-room-stage {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 18px;
+  align-items: center;
+}
+
+.s1-room-illustration {
+  position: relative;
+  min-height: 240px;
+  overflow: hidden;
+  border-radius: 24px;
+  border: 1px solid rgba(49, 37, 28, 0.08);
+  background:
+    linear-gradient(180deg, rgba(37, 29, 25, 0.16), transparent 35%),
+    linear-gradient(180deg, #f1d8ba 0%, #c88a62 66%, #8a503f 100%);
+}
+
+.s1-room-light,
+.s1-room-monitor,
+.s1-room-cat {
+  position: absolute;
+}
+
+.s1-room-light {
+  top: 24px;
+  right: 34px;
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 244, 203, 0.9), rgba(255, 244, 203, 0.1) 72%, transparent 73%);
+}
+
+.s1-room-monitor {
+  left: 16%;
+  bottom: 56px;
+  width: 44%;
+  height: 72px;
+  border-radius: 18px 18px 8px 8px;
+  border: 3px solid rgba(30, 23, 20, 0.28);
+  background: linear-gradient(180deg, #182b31, #2f4e55 56%, #8dd5cf);
+  box-shadow: 0 14px 28px rgba(20, 17, 17, 0.18);
+}
+
+.s1-room-cat {
+  right: 14%;
+  bottom: 42px;
+  padding: 10px 12px;
+  border-radius: 18px 18px 16px 16px;
+  background: linear-gradient(180deg, #f6b35b, #cf6f2d);
+  color: #fff7ef;
+  font-weight: 700;
+}
+
+.s1-people-list,
+.s1-actions-list,
+.s1-feed {
+  display: grid;
+  gap: 12px;
+}
+
+.s1-person-card,
+.s1-action-card,
+.s1-feed-item {
+  border-radius: 22px;
+  border: 1px solid var(--s1-line);
+  background: rgba(255, 247, 234, 0.95);
+}
+
+.s1-person-card {
+  padding: 16px;
+}
+
+.s1-person-card h3,
+.s1-action-card h3,
+.s1-feed-item h3 {
+  margin: 0 0 8px;
+  font-size: 17px;
+}
+
+.s1-person-meta,
+.s1-action-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.s1-tag.is-good {
+  color: var(--s1-green);
+}
+
+.s1-tag.is-risk {
+  color: var(--s1-red);
+}
+
+.s1-action-card {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 16px;
+  padding: 18px;
+  align-items: center;
+}
+
+.s1-action-card.is-locked {
+  opacity: 0.7;
+}
+
+.s1-action-card p,
+.s1-person-card p,
+.s1-feed-item p {
+  margin: 0;
+  color: var(--s1-muted);
+  line-height: 1.45;
+}
+
+.s1-action-button,
+.s1-reset {
+  border: 0;
+  border-radius: 16px;
+  cursor: pointer;
+  font: inherit;
+}
+
+.s1-action-button {
+  min-width: 164px;
+  padding: 14px 18px;
+  background: linear-gradient(135deg, var(--s1-accent), #d58a4f);
+  color: #fff7ef;
+  font-weight: 700;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+}
+
+.s1-action-button:hover:not(:disabled),
+.s1-reset:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 20px rgba(180, 83, 42, 0.2);
+}
+
+.s1-action-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.s1-reset {
+  padding: 12px 16px;
+  background: rgba(45, 33, 26, 0.06);
+  color: var(--s1-ink);
+}
+
+.s1-feed-item {
+  padding: 16px 18px;
+}
+
+.s1-feed-item small {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--s1-accent);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 980px) {
+  .s1-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .s1-room-stage,
+  .s1-action-card {
+    grid-template-columns: 1fr;
+  }
+
+  .s1-topbar {
+    flex-direction: column;
+  }
+
+  .s1-topbar-meta {
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 640px) {
+  .s1-shell {
+    width: min(100% - 18px, 100%);
+    padding-top: 18px;
+  }
+
+  .s1-topbar,
+  .s1-panel {
+    border-radius: 22px;
+    padding: 18px;
+  }
+
+  .s1-action-button {
+    width: 100%;
+  }
+}

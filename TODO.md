@@ -962,6 +962,23 @@
   - ясно, из каких фаз состоит новый idle-loop
 - Note: добавлены отдельный entrypoint `/season1.php`, Laravel page adapter, изолированный UI/runtime vertical slice и feature test; реализованы 5 действий, day resolution loop, локальный state в `localStorage` и базовые unlock/guard conditions без вмешательства в `idle.php`.
 - Priority: `P1`
+### TASK-075 — Собрать idle main screen spec для season 1
+- Status: `done`
+- Note: создан `docs/game/season-1-idle-main-screen-spec.md`; зафиксирован главный экран новой idle-версии игры как pixel-life dashboard с `Room Stage`, `Routine Controls Panel`, `Idle Results Rail`, `Project Panel`, `People/Circle Panel` и `Cycle Alerts`.
+- Priority: `P1`
+- Agent: `Game Systems`
+- Goal: перевести новый idle-вектор season 1 в конкретный экранный контракт для UI и frontend-реализации
+- Scope:
+  - экранная иерархия внимания
+  - центральная роль комнаты героя
+  - панели управления idle-циклом
+  - блоки чтения idle-результатов
+  - desktop/mobile layout
+  - visual pillar под pixel-life fantasy
+- Deliverables:
+  - `docs/game/season-1-idle-main-screen-spec.md`
+- Acceptance Criteria:
+  - ясно, какие зоны есть на главном экране и зачем
 - Agent: `Game Developer`
 - Goal: поднять отдельный entrypoint новой игры и проверить day loop на реальном playable-срезе
 - Scope:

@@ -1,3 +1,17 @@
+## 2026-03-13 — Закрыт TASK-075: собран idle main screen spec для season 1
+
+**Что сделано:**
+- Добавлен `docs/game/season-1-idle-main-screen-spec.md`, который переводит новый season 1 idle-вектор в конкретный экранный контракт главного экрана
+- Зафиксированы `Top HUD`, `Room Stage`, `Idle Results Rail`, `Routine Controls Panel`, `Project Panel`, `People / Circle Panel`, `Cycle Alerts` и пользовательский маршрут короткой сессии
+- Отдельно описаны visual pillar, desktop/mobile layout и MVP cut для первой экранной реализации
+- В `TODO.md` добавлена и закрыта задача `TASK-075`
+
+**Файлы затронуты:**
+- `docs/game/season-1-idle-main-screen-spec.md` (создан)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
 ## 2026-03-13 — Закрыт TASK-074: собран idle core loop spec для season 1
 
 **Что сделано:**

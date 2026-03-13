@@ -1,3 +1,15 @@
+## 2026-03-13 — Агент Game Developer переведён на Phaser + TypeScript browser runtime
+
+**Что сделано:**
+- `agents/game-developer.md` обновлён под новый технологический вектор браузерной разработки
+- В агенте зафиксировано, что новый idle-slice должен собираться на `Phaser + TypeScript`, а не как абстрактный frontend/runtime без выбранного стека
+- Добавлены требования по отдельному browser runtime, модульной структуре `state/ticks/ui/content/domain` и актуальные deliverables для browser idle-slice
+
+**Файлы затронуты:**
+- `agents/game-developer.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
 ## 2026-03-13 — Закрыт TASK-076: `season1.php` переведён в первый рабочий idle-slice
 
 **Что сделано:**

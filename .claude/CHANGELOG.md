@@ -1,3 +1,15 @@
+## 2026-03-13 — Добавлен агент Game Developer для vertical slice новой игры
+
+**Что сделано:**
+- Добавлен `agents/game-developer.md` как отдельная инструкция для production-агента разработки
+- В агенте зафиксирована задача на первый playable vertical slice новой игры сезона 1 без вмешательства в `idle.php`
+- Зафиксированы source-of-truth документы, ограничения, deliverables и acceptance criteria для запуска отдельного dev-агента по файлу
+
+**Файлы затронуты:**
+- `agents/game-developer.md` (создан)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
 ## 2026-03-13 — Закрыт TASK-071: собран MVP action catalog для season 1
 
 **Что сделано:**

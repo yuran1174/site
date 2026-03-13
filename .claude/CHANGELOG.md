@@ -1,3 +1,18 @@
+## 2026-03-13 — Закрыт TASK-069: собрана information architecture главного экрана season 1
+
+**Что сделано:**
+- Добавлен `docs/game/season-1-main-screen-ia.md`, где state schema и core systems разложены по зонам главного экрана
+- Зафиксированы приоритеты внимания, desktop/mobile-структура, primary CTA, поведение экрана по фазам дня и MVP cut для первого интерфейсного прототипа
+- Зафиксировано, что главный экран новой игры должен быть decision board взрослой жизни, а не возвращением к idle-dashboard паттерну
+- В `TODO.md` добавлена и закрыта задача `TASK-069`
+
+**Файлы затронуты:**
+- `docs/game/season-1-main-screen-ia.md` (создан)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
 ## 2026-03-13 — Закрыт TASK-068: зафиксирована MVP state schema для season 1
 
 **Что сделано:**

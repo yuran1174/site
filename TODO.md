@@ -869,6 +869,22 @@
 - Acceptance Criteria:
   - privacy policy
   - terms of use
+
+### TASK-069 — Собрать information architecture главного экрана season 1
+- Status: `done`
+- Note: создан `docs/game/season-1-main-screen-ia.md`, где state schema и core systems разложены по зонам главного экрана, приоритетам внимания, CTA, desktop/mobile-структуре и правилам показа контента в течение дня.
+- Priority: `P1`
+- Agent: `Game Systems`
+- Goal: перевести системное ядро в структуру основного игрового экрана
+- Scope:
+  - screen regions
+  - information hierarchy
+  - action placement
+  - day-phase behavior
+  - mobile/desktop layout logic
+- Deliverables:
+  - `docs/game/season-1-main-screen-ia.md`
+- Acceptance Criteria:
   - user data notice
 - Deliverables:
   - legal docs drafts

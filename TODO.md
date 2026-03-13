@@ -903,6 +903,23 @@
 - Deliverables:
   - `docs/game/season-1-legacy-cut-list.md`
 - Acceptance Criteria:
+### TASK-071 — Собрать MVP action catalog для season 1
+- Status: `done`
+- Note: создан `docs/game/season-1-mvp-action-catalog.md`; ядро новой игры переведено в каталог конкретных действий игрока с `availability`, `cost`, `effect`, `risk`, `state hooks` и минимальным набором для первого playable.
+- Priority: `P1`
+- Agent: `Game Systems`
+- Goal: превратить core loop новой игры в конкретный action layer
+- Scope:
+  - recovery actions
+  - money actions
+  - project actions
+  - relationship actions
+  - group actions
+  - MVP minimum set
+- Deliverables:
+  - `docs/game/season-1-mvp-action-catalog.md`
+- Acceptance Criteria:
+  - у ключевых действий есть `cost`, `effect`, `risk` и `state hooks`
   - команде ясно, что больше не является частью новой игры
   - legal docs drafts
 - Acceptance Criteria:

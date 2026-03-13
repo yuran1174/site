@@ -1,3 +1,17 @@
+## 2026-03-13 — Закрыт TASK-071: собран MVP action catalog для season 1
+
+**Что сделано:**
+- Добавлен `docs/game/season-1-mvp-action-catalog.md`, где core systems и state schema переведены в конкретный каталог действий игрока
+- Зафиксированы категории `recovery`, `money`, `project`, `relationship`, `group` и единый формат описания через `availability`, `cost`, `effect`, `risk` и `state hooks`
+- Отдельно определён минимальный action set для первого playable и ранней балансировки первых 7-10 дней
+- В `TODO.md` добавлена и закрыта задача `TASK-071`
+
+**Файлы затронуты:**
+- `docs/game/season-1-mvp-action-catalog.md` (создан)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
 ## 2026-03-13 — Закрыт TASK-070: зафиксирован legacy systems cut list для новой игры
 
 **Что сделано:**

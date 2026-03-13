@@ -815,6 +815,23 @@
 - Acceptance Criteria:
   - по каждому ключевому персонажу понятно, как он влияет на игру
 - Priority: `P3`
+
+### TASK-066 — Разложить акт 1 в progression map
+- Status: `done`
+- Note: создан `docs/game/season-1-act-1-progression-map.md`, где акт 1 разложен в последовательность игровых узлов: состояние дня, доступные действия, сюжетная сцена, системный эффект и следующий unlock для перехода к следующему beat'у.
+- Priority: `P1`
+- Agent: `Game Systems`
+- Goal: превратить сценарный акт 1 в production-ready progression blueprint
+- Scope:
+  - sequence of beats
+  - unlock conditions
+  - available actions
+  - systemic rewards and penalties
+  - act-end transition
+- Deliverables:
+  - `docs/game/season-1-act-1-progression-map.md`
+- Acceptance Criteria:
+  - понятно, как игрок проходит акт 1 от нулевой комнаты до решения собрать своих
 - Agent: `Operations`
 - Goal: снизить юридические риски при публичном запуске
 - Scope:

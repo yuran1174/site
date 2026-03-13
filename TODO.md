@@ -1002,6 +1002,7 @@
   - ясно, что в центре игры стоит idle-прогрессия
   - описано, как сюжет и персонажи усиливают idle-loop
   - зафиксировано, что manager/life-sim путь больше не является ядром сезона
+
 ### TASK-080 — Собрать idle progression model для season 1
 - Status: `done`
 - Note: создан `docs/game/season-1-idle-progression-model.md`; зафиксированы progression axes, production layers, типы билдов, стадии проекта, персонажные modifiers, automation line и точки, где в рост встраиваются юмор, драма и ирония.
@@ -1020,6 +1021,7 @@
 - Acceptance Criteria:
   - ясно, что именно игрок строит, апгрейдит и автоматизирует
   - описано, как персонажи усиливают progression model
+  - зафиксировано, где в прогрессию встраиваются сцены, юмор и драматические узлы
 
 ### TASK-078 — Нормализовать build-flow для season 1 browser runtime
 - Status: `done`

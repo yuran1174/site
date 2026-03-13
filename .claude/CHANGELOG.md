@@ -1,3 +1,33 @@
+## 2026-03-13 — Закрыт TASK-063: сезон 1 переведён в новую продуктовую рамку
+
+**Что сделано:**
+- Добавлен `docs/game/season-1-design-framework.md`, который переводит `narrative-season-1.md` из сценарного каркаса в системный дизайн-тезис игры
+- Зафиксирован прямой конфликт текущей idle/prestige модели с сезоном `Скуф-пати` и перечислены системы, которые нужно сохранить, убрать или радикально переосмыслить
+- Описаны новый core loop, meta loop, ресурсная модель, роль персонажей и типы активностей для игры, построенной вокруг сборки команды, а не power-fantasy роста
+- В `TODO.md` добавлена и закрыта задача `TASK-063`
+
+**Файлы затронуты:**
+- `docs/game/season-1-design-framework.md` (создан)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
+## 2026-03-13 — Закрыт TASK-062: зафиксирован data-driven контракт active abilities
+
+**Что сделано:**
+- Добавлен `docs/game/idle-abilities-schema.md` с конфиг-схемой `abilitySystem`, моделью `slotUnlocks`, `abilities`, runtime-state и save/load контрактом для active abilities
+- Зафиксированы runtime hooks, требования к prestige shop, analytics payloads и минимальные server-side guardrails для save validation
+- Описан безопасный rollout по фазам: infrastructure -> MVP abilities -> midgame depth -> risk/reward expansion
+- В `TODO.md` добавлена и закрыта задача `TASK-062`
+
+**Файлы затронуты:**
+- `docs/game/idle-abilities-schema.md` (создан)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
 ## 2026-03-13 — Закрыт TASK-061: спроектирован слой активных способностей для idle-ядра
 
 **Что сделано:**

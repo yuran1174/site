@@ -762,6 +762,23 @@
   - описано, что не продаётся
   - определены первые безопасные эксперименты
 
+### TASK-063 — Пересобрать продуктовую рамку под narrative season 1
+- Status: `done`
+- Note: создан `docs/game/season-1-design-framework.md`, в котором сценарный каркас `Скуф-пати` переведён в новый продуктовый тезис, core loop, ресурсы, прогрессию, seasonal structure и список систем, которые конфликтуют с новым направлением и требуют замены или переосмысления.
+- Priority: `P1`
+- Agent: `Game Systems`
+- Goal: превратить сценарий сезона в опорную игровую модель
+- Scope:
+  - narrative-to-systems translation
+  - новый core loop и meta loop
+  - ресурсы, прогрессия и типы активностей
+  - compatibility audit текущих механик
+  - правила для дальнейшего сценарного и системного дизайна
+- Deliverables:
+  - `docs/game/season-1-design-framework.md`
+- Acceptance Criteria:
+  - понятно, какая игра строится из сценария сезона
+
 ### TASK-042 — Подготовить legal minimum
 - Priority: `P3`
 - Agent: `Operations`

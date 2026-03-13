@@ -1,15 +1,42 @@
-## 2026-03-13 — Агент Game Developer переведён на Phaser + TypeScript browser runtime
+## 2026-03-13 — Закрыт TASK-077: season 1 runtime переведён на `Phaser + TypeScript`
 
 **Что сделано:**
-- `agents/game-developer.md` обновлён под новый технологический вектор браузерной разработки
-- В агенте зафиксировано, что новый idle-slice должен собираться на `Phaser + TypeScript`, а не как абстрактный frontend/runtime без выбранного стека
-- Добавлены требования по отдельному browser runtime, модульной структуре `state/ticks/ui/content/domain` и актуальные deliverables для browser idle-slice
+- `/season1.php` и Laravel view для season 1 пересобраны под новый idle-first экранный контракт с `Top HUD`, `Room Stage`, `Idle Results Rail`, `Routine Controls Panel`, `Project Panel`, `People / Circle Panel`, `Cycle Alerts` и narrative feed
+- Добавлен новый TS runtime в `src/season1/` с разбиением на `content`, `state`, `tick resolver`, `Phaser` room stage и DOM UI binding
+- `tsconfig.season1.json` и локальная сборка через `tsc` выводят browser-safe ES modules в `js/season1/`, после чего runtime зеркалируется в `public/js/season1/`
+- `season1.css` полностью обновлён под новый layout и phaser stage; feature test на `/season1.php` обновлён под новый контракт
 
 **Файлы затронуты:**
-- `agents/game-developer.md` (обновлён)
+- `season1.php` (обновлён)
+- `laravel/resources/views/legacy/pages/season1.php` (обновлён)
+- `css/season1.css` (обновлён)
+- `public/css/season1.css` (обновлён)
+- `src/season1/types.ts` (создан)
+- `src/season1/content.ts` (создан)
+- `src/season1/state.ts` (создан)
+- `src/season1/ticks.ts` (создан)
+- `src/season1/phaser-room-stage.ts` (создан)
+- `src/season1/ui.ts` (создан)
+- `src/season1/main.ts` (создан)
+- `tsconfig.season1.json` (создан)
+- `js/season1/content.js` (создан)
+- `js/season1/main.js` (создан)
+- `js/season1/phaser-room-stage.js` (создан)
+- `js/season1/state.js` (создан)
+- `js/season1/ticks.js` (создан)
+- `js/season1/types.js` (создан)
+- `js/season1/ui.js` (создан)
+- `public/js/season1/content.js` (создан)
+- `public/js/season1/main.js` (создан)
+- `public/js/season1/phaser-room-stage.js` (создан)
+- `public/js/season1/state.js` (создан)
+- `public/js/season1/ticks.js` (создан)
+- `public/js/season1/types.js` (создан)
+- `public/js/season1/ui.js` (создан)
+- `laravel/tests/Feature/LegacyGameplayPagesTest.php` (обновлён)
+- `TODO.md` (обновлён)
 - `.claude/CHANGELOG.md` (обновлён)
 
----
 ## 2026-03-13 — Закрыт TASK-076: `season1.php` переведён в первый рабочий idle-slice
 
 **Что сделано:**
@@ -27,6 +54,19 @@
 - `public/css/season1.css` (обновлён)
 - `laravel/tests/Feature/LegacyGameplayPagesTest.php` (обновлён)
 - `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
+## 2026-03-13 — Агент Game Developer переведён на Phaser + TypeScript browser runtime
+
+**Что сделано:**
+- `agents/game-developer.md` обновлён под новый технологический вектор браузерной разработки
+- В агенте зафиксировано, что новый idle-slice должен собираться на `Phaser + TypeScript`, а не как абстрактный frontend/runtime без выбранного стека
+- Добавлены требования по отдельному browser runtime, модульной структуре `state/ticks/ui/content/domain` и актуальные deliverables для browser idle-slice
+
+**Файлы затронуты:**
+- `agents/game-developer.md` (обновлён)
 - `.claude/CHANGELOG.md` (обновлён)
 
 ---

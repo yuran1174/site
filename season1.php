@@ -6,168 +6,162 @@ require_once __DIR__ . '/bootstrap/app.php';
 
 $isLoggedIn = isset($_SESSION['user_id']);
 $username = isset($_SESSION['username']) ? (string) $_SESSION['username'] : null;
+$season1CssVersion = (string) @filemtime(__DIR__ . '/css/season1.css');
+$season1JsVersion = (string) @filemtime(__DIR__ . '/js/season1/main.js');
 ?>
 <!DOCTYPE html>
 <html lang="ru">
 <?php
-$pageTitle = 'Season 1 Idle — Скуф-пати';
-$pageIcon = '🌆';
-$pageStyles = ['css/season1.css'];
+$pageTitle = 'Season 1: Скуф-пати';
+$pageIcon = '🎮';
+$pageStyles = ['css/season1.css?v=' . rawurlencode($season1CssVersion)];
 $pageUseFontAwesome = true;
 require __DIR__ . '/templates/partials/app-head.php';
 ?>
 <body class="season1-body">
-<div class="s1-shell">
-  <header class="s1-topbar">
-    <div>
-      <a href="index.php" class="s1-back"><i class="fas fa-arrow-left"></i> На главную</a>
-      <p class="s1-kicker">Idle-slice season 1</p>
-      <h1>Season 1: Скуф-пати Idle</h1>
-      <p class="s1-subtitle">Новый idle-entrypoint новой версии. Игрок настраивает рутину, слоты и приоритеты, а цикл сам проживает дни и возвращает последствия.</p>
+<div id="s1UserBar">
+  <?php if ($isLoggedIn): ?>
+    <span class="s1-ub-user">👤 <?= htmlspecialchars($username) ?></span>
+    <a href="profile.php" class="s1-ub-link">🏪 Мета-прогресс</a>
+    <a href="leaderboard.php" class="s1-ub-link">🏆 Рейтинг</a>
+    <a href="#" class="s1-ub-link s1-ub-logout" id="logoutBtn">Выйти</a>
+  <?php else: ?>
+    <span class="s1-ub-guest">👤 Гость — <a href="auth.php" class="s1-ub-guest-link">войди</a> чтобы сохранять студию</span>
+    <a href="leaderboard.php" class="s1-ub-link">🏆 Таблица лидеров</a>
+  <?php endif; ?>
+</div>
+
+<main id="s1AppShell">
+  <header id="s1TopHud">
+    <div class="s1-top-left">
+      <a href="index.php" class="s1-back-link"><i class="fas fa-arrow-left"></i> На главную</a>
+      <div class="s1-title-block">
+        <p class="s1-kicker">Season 1: Скуф-пати</p>
+        <h1>Phaser + TypeScript Idle Slice</h1>
+      </div>
     </div>
-    <div class="s1-topbar-meta">
-      <div class="s1-pill"><?= $isLoggedIn ? 'Игрок: '.htmlspecialchars($username) : 'Гостевой прогон' ?></div>
-      <div class="s1-pill">Entry: <strong>/season1.php</strong></div>
-      <button class="s1-primary-button" id="runCycleNow" type="button">Прогнать idle-цикл</button>
+    <div class="s1-top-center">
+      <div class="s1-cycle-badge" id="s1CycleStatus">Цикл стабилен</div>
+      <p id="s1HudPhase">Герой ещё собирает форму и ритм вокруг проекта.</p>
+    </div>
+    <div class="s1-hud-grid">
+      <div class="s1-hud-card"><span>Day</span><strong id="s1HudDay">День 1</strong></div>
+      <div class="s1-hud-card"><span>Weekday</span><strong id="s1HudWeekday">Понедельник</strong></div>
+      <div class="s1-hud-card"><span>Mode</span><strong id="s1HudMode">Выживание</strong></div>
+      <div class="s1-hud-card"><span>Money</span><strong id="s1HudMoney">0 ₽</strong></div>
+      <div class="s1-hud-card"><span>Energy</span><strong id="s1HudEnergy">0</strong></div>
+      <div class="s1-hud-card"><span>Focus</span><strong id="s1HudFocus">0</strong></div>
+      <div class="s1-hud-card"><span>Mood</span><strong id="s1HudMood">0</strong></div>
+      <div class="s1-hud-card"><span>Stress</span><strong id="s1HudStress">0</strong></div>
     </div>
   </header>
 
-  <section class="s1-hud">
-    <div class="s1-hud-main">
-      <div>
-        <p class="s1-label">Top HUD</p>
-        <h2 id="hudDay">Понедельник, день 1</h2>
+  <section id="s1MainGrid">
+    <aside class="s1-side-column">
+      <section class="s1-panel">
+        <div class="s1-panel-head">
+          <span class="s1-panel-kicker">Idle Results Rail</span>
+          <h2>Последствия последнего idle-прогона</h2>
+        </div>
+        <div id="s1ResultsRail" class="s1-results-list"></div>
+      </section>
+
+      <section class="s1-panel">
+        <div class="s1-panel-head">
+          <span class="s1-panel-kicker">Cycle Alerts</span>
+          <h2>Критические сигналы цикла</h2>
+        </div>
+        <ul id="s1AlertsList" class="s1-alerts-list"></ul>
+      </section>
+
+      <section class="s1-panel">
+        <div class="s1-panel-head">
+          <span class="s1-panel-kicker">Progress Shelf</span>
+          <h2>Долгий мета-сдвиг</h2>
+        </div>
+        <div id="s1ProgressShelf" class="s1-shelf-grid"></div>
+      </section>
+    </aside>
+
+    <section class="s1-stage-column">
+      <section class="s1-panel s1-stage-panel">
+        <div class="s1-panel-head">
+          <span class="s1-panel-kicker">Room Stage</span>
+          <h2>Комната героя как центр idle-цикла</h2>
+        </div>
+        <div id="s1PhaserStageWrap">
+          <div id="s1PhaserStage"></div>
+        </div>
+        <p id="s1StageCaption" class="s1-stage-caption">Герой ещё собирает форму и ритм вокруг проекта.</p>
+        <div class="s1-stage-actions">
+          <button id="s1RunCycleBtn" type="button">Прогнать ещё один цикл</button>
+          <button id="s1ResetBtn" type="button" class="is-secondary">Сбросить slice</button>
+        </div>
+        <p id="s1CycleHint" class="s1-cycle-hint">Авто-цикл тикает сам.</p>
+      </section>
+
+      <div class="s1-bottom-grid">
+        <section class="s1-panel">
+          <div class="s1-panel-head">
+            <span class="s1-panel-kicker">Project Panel</span>
+            <h2>Живой контур проекта</h2>
+          </div>
+          <div id="s1ProjectSummary" class="s1-project-summary"></div>
+          <div id="s1ProjectBars" class="s1-project-bars"></div>
+        </section>
+
+        <section class="s1-panel">
+          <div class="s1-panel-head">
+            <span class="s1-panel-kicker">People / Circle Panel</span>
+            <h2>Люди, которые реально меняют цикл</h2>
+          </div>
+          <div id="s1PeopleList" class="s1-people-list"></div>
+        </section>
       </div>
-      <span class="s1-phase" id="cycleStatus">Цикл стабилизируется</span>
-    </div>
-    <div class="s1-hud-stats" id="hudStats"></div>
+    </section>
+
+    <aside class="s1-control-column">
+      <section class="s1-panel">
+        <div class="s1-panel-head">
+          <span class="s1-panel-kicker">Routine Controls Panel</span>
+          <h2>Рычаги перенастройки</h2>
+        </div>
+        <div class="s1-control-group">
+          <h3>Life Mode</h3>
+          <div id="s1LifeModeControls" class="s1-option-grid"></div>
+        </div>
+        <div class="s1-control-group">
+          <h3>Project Focus</h3>
+          <div id="s1ProjectFocusControls" class="s1-pill-grid"></div>
+        </div>
+        <div class="s1-control-group">
+          <h3>Evening Slots</h3>
+          <div id="s1EveningSlots" class="s1-slot-stack"></div>
+        </div>
+        <div class="s1-control-group">
+          <h3>Social Priority</h3>
+          <div id="s1SocialPriority" class="s1-person-stack"></div>
+        </div>
+      </section>
+
+      <section class="s1-panel">
+        <div class="s1-panel-head">
+          <span class="s1-panel-kicker">Narrative Feed</span>
+          <h2>Короткие beats по итогам цикла</h2>
+        </div>
+        <div id="s1FeedList" class="s1-feed-list"></div>
+      </section>
+    </aside>
   </section>
+</main>
 
-  <main class="s1-layout">
-    <section class="s1-panel s1-room-panel">
-      <div class="s1-panel-head">
-        <div>
-          <p class="s1-label">Room Stage</p>
-          <h2 id="roomTitle">Комната героя</h2>
-        </div>
-        <span class="s1-tag" id="roomMoodTag">Собирается</span>
-      </div>
-      <div class="s1-room-stage" id="roomStage">
-        <div class="s1-room-illustration" aria-hidden="true">
-          <span class="s1-room-light"></span>
-          <span class="s1-room-monitor"></span>
-          <span class="s1-room-hero">Герой</span>
-          <span class="s1-room-cat">Кэш</span>
-        </div>
-        <div class="s1-room-copy">
-          <p id="roomSummary">Загрузка комнаты...</p>
-          <div class="s1-inline-stats" id="roomStats"></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="s1-panel s1-results-panel">
-      <div class="s1-panel-head">
-        <div>
-          <p class="s1-label">Idle Results Rail</p>
-          <h2>Итог последнего прогона</h2>
-        </div>
-        <span class="s1-tag" id="lastTickInfo">Ждём первый тик</span>
-      </div>
-      <div class="s1-results-grid" id="resultsRail"></div>
-    </section>
-
-    <section class="s1-panel s1-controls-panel">
-      <div class="s1-panel-head">
-        <div>
-          <p class="s1-label">Routine Controls Panel</p>
-          <h2>Перенастрой цикл</h2>
-        </div>
-        <button class="s1-reset" id="resetRun" type="button">Сбросить прогон</button>
-      </div>
-
-      <div class="s1-control-group">
-        <h3>life_mode</h3>
-        <div class="s1-segmented" id="lifeModeControl"></div>
-      </div>
-
-      <div class="s1-control-group">
-        <h3>Вечерние слоты</h3>
-        <div class="s1-slots" id="slotControls"></div>
-      </div>
-
-      <div class="s1-control-group">
-        <h3>project_focus</h3>
-        <div class="s1-segmented" id="projectFocusControl"></div>
-      </div>
-
-      <div class="s1-control-group">
-        <h3>social_priority</h3>
-        <p class="s1-helper">Выбери до двух людей, которые будут главным social modifier следующего idle-цикла.</p>
-        <div class="s1-priority-list" id="socialPriorityControl"></div>
-      </div>
-    </section>
-
-    <section class="s1-panel s1-project-panel">
-      <div class="s1-panel-head">
-        <div>
-          <p class="s1-label">Project Panel</p>
-          <h2 id="projectTitle">Проект пока буксует</h2>
-        </div>
-        <span class="s1-tag" id="projectTag">clarify</span>
-      </div>
-      <p class="s1-panel-copy" id="projectSummary">Загрузка проекта...</p>
-      <div class="s1-inline-stats" id="projectStats"></div>
-    </section>
-
-    <section class="s1-panel s1-people-panel">
-      <div class="s1-panel-head">
-        <div>
-          <p class="s1-label">People / Circle Panel</p>
-          <h2>Кто реально влияет на цикл</h2>
-        </div>
-      </div>
-      <div class="s1-inline-stats" id="groupStats"></div>
-      <div class="s1-people-list" id="peopleList"></div>
-    </section>
-
-    <section class="s1-panel s1-alerts-panel">
-      <div class="s1-panel-head">
-        <div>
-          <p class="s1-label">Cycle Alerts</p>
-          <h2>Что сейчас трещит или наконец работает</h2>
-        </div>
-      </div>
-      <div class="s1-alerts-wrap">
-        <div>
-          <h3 class="s1-subheading">Alerts</h3>
-          <div class="s1-alert-list" id="alertList"></div>
-        </div>
-        <div>
-          <h3 class="s1-subheading">Positive States</h3>
-          <div class="s1-alert-list" id="positiveList"></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="s1-panel s1-feed-panel">
-      <div class="s1-panel-head">
-        <div>
-          <p class="s1-label">Narrative Feed</p>
-          <h2>Последние системные и человеческие сдвиги</h2>
-        </div>
-      </div>
-      <div class="s1-feed" id="feedList"></div>
-    </section>
-  </main>
-</div>
-
+<script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
 <script>
 window.SEASON1_BOOTSTRAP = {
   playerName: <?= json_encode($username ?: 'Герой', JSON_UNESCAPED_UNICODE) ?>,
   isLoggedIn: <?= $isLoggedIn ? 'true' : 'false' ?>,
 };
 </script>
-<script src="js/season1.js"></script>
+<script type="module" src="js/season1/main.js?v=<?= htmlspecialchars(rawurlencode($season1JsVersion), ENT_QUOTES) ?>"></script>
 </body>
 </html>

@@ -984,8 +984,30 @@
   - описано, что игрок видит первым и чем управляет
   - зафиксирован MVP cut главного экрана новой idle-версии
 
+### TASK-077 — Перевести season 1 runtime на `Phaser + TypeScript`
+- Status: `done`
+- Note: `/season1.php` и Laravel view переведены на новый screen contract с `Phaser` room stage, TS runtime вынесен в `src/season1/*`, собран в `js/season1/*` и зеркалирован в `public/js/season1/*`; проверены `tsc`, `php -l` и season1 feature test.
+- Priority: `P1`
+- Agent: `Game Developer`
+- Goal: перевести существующий `/season1.php` на новый browser runtime с `Phaser`-сценой и `TypeScript`-модулями
+- Scope:
+  - сохранение изолированного entrypoint `/season1.php`
+  - `Phaser`-based `Room Stage`
+  - `TypeScript`-слой для `state`, `tick resolver`, `content`, `UI binding`
+  - idle-first экран по `season-1-idle-main-screen-spec`
+  - smoke/regression проверка без поломки legacy `idle.php`
+- Deliverables:
+  - рабочий season 1 browser runtime на `Phaser + TypeScript`
+  - модульная структура исходников новой idle-версии
+  - обновлённые page/view/assets под новый runtime
+- Acceptance Criteria:
+  - `/season1.php` работает как отдельный новый slice
+  - `Room Stage` рендерится через `Phaser`
+  - основная экранная логика живёт в `TypeScript`
+  - старая версия проекта не сломана
+
 ### TASK-076 — Собрать первый рабочий idle-slice season 1
-  - Status: `done`
+- Status: `done`
 - Priority: `P1`
 - Agent: `Game Developer`
 - Goal: превратить `season1.php` в рабочий `character-driven life-management idle` vertical slice

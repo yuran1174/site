@@ -725,6 +725,24 @@
 - Acceptance Criteria:
   - архитектура ивентов описана без немедленной полной реализации
 
+### TASK-061 — Спроектировать активные способности для idle-ядра
+- Status: `done`
+- Note: создан `docs/game/idle-active-abilities.md` с моделью unlock-путей, слотами способностей, cooldown/economy guardrails, набором стартовых способностей и правилами их балансировки как midgame-слоя между idle и prestige.
+- Priority: `P2`
+- Agent: `Game Systems`
+- Goal: усилить midgame-решения без размывания idle-ядра
+- Scope:
+  - fantasy и роль активных способностей
+  - unlock rules через престиж и account progression
+  - reward structure и safe power budget
+  - pacing, cooldowns и anti-spam ограничения
+  - балансные риски и failure states
+- Deliverables:
+  - `docs/game/idle-active-abilities.md`
+- Acceptance Criteria:
+  - способности описаны как системный слой, а не набор разрозненных кнопок
+  - их награды не ломают prestige pacing и не заменяют side modes
+
 ## Epic 10 — Monetization & Legal Readiness
 
 ### TASK-041 — Зафиксировать монетизационную стратегию
@@ -782,7 +800,7 @@
 7. `TASK-023` -> `TASK-024` -> `TASK-025` -> `TASK-026`
 8. `TASK-031` -> `TASK-032` -> `TASK-033` -> `TASK-034`
 9. `TASK-035` -> `TASK-036` -> `TASK-037`
-10. `TASK-038` -> `TASK-039` -> `TASK-040`
+10. `TASK-038` -> `TASK-039` -> `TASK-040` -> `TASK-061`
 11. `TASK-041` -> `TASK-042` -> `TASK-043`
 
 ## Definition of Done для любой задачи

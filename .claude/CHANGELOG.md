@@ -1,3 +1,18 @@
+## 2026-03-13 — Закрыт TASK-061: спроектирован слой активных способностей для idle-ядра
+
+**Что сделано:**
+- Добавлен `docs/game/idle-active-abilities.md` с продуктовым обоснованием active ability layer как midgame-системы между базовой idle-экономикой и prestige loop
+- Зафиксированы роль способностей в прогрессии, unlock rules через prestige/account progression, модель слотов и cooldown guardrails
+- Описан стартовый набор способностей (`Экстренный деплой`, `Code Review`, `Фокус-спринт`, `Ночной релиз`) с fantasy, ролью, рисками и границами баланса
+- В `TODO.md` добавлена и закрыта задача `TASK-061`
+
+**Файлы затронуты:**
+- `docs/game/idle-active-abilities.md` (создан)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
 ## 2026-03-13 — Закрыт TASK-026: зафиксирована стратегия frontend build step
 
 **Что сделано:**

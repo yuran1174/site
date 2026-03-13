@@ -177,6 +177,15 @@ function gameTick() {
 }
 
 $(async function () {
+  if (window.ApiSession) {
+    try {
+      const token = await window.ApiSession.getCsrfToken(true);
+      if (token) {
+        CSRF_TOKEN = token;
+      }
+    } catch (error) {}
+  }
+
   let loaded = false;
   if (typeof IS_LOGGED_IN !== 'undefined' && IS_LOGGED_IN) {
     loaded = await loadGameServer();

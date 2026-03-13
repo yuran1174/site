@@ -724,11 +724,13 @@ function sendReward(loc, oo, isWin) {
         }
     } catch (_) {}
     if (!IS_LOGGED_IN) return;
-    fetch('/ajax/save.php', {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ action: isWin ? 'dungeon_clear' : 'minigame_reward', loc, oo, csrf: CSRF_TOKEN }),
-    });
+    Promise.resolve(window.ApiSession ? window.ApiSession.getCsrfToken(true) : CSRF_TOKEN)
+        .catch(() => CSRF_TOKEN)
+        .then((csrf) => fetch('/ajax/save.php', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({ action: isWin ? 'dungeon_clear' : 'minigame_reward', loc, oo, csrf }),
+        }));
 }
 
 // ── START GAME ─────────────────────────────────────────────────

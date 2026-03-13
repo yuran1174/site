@@ -37,7 +37,15 @@
       "Bash(cd \"D:/OSPanel/site\" && php index.php 2>&1 | head -30)",
       "Bash(cd \"D:/OSPanel/site\" && php -r \"require_once 'db.php'; \\\\$db = DB::get\\(\\); echo 'DB OK';\" 2>&1)",
       "Bash(cd \"D:/OSPanel/site\" && php -r \"echo phpversion\\(\\);\" 2>&1 && php -m | grep -i sqlite)",
-      "Bash(bash .claude/push.sh \"chore: удалён TODO.md — все 8 задач выполнены\")"
+      "Bash(bash .claude/push.sh \"chore: удалён TODO.md — все 8 задач выполнены\")",
+      "Bash(netstat -ano | findstr \":80 \" | head -5)",
+      "Read(//d/OSPanel/userdata/**)",
+      "Read(//d/OSPanel/logs/**)",
+      "Read(//d/OSPanel/**)",
+      "Bash(find \"D:/OSPanel/userdata/logs\" -name \"*.log\" | xargs ls -la 2>/dev/null)",
+      "Bash(find \"D:/OSPanel/logs\" -name \"*.log\" | xargs grep -l \"error\\\\|Error\\\\|fatal\" 2>/dev/null | head -5)",
+      "Bash(find \"D:/OSPanel\" -name \"*.conf\" -path \"*/sites*\" 2>/dev/null | head -10; find \"D:/OSPanel\" -name \"*.conf\" -path \"*/vhosts*\" 2>/dev/null | head -10)",
+      "Bash(find \"D:/OSPanel\" -name \"*.conf\" 2>/dev/null | grep -v \"example\\\\|full-example\" | head -20)"
     ]
   }
 }

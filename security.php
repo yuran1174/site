@@ -36,11 +36,14 @@ function app_start_session(): void
     $cookieSecure = (bool) app_config_value('security.session.cookie_secure', false);
     $isSecure = $cookieSecure || app_is_https();
     $sameSite = (string) app_config_value('security.session.cookie_samesite', 'Lax');
+    $sessionPath = app_storage_path((string) app_config_value('storage.sessions_path', 'sessions'));
+    app_ensure_dir($sessionPath);
 
     ini_set('session.use_only_cookies', app_config_value('security.session.use_only_cookies', true) ? '1' : '0');
     ini_set('session.use_strict_mode', app_config_value('security.session.use_strict_mode', true) ? '1' : '0');
     ini_set('session.cookie_httponly', app_config_value('security.session.cookie_httponly', true) ? '1' : '0');
     ini_set('session.cookie_samesite', $sameSite);
+    ini_set('session.save_path', $sessionPath);
     if ($isSecure) {
         ini_set('session.cookie_secure', '1');
     }

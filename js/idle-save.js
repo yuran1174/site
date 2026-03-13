@@ -15,6 +15,26 @@
     return merged;
   }
 
+  function normalizeServerSave(payload) {
+    if (!payload) {
+      return null;
+    }
+
+    if (typeof payload === 'string') {
+      try {
+        return JSON.parse(payload);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    if (typeof payload === 'object') {
+      return payload;
+    }
+
+    return null;
+  }
+
   function buildSaveData() {
     return {
       loc: state.loc,
@@ -61,10 +81,11 @@
 
     const saveData = buildSaveData();
     try {
+      const csrf = window.ApiSession ? await window.ApiSession.getCsrfToken(true) : CSRF_TOKEN;
       const res = await fetch('ajax/save.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'save', data: JSON.stringify(saveData), csrf: CSRF_TOKEN }),
+        body: JSON.stringify({ action: 'save', data: JSON.stringify(saveData), csrf }),
       });
       await res.json();
     } catch (e) {
@@ -152,7 +173,7 @@
         return false;
       }
 
-      const serverData = JSON.parse(json.data);
+      const serverData = normalizeServerSave(json.data);
       if (!serverData || !serverData.version) {
         return false;
       }

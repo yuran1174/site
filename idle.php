@@ -194,8 +194,23 @@ require __DIR__ . '/templates/partials/app-head.php';
 <script>
   const PHP_GREETING  = <?= json_encode($greeting, JSON_UNESCAPED_UNICODE) ?>;
   const IS_LOGGED_IN  = <?= $isLoggedIn ? 'true' : 'false' ?>;
-  const CSRF_TOKEN    = <?= json_encode(app_csrf_token(), JSON_UNESCAPED_UNICODE) ?>;
+  let CSRF_TOKEN      = <?= json_encode(app_csrf_token(), JSON_UNESCAPED_UNICODE) ?>;
   const APP_ENV       = <?= json_encode((string) \App\Bootstrap\Config::get('app.env', 'development'), JSON_UNESCAPED_UNICODE) ?>;
+
+  async function refreshCsrfToken() {
+    if (!window.ApiSession) {
+      return CSRF_TOKEN;
+    }
+
+    try {
+      const token = await window.ApiSession.getCsrfToken(true);
+      if (token) {
+        CSRF_TOKEN = token;
+      }
+    } catch (error) {}
+
+    return CSRF_TOKEN;
+  }
 
   if (APP_ENV === 'development') {
     window.devResetAccountProgress = async function devResetAccountProgress() {
@@ -203,11 +218,12 @@ require __DIR__ . '/templates/partials/app-head.php';
         throw new Error('Сброс аккаунта доступен только для залогиненного пользователя.');
       }
 
+      const csrf = await refreshCsrfToken();
       const response = await fetch('ajax/save.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-CSRF-Token': CSRF_TOKEN,
+          'X-CSRF-Token': csrf,
         },
         body: JSON.stringify({
           action: 'reset_progress',
@@ -229,6 +245,8 @@ require __DIR__ . '/templates/partials/app-head.php';
       return data;
     };
   }
+
+  refreshCsrfToken();
 </script>
 <script src="data/game/idle-balance.js"></script>
 <script src="js/idle-runtime.js"></script>

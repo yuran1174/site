@@ -23,4 +23,46 @@ $pageExtraHead = $pageExtraHead ?? [];
   <?php foreach ($pageExtraHead as $pageHeadTag): ?>
     <?= $pageHeadTag . PHP_EOL ?>
   <?php endforeach; ?>
+  <script>
+    window.ApiSession = (() => {
+      let authStatePromise = null;
+
+      async function fetchState() {
+        const response = await fetch('/ajax/auth.php?action=me', {
+          cache: 'no-store',
+          credentials: 'same-origin',
+        });
+        const data = await response.json();
+        if (!response.ok || !data.success) {
+          throw new Error(data.error || 'Failed to load auth state.');
+        }
+        return data;
+      }
+
+      async function getState(force = false) {
+        if (force || authStatePromise === null) {
+          authStatePromise = fetchState().catch((error) => {
+            authStatePromise = null;
+            throw error;
+          });
+        }
+
+        return authStatePromise;
+      }
+
+      async function getCsrfToken(force = false) {
+        const state = await getState(force);
+        if (state.csrfToken) {
+          window.CSRF_TOKEN = state.csrfToken;
+        }
+        return state.csrfToken || window.CSRF_TOKEN || '';
+      }
+
+      function forget() {
+        authStatePromise = null;
+      }
+
+      return { getState, getCsrfToken, forget };
+    })();
+  </script>
 </head>

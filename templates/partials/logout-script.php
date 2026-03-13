@@ -4,10 +4,11 @@
     logoutBtn.addEventListener('click', async (e) => {
       e.preventDefault();
       try {
+        const csrf = window.ApiSession ? await window.ApiSession.getCsrfToken(true) : CSRF_TOKEN;
         const res = await fetch('ajax/auth.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'logout', csrf: CSRF_TOKEN }),
+          body: JSON.stringify({ action: 'logout', csrf }),
         });
         const data = await res.json();
         if (data.success) {

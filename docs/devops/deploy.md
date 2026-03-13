@@ -11,6 +11,7 @@
 - есть writable DB path
 - production использует HTTPS
 - окружение получает корректные env values
+- web server должен смотреть в `/public`, а не в корень репозитория
 
 ## Рекомендуемый release flow
 
@@ -24,9 +25,10 @@
 3. Деплой берёт конкретный commit SHA
 4. На сервер доставляется код релиза
 5. Устанавливаются production dependencies
-6. Применяются миграции через обычный bootstrap/первое подключение к БД или через отдельный warmup step
-7. Выполняется smoke-check ключевых страниц
-8. Трафик переключается на новый release
+6. document root сервера указывает на `public/`
+7. Применяются миграции через обычный bootstrap/первое подключение к БД или через отдельный warmup step
+8. Выполняется smoke-check ключевых страниц
+9. Трафик переключается на новый release
 
 ## Минимальный пошаговый deploy
 
@@ -45,6 +47,8 @@ git checkout <release-sha>
 composer install --no-dev --optimize-autoloader
 ```
 
+Если Laravel runtime ещё живёт в подпапке `laravel/`, нужно убедиться, что его зависимости тоже установлены и доступны.
+
 ### 3. Проверить env
 
 Проверить:
@@ -58,8 +62,10 @@ composer install --no-dev --optimize-autoloader
 
 - `storage/logs`
 - `storage/ratelimits`
+- `storage/sessions`
 - `storage/tmp`
 - директория SQLite-файла
+- `laravel/storage/*`, если framework runtime пишет свои логи/кэш
 
 ### 5. Применить миграции
 
@@ -72,11 +78,15 @@ composer install --no-dev --optimize-autoloader
 ### 6. Smoke-check
 
 Проверить:
+- `/`
 - `/index.php`
 - `/auth.php`
 - `/idle.php`
 - `/leaderboard.php`
 - auth login/register
+
+См. также:
+- `docs/devops/public-web-root.md`
 
 ## Rollback
 

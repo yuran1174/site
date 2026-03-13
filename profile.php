@@ -380,9 +380,24 @@ require __DIR__ . '/templates/partials/page-nav.php';
 <div id="shopToast" class="shop-toast" style="display:none;"></div>
 
 <script>
-const CSRF_TOKEN = <?= json_encode(app_csrf_token(), JSON_UNESCAPED_UNICODE) ?>;
+let CSRF_TOKEN = <?= json_encode(app_csrf_token(), JSON_UNESCAPED_UNICODE) ?>;
 const currentOO = <?= $prestigePoints ?>;
 let ooBalance   = currentOO;
+
+async function refreshCsrfToken() {
+  if (!window.ApiSession) {
+    return CSRF_TOKEN;
+  }
+
+  try {
+    const token = await window.ApiSession.getCsrfToken(true);
+    if (token) {
+      CSRF_TOKEN = token;
+    }
+  } catch (error) {}
+
+  return CSRF_TOKEN;
+}
 
 function updateOODisplay() {
   document.getElementById('ooBalance').textContent = '⭐ ' + ooBalance + ' ОО';
@@ -411,10 +426,11 @@ document.querySelectorAll('.shop-buy-btn:not([disabled])').forEach(btn => {
     this.textContent = 'Покупаем...';
 
     try {
+      const csrf = await refreshCsrfToken();
       const res = await fetch('ajax/save.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'buy_prestige', id, csrf: CSRF_TOKEN }),
+        body: JSON.stringify({ action: 'buy_prestige', id, csrf }),
       });
       const data = await res.json();
 
@@ -436,6 +452,8 @@ document.querySelectorAll('.shop-buy-btn:not([disabled])').forEach(btn => {
     }
   });
 });
+
+refreshCsrfToken();
 
 </script>
 <?php require __DIR__ . '/templates/partials/logout-script.php'; ?>

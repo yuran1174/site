@@ -109,7 +109,7 @@ require __DIR__ . '/templates/partials/app-head.php';
 </div><!-- /auth-wrap -->
 
 <script>
-const CSRF_TOKEN = <?= json_encode(app_csrf_token(), JSON_UNESCAPED_UNICODE) ?>;
+let CSRF_TOKEN = <?= json_encode(app_csrf_token(), JSON_UNESCAPED_UNICODE) ?>;
 const QUOTES = [
   'Добро пожаловать в систему',
   'git commit -m "finally fixed it"',
@@ -183,6 +183,21 @@ function showError(id, msg) {
   el.style.display = 'block';
 }
 
+async function refreshCsrfToken() {
+  if (!window.ApiSession) {
+    return CSRF_TOKEN;
+  }
+
+  try {
+    const token = await window.ApiSession.getCsrfToken(true);
+    if (token) {
+      CSRF_TOKEN = token;
+    }
+  } catch (error) {}
+
+  return CSRF_TOKEN;
+}
+
 // Login
 const loginForm = document.getElementById('loginForm');
 const loginSubmit = document.getElementById('loginSubmit');
@@ -196,10 +211,11 @@ loginForm.addEventListener('submit', async function(e) {
   setLoading(loginSubmit, true);
 
   try {
+    const csrf = await refreshCsrfToken();
     const res = await fetch('ajax/auth.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'login', username, password, csrf: CSRF_TOKEN }),
+      body: JSON.stringify({ action: 'login', username, password, csrf }),
     });
     const data = await res.json();
     if (data.success) {
@@ -235,10 +251,11 @@ registerForm.addEventListener('submit', async function(e) {
   setLoading(registerSubmit, true);
 
   try {
+    const csrf = await refreshCsrfToken();
     const res = await fetch('ajax/auth.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'register', username, password, confirm, csrf: CSRF_TOKEN }),
+      body: JSON.stringify({ action: 'register', username, password, confirm, csrf }),
     });
     const data = await res.json();
     if (data.success) {
@@ -253,6 +270,8 @@ registerForm.addEventListener('submit', async function(e) {
     setLoading(registerSubmit, false);
   }
 });
+
+refreshCsrfToken();
 </script>
 
 </body>

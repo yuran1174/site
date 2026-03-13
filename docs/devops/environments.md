@@ -83,6 +83,7 @@
 - `STORAGE_PATH`
 - `STORAGE_LOGS_PATH`
 - `STORAGE_RATELIMITS_PATH`
+- `STORAGE_SESSIONS_PATH`
 - `STORAGE_TMP_PATH`
 
 ## Правила
@@ -92,6 +93,7 @@
 3. Production не должен использовать `APP_DEBUG=true`.
 4. Production и stage не должны писать в один и тот же SQLite-файл.
 5. Любые новые runtime-path настройки добавляются в `config/` и `.env.example`, а не хардкодятся в PHP.
+6. Для Laravel migration baseline document root локального и production сервера должен указывать на `/public`.
 
 ## Практическая схема файлов
 

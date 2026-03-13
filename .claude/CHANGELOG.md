@@ -1,3 +1,16 @@
+## 2026-03-13 — Агент Game Developer пересобран под новую idle-логику season 1
+
+**Что сделано:**
+- Полностью обновлён `agents/game-developer.md`
+- Старый фокус на отдельный vertical slice с day-sim логикой заменён на разработку новой `character-driven life-management idle` версии игры
+- В агент добавлены актуальные source-of-truth документы по `idle redesign framework`, `idle core loop spec` и `idle main screen spec`
+- Зафиксированы обязательные системы v1: `life_mode`, evening slots, `project_focus`, auto-ticks, alerts, positive states и result layer
+
+**Файлы затронуты:**
+- `agents/game-developer.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
 ## 2026-03-13 — Закрыт TASK-075: собран idle main screen spec для season 1
 
 **Что сделано:**

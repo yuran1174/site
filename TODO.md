@@ -985,6 +985,23 @@
   - зафиксирован MVP cut главного экрана новой idle-версии
 
 ### TASK-078 — Нормализовать build-flow для season 1 browser runtime
+### TASK-079 — Зафиксировать narrative idle core для season 1
+- Status: `done`
+- Note: создан `docs/game/season-1-narrative-idle-core.md`; зафиксирован жёсткий разворот от manager/life-sim логики к `story-driven idle` с персонажной прогрессией, юмором, драмой и иронией вокруг ядра роста.
+- Priority: `P1`
+- Agent: `Game Systems`
+- Goal: вернуть season 1 в формат настоящей idle-игры, где сюжет усиливает прогрессию, а не заменяет её
+- Scope:
+  - новый продуктовый тезис
+  - что производит idle-цикл
+  - что игрок прокачивает
+  - роль сцен и персонажей в idle-системе
+  - место юмора, драмы и иронии
+- Deliverables:
+  - `docs/game/season-1-narrative-idle-core.md`
+- Acceptance Criteria:
+  - ясно, что в центре игры стоит idle-прогрессия
+  - описано, как сюжет и персонажи усиливают idle-loop
 - Status: `done`
 - Note: добавлен `composer build:season1` и `scripts/build-season1-runtime.mjs`; сборка компилирует `src/season1/*.ts` через локальный `typescript` из `laravel/node_modules` и зеркалит runtime в `public/`. README обновлён с инструкцией.
 - Priority: `P1`

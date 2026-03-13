@@ -1,7 +1,9 @@
 (function () {
   'use strict';
 
-  const STORAGE_KEY = 'season1_vertical_slice_v1';
+  const STORAGE_KEY = 'season1_idle_slice_v2';
+  const TICK_MS = 15000;
+  const MAX_OFFLINE_CYCLES = 24;
   const WEEKDAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
   const WEEKDAY_LABELS = {
     monday: 'Понедельник',
@@ -14,21 +16,63 @@
   };
   const PLAYER_NAME = (window.SEASON1_BOOTSTRAP && window.SEASON1_BOOTSTRAP.playerName) || 'Герой';
 
+  const LIFE_MODES = [
+    { id: 'survival', label: 'Выживание' },
+    { id: 'side_hustle', label: 'Подработка' },
+    { id: 'recovery', label: 'Восстановление' },
+    { id: 'project_focus', label: 'Фокус на проект' },
+    { id: 'people_focus', label: 'Фокус на людях' },
+  ];
+
+  const SLOT_OPTIONS = [
+    { id: 'rest', label: 'Отдых' },
+    { id: 'project', label: 'Проект' },
+    { id: 'people', label: 'Люди' },
+    { id: 'room', label: 'Комната' },
+    { id: 'side_hustle', label: 'Подработка' },
+  ];
+
+  const PROJECT_FOCUSES = [
+    { id: 'clarify', label: 'Clarify' },
+    { id: 'build', label: 'Build' },
+    { id: 'polish', label: 'Polish' },
+    { id: 'show', label: 'Show' },
+  ];
+
+  const PEOPLE = [
+    { id: 'max', name: 'Макс', role: 'Разгоняет social warmth и вытаскивает цикл из глухой бытовухи.' },
+    { id: 'zhora', name: 'Жора', role: 'Помогает не сдуваться и лучше прожимать clarify-цикл.' },
+    { id: 'zheka', name: 'Жека', role: 'Подкручивает build/polish и делает проект менее кривым.' },
+    { id: 'kostya', name: 'Костя', role: 'Даёт физическое ощущение круга и стабилизирует пятничный ритм.' },
+    { id: 'ilya', name: 'Илья', role: 'Поднимает group pulse и возвращает ощущение старой химии.' },
+  ];
+
   const elements = {
-    dayTitle: document.getElementById('dayTitle'),
-    phaseBadge: document.getElementById('phaseBadge'),
-    dayMood: document.getElementById('dayMood'),
-    statusStats: document.getElementById('statusStats'),
+    runCycleNow: document.getElementById('runCycleNow'),
+    resetRun: document.getElementById('resetRun'),
+    hudDay: document.getElementById('hudDay'),
+    cycleStatus: document.getElementById('cycleStatus'),
+    hudStats: document.getElementById('hudStats'),
     roomTitle: document.getElementById('roomTitle'),
+    roomMoodTag: document.getElementById('roomMoodTag'),
     roomSummary: document.getElementById('roomSummary'),
     roomStats: document.getElementById('roomStats'),
+    roomStage: document.getElementById('roomStage'),
+    lastTickInfo: document.getElementById('lastTickInfo'),
+    resultsRail: document.getElementById('resultsRail'),
+    lifeModeControl: document.getElementById('lifeModeControl'),
+    slotControls: document.getElementById('slotControls'),
+    projectFocusControl: document.getElementById('projectFocusControl'),
+    socialPriorityControl: document.getElementById('socialPriorityControl'),
     projectTitle: document.getElementById('projectTitle'),
+    projectTag: document.getElementById('projectTag'),
     projectSummary: document.getElementById('projectSummary'),
     projectStats: document.getElementById('projectStats'),
+    groupStats: document.getElementById('groupStats'),
     peopleList: document.getElementById('peopleList'),
-    actionsList: document.getElementById('actionsList'),
+    alertList: document.getElementById('alertList'),
+    positiveList: document.getElementById('positiveList'),
     feedList: document.getElementById('feedList'),
-    resetRun: document.getElementById('resetRun'),
   };
 
   function clamp(value, min, max) {
@@ -40,76 +84,31 @@
   }
 
   function createInitialState() {
+    const now = Date.now();
     return {
-      calendar: {
-        day: 1,
-        weekday: 'monday',
-        week: 1,
-        phase: 'evening',
-      },
-      resources: {
-        time_evening: 2,
-        energy: 62,
-        money: 900,
-        impulse: 28,
-        stress: 36,
-      },
-      hero: {
-        name: PLAYER_NAME,
-        burnout: 24,
-        stability: 18,
-        has_acknowledged_idea: false,
-        last_outcome: 'heavy_but_useful',
-      },
-      project: {
-        seed: 0,
-        clarity: 0,
-        prototype_quality: 0,
-        showable_build: false,
-        last_action: 'none',
-      },
+      calendar: { day: 1, weekday: 'monday', week: 1, phase: 'idle' },
+      resources: { money: 780, energy: 58, focus: 46, mood: 52, stress: 39 },
+      hero: { name: PLAYER_NAME, life_mode: 'survival', stability: 24, burnout: 22 },
+      routine: { evening_slots: ['rest', 'project'], project_focus: 'clarify', social_priority: ['max'] },
+      project: { clarity: 3, prototype: 1, quality: 0, showability: 0 },
       relationships: {
-        cash: { introduced: true, bond: 2, last_interaction_day: 1 },
-        max: { introduced: true, bond: 1, last_interaction_day: 0 },
-        zhora: { introduced: false, bond: 0, last_interaction_day: null },
-        denis: { introduced: false, bond: 0, last_interaction_day: null },
-        zheka: { introduced: false, bond: 0, last_interaction_day: null },
-        kostya: { introduced: true, bond: 2, last_interaction_day: 0 },
-        ilya: { introduced: true, bond: 2, last_interaction_day: 0 },
+        max: { introduced: true, bond: 2, readiness: 56 },
+        zhora: { introduced: false, bond: 0, readiness: 0 },
+        zheka: { introduced: false, bond: 0, readiness: 0 },
+        kostya: { introduced: true, bond: 2, readiness: 48 },
+        ilya: { introduced: true, bond: 2, readiness: 45 },
       },
-      group: {
-        circle_trust: 0,
-        group_momentum: 0,
-        shared_context: 0,
-      },
-      room: {
-        comfort: 22,
-        order: 18,
-        project_corner: 12,
-        upgrades: {
-          desk_lamp: true,
-          second_monitor: false,
-          better_chair: false,
-        },
-      },
-      content: {
-        feed: [
-          {
-            day: 1,
-            weekday: 'monday',
-            title: 'Старт среза',
-            text: 'Новая игра живёт отдельно от idle-режима. Сегодня надо вытянуть вечер и решить, во что его вложить.',
-          },
-        ],
-      },
-      meta: {
-        version: 1,
-      },
+      group: { circle_trust: 1, group_momentum: 0 },
+      room: { order: 36, comfort: 33, project_corner: 24 },
+      results: { money_delta: 0, energy_delta: 0, project_delta: 0, bond_delta: 0, room_delta: 0 },
+      system: { total_cycles: 0, last_tick_at: now, last_tick_label: 'Стартовый idle-срез' },
+      content: { feed: [{ day: 1, weekday: 'monday', title: 'Idle-срез собран', text: 'Теперь герой не проживает каждый вечер вручную. Игрок настраивает жизнь, а система сама показывает, во что она превращается.' }] },
+      meta: { version: 2 },
     };
   }
 
   function validateState(candidate) {
-    return candidate && candidate.calendar && candidate.resources && candidate.hero && candidate.project && candidate.relationships && candidate.group && candidate.room;
+    return candidate && candidate.calendar && candidate.resources && candidate.hero && candidate.routine && candidate.project && candidate.relationships && candidate.group && candidate.room && candidate.results && candidate.system;
   }
 
   function loadState() {
@@ -118,7 +117,6 @@
       if (!raw) {
         return createInitialState();
       }
-
       const parsed = JSON.parse(raw);
       return validateState(parsed) ? parsed : createInitialState();
     } catch (error) {
@@ -126,408 +124,413 @@
     }
   }
 
-  function saveState(state) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  function saveState(currentState) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(currentState));
   }
 
-  function pushFeed(state, title, text) {
-    state.content.feed.unshift({
-      day: state.calendar.day,
-      weekday: state.calendar.weekday,
-      title: title,
-      text: text,
+  function pushFeed(currentState, title, text) {
+    currentState.content.feed.unshift({ day: currentState.calendar.day, weekday: currentState.calendar.weekday, title: title, text: text });
+    currentState.content.feed = currentState.content.feed.slice(0, 8);
+  }
+
+  function nextWeekday(weekday) {
+    return WEEKDAYS[(WEEKDAYS.indexOf(weekday) + 1) % WEEKDAYS.length];
+  }
+
+  function isSecondSlotUnlocked(currentState) {
+    return currentState.resources.energy >= 45 || currentState.hero.stability >= 30;
+  }
+
+  function getPrioritizedPeople(currentState) {
+    return currentState.routine.social_priority.filter(function (id) {
+      return currentState.relationships[id] && currentState.relationships[id].introduced;
     });
-    state.content.feed = state.content.feed.slice(0, 8);
+  }
+
+  function advanceCalendar(currentState) {
+    const next = nextWeekday(currentState.calendar.weekday);
+    currentState.calendar.day += 1;
+    currentState.calendar.weekday = next;
+    if (next === 'monday') {
+      currentState.calendar.week += 1;
+    }
+  }
+
+  function applyLifeMode(currentState, deltas) {
+    if (currentState.hero.life_mode === 'survival') {
+      deltas.money += 170; deltas.energy -= 8; deltas.focus -= 2; deltas.mood -= 1; deltas.stress += 2;
+    } else if (currentState.hero.life_mode === 'side_hustle') {
+      deltas.money += 280; deltas.energy -= 15; deltas.focus -= 6; deltas.mood -= 4; deltas.stress += 8; deltas.project -= 1;
+    } else if (currentState.hero.life_mode === 'recovery') {
+      deltas.money += 80; deltas.energy += 7; deltas.focus += 5; deltas.mood += 6; deltas.stress -= 7;
+    } else if (currentState.hero.life_mode === 'project_focus') {
+      deltas.money += 120; deltas.energy -= 12; deltas.focus -= 8; deltas.project += 2; deltas.stress += 5;
+    } else if (currentState.hero.life_mode === 'people_focus') {
+      deltas.money += 100; deltas.energy -= 7; deltas.mood += 4; deltas.stress -= 1; deltas.bond += 1;
+    }
+  }
+
+  function applyProjectTick(currentState, deltas, slotUsedProject) {
+    const focus = currentState.routine.project_focus;
+    let gain = slotUsedProject ? 2 : 0;
+    if (currentState.hero.life_mode === 'project_focus') {
+      gain += 2;
+    }
+    if (focus === 'clarify') {
+      currentState.project.clarity = clamp(currentState.project.clarity + gain, 0, 100);
+      deltas.project += gain;
+    } else if (focus === 'build') {
+      currentState.project.prototype = clamp(currentState.project.prototype + gain, 0, 100);
+      deltas.project += gain;
+    } else if (focus === 'polish') {
+      currentState.project.quality = clamp(currentState.project.quality + Math.max(1, gain - 1), 0, 100);
+      deltas.project += Math.max(1, gain - 1);
+    } else if (focus === 'show') {
+      currentState.project.showability = clamp(currentState.project.showability + Math.max(1, gain - 1), 0, 100);
+      deltas.project += Math.max(1, gain - 1);
+    }
+  }
+
+  function applySocialTick(currentState, deltas, slotUsedPeople) {
+    const priorities = getPrioritizedPeople(currentState);
+    PEOPLE.forEach(function (person) {
+      const relation = currentState.relationships[person.id];
+      if (!relation || !relation.introduced) {
+        return;
+      }
+      relation.readiness = clamp(relation.readiness + 6 + (priorities.indexOf(person.id) !== -1 ? 8 : 0), 0, 100);
+    });
+    if (slotUsedPeople) {
+      priorities.forEach(function (id) {
+        const relation = currentState.relationships[id];
+        relation.bond = clamp(relation.bond + 1, 0, 10);
+        relation.readiness = clamp(relation.readiness - 22, 0, 100);
+        deltas.bond += 1;
+      });
+    }
+  }
+
+  function applyCharacterModifiers(currentState, deltas) {
+    const priorities = getPrioritizedPeople(currentState);
+    if (priorities.indexOf('max') !== -1 && currentState.relationships.max.introduced) {
+      deltas.mood += 3; deltas.stress -= 2;
+    }
+    if (priorities.indexOf('zhora') !== -1 && currentState.relationships.zhora.introduced && currentState.routine.project_focus === 'clarify') {
+      currentState.project.clarity = clamp(currentState.project.clarity + 1, 0, 100); deltas.project += 1; deltas.stress -= 1;
+    }
+    if (priorities.indexOf('zheka') !== -1 && currentState.relationships.zheka.introduced && (currentState.routine.project_focus === 'build' || currentState.routine.project_focus === 'polish')) {
+      currentState.project.quality = clamp(currentState.project.quality + 1, 0, 100); deltas.project += 1; deltas.focus += 2;
+    }
+    if (priorities.indexOf('kostya') !== -1 && priorities.indexOf('ilya') !== -1 && currentState.calendar.weekday === 'friday') {
+      currentState.group.circle_trust = clamp(currentState.group.circle_trust + 1, 0, 100); currentState.group.group_momentum = clamp(currentState.group.group_momentum + 1, 0, 100); deltas.bond += 1; deltas.mood += 2;
+    }
+  }
+
+  function unlockCharacters(currentState) {
+    if (!currentState.relationships.zhora.introduced && currentState.relationships.max.bond >= 3) {
+      currentState.relationships.zhora.introduced = true;
+      currentState.relationships.zhora.readiness = 42;
+      pushFeed(currentState, 'Жора открылся как idle modifier', 'После нескольких тёплых контактов Макс снова вывел героя на Жору. Теперь clarify-цикл можно подпитывать удалённой поддержкой.');
+    }
+    if (!currentState.relationships.zheka.introduced && currentState.project.clarity >= 6) {
+      currentState.relationships.zheka.introduced = true;
+      currentState.relationships.zheka.readiness = 38;
+      pushFeed(currentState, 'Жека вошёл в контур проекта', 'Идея стала достаточно собранной, чтобы Жека начал влиять не на разговоры, а на сам project throughput.');
+    }
+  }
+
+  function describeCycleNarrative(currentState) {
+    if (currentState.resources.money < 220) {
+      return 'Цикл снова уходит в money crunch. Без перенастройки life_mode или слотов герой продолжит вытаскивать только быт.';
+    }
+    if (currentState.resources.energy < 24 || currentState.hero.burnout > 60) {
+      return 'Ритм стал слишком тяжёлым. Сейчас это уже не productive grind, а прямой путь в burnout risk.';
+    }
+    if (currentState.project.clarity + currentState.project.prototype + currentState.project.quality > 18) {
+      return 'Проект наконец начинает выглядеть как что-то, что можно показывать не только коту.';
+    }
+    if (currentState.group.group_momentum > 2) {
+      return 'Круг уже не просто висит в памяти. Idle-цикл начал производить общее настроение, а не только цифры.';
+    }
+    return 'Цикл живёт. Пока ещё шатко, но уже видно, что проблему можно решать настройкой жизни, а не ручным проживанием каждого вечера.';
+  }
+
+  function runSingleCycle(currentState) {
+    const slotCount = isSecondSlotUnlocked(currentState) ? 2 : 1;
+    const slots = currentState.routine.evening_slots.slice(0, slotCount);
+    const beforeProject = currentState.project.clarity + currentState.project.prototype + currentState.project.quality + currentState.project.showability;
+    const beforeBond = PEOPLE.reduce(function (sum, person) {
+      const relation = currentState.relationships[person.id];
+      return sum + (relation && relation.introduced ? relation.bond : 0);
+    }, 0);
+    const beforeRoom = currentState.room.order + currentState.room.comfort + currentState.room.project_corner;
+    const deltas = { money: -130, energy: 0, focus: 0, mood: 0, stress: 0, project: 0, bond: 0, room: 0 };
+
+    applyLifeMode(currentState, deltas);
+    applyProjectTick(currentState, deltas, slots.indexOf('project') !== -1);
+    applySocialTick(currentState, deltas, slots.indexOf('people') !== -1);
+    applyCharacterModifiers(currentState, deltas);
+
+    if (slots.indexOf('rest') !== -1) {
+      deltas.energy += 10; deltas.mood += 5; deltas.stress -= 6;
+    }
+    if (slots.indexOf('side_hustle') !== -1) {
+      deltas.money += 120; deltas.energy -= 8; deltas.stress += 4;
+    }
+    if (slots.indexOf('room') !== -1) {
+      deltas.room += 8; currentState.room.comfort = clamp(currentState.room.comfort + 3, 0, 100);
+    } else {
+      deltas.room -= currentState.hero.life_mode === 'side_hustle' ? 5 : 3;
+      currentState.room.comfort = clamp(currentState.room.comfort - 1, 0, 100);
+    }
+
+    currentState.resources.money = clamp(currentState.resources.money + deltas.money, 0, 9999);
+    currentState.resources.energy = clamp(currentState.resources.energy + deltas.energy, 0, 100);
+    currentState.resources.focus = clamp(currentState.resources.focus + deltas.focus + Math.floor(currentState.room.project_corner / 25), 0, 100);
+    currentState.resources.mood = clamp(currentState.resources.mood + deltas.mood + (currentState.group.group_momentum > 0 ? 1 : 0), 0, 100);
+    currentState.resources.stress = clamp(currentState.resources.stress + deltas.stress + (currentState.resources.money < 220 ? 4 : 0), 0, 100);
+    currentState.room.order = clamp(currentState.room.order + deltas.room, 0, 100);
+    currentState.room.project_corner = clamp(currentState.room.project_corner + (slots.indexOf('project') !== -1 ? 2 : 0), 0, 100);
+    currentState.hero.burnout = clamp(currentState.hero.burnout + (currentState.resources.energy < 25 ? 5 : -1) + (currentState.resources.stress > 70 ? 3 : 0), 0, 100);
+    currentState.hero.stability = clamp(currentState.hero.stability + (currentState.hero.life_mode === 'recovery' ? 2 : 0) + (currentState.room.order > 50 ? 1 : 0), 0, 100);
+
+    unlockCharacters(currentState);
+    advanceCalendar(currentState);
+    currentState.system.total_cycles += 1;
+
+    const afterProject = currentState.project.clarity + currentState.project.prototype + currentState.project.quality + currentState.project.showability;
+    const afterBond = PEOPLE.reduce(function (sum, person) {
+      const relation = currentState.relationships[person.id];
+      return sum + (relation && relation.introduced ? relation.bond : 0);
+    }, 0);
+    const afterRoom = currentState.room.order + currentState.room.comfort + currentState.room.project_corner;
+
+    currentState.results = {
+      money_delta: deltas.money,
+      energy_delta: deltas.energy,
+      project_delta: afterProject - beforeProject,
+      bond_delta: afterBond - beforeBond,
+      room_delta: afterRoom - beforeRoom,
+    };
+
+    pushFeed(currentState, 'Idle-цикл прожит', describeCycleNarrative(currentState));
+  }
+
+  function processAutoTicks(currentState, forceOne) {
+    const now = Date.now();
+    let cycles = forceOne ? 1 : Math.floor((now - currentState.system.last_tick_at) / TICK_MS);
+    cycles = Math.min(cycles, MAX_OFFLINE_CYCLES);
+    if (cycles <= 0) {
+      return false;
+    }
+    for (let index = 0; index < cycles; index += 1) {
+      runSingleCycle(currentState);
+    }
+    currentState.system.last_tick_at = now;
+    currentState.system.last_tick_label = forceOne ? 'Ручной прогон idle-цикла' : 'Авто-прогон за ' + cycles + ' цикл(ов)';
+    return true;
+  }
+
+  function formatDelta(value, suffix) {
+    const sign = value > 0 ? '+' : '';
+    return sign + value + (suffix || '');
   }
 
   function statChip(label, value) {
     return '<div class="s1-stat-chip"><span>' + label + '</span><strong>' + value + '</strong></div>';
   }
 
-  function isWeekend(weekday) {
-    return weekday === 'saturday' || weekday === 'sunday';
+  function deriveAlerts(currentState) {
+    const alerts = [];
+    const positives = [];
+    if (currentState.resources.money < 250) {
+      alerts.push({ id: 'money_crunch', text: 'money_crunch: денег осталось на пару тяжёлых циклов.' });
+    }
+    if (currentState.resources.energy < 28 || currentState.resources.stress > 72 || currentState.hero.burnout > 60) {
+      alerts.push({ id: 'burnout_risk', text: 'burnout_risk: цикл жрёт героя быстрее, чем восстанавливает.' });
+    }
+    if (currentState.room.order < 28) {
+      alerts.push({ id: 'room_decline', text: 'room_decline: бардак начал бить по recovery и focus.' });
+    }
+    if (currentState.resources.money > 520 && currentState.resources.energy > 48 && currentState.resources.stress < 44 && currentState.room.order > 42) {
+      positives.push({ id: 'stable_routine', text: 'stable_routine: жизнь наконец перестаёт разваливаться между циклами.' });
+    }
+    if (currentState.results.project_delta >= 3 || (currentState.project.clarity + currentState.project.prototype + currentState.project.quality) > 16) {
+      positives.push({ id: 'project_flow', text: 'project_flow: idle-контур реально двигает проект, а не просто имитирует занятость.' });
+    }
+    return { alerts: alerts, positives: positives };
   }
 
-  function describeDayMood(state) {
-    if (state.resources.energy <= 25) {
-      return 'После обязательного дня сил почти нет. Любой тяжёлый шаг будет дорогим.';
+  function describeRoom(currentState) {
+    if (currentState.room.order < 24) {
+      return 'Комната снова скатывается в усталый хаос. Recovery проседает, а рабочий угол перестаёт чувствоваться местом силы.';
     }
-
-    if (state.resources.stress >= 65) {
-      return 'День вязкий и шумный. Если полезешь в сложное, есть риск только сильнее перегореть.';
+    if (currentState.room.order > 58 && currentState.room.comfort > 48) {
+      return 'Комната уже выглядит не как случайная съёмка, а как место, где цикл действительно помогает жить и собирать своё.';
     }
-
-    if (state.calendar.weekday === 'friday') {
-      return 'Пятничное окно наконец открылось. Сегодня можно вложиться не только в выживание, но и в круг.';
-    }
-
-    if (state.project.clarity >= 4) {
-      return 'Идея уже держится лучше. Есть шанс сделать вечер, который реально двинет проект.';
-    }
-
-    return 'Обычный взрослый вечер: немного сил, немного денег, один реальный выбор.';
+    return 'Пока это ещё не маленькая студия, но уже и не просто тесная комната, где герой задыхается от рутины.';
   }
 
-  function describeRoom(state) {
-    if (state.room.order >= 40 && state.room.project_corner >= 28) {
-      return 'Комната уже перестала быть просто местом ночёвки. Здесь начинает ощущаться будущая своя студия.';
+  function describeProject(currentState) {
+    if (currentState.project.showability > 8) {
+      return 'Проект уже подходит к стадии, где idle-цикл производит не только заметки, но и что-то, что не стыдно показывать людям.';
     }
-
-    if (state.room.order <= 16) {
-      return 'В комнате всё ещё видно, как жизнь давит первой. Но рабочий угол уже пытается отбить себе место.';
+    if (currentState.project.prototype > 6) {
+      return 'Есть движение в build-слое. Следующий вопрос уже не "идея ли это", а "что из этого собрать дальше".';
     }
-
-    return 'Жильё пока держится на честном слове, коте Кэше и одном рабочем островке у монитора.';
+    return 'Проект пока в ранней фазе: нужно удержать clarity, не развалиться по энергии и только потом давить build/polish.';
   }
 
-  function describeProject(state) {
-    if (state.project.showable_build) {
-      return 'Есть что показать. Это ещё не нормальный билд, но идея уже не живёт только в голове.';
+  function describeCycleStatus(currentState) {
+    const derived = deriveAlerts(currentState);
+    if (derived.alerts.length > 0) {
+      return derived.alerts[0].id;
     }
-
-    if (state.project.clarity >= 4) {
-      return 'Идея начинает собираться в понятную форму. Следующий шаг уже можно обсуждать вслух.';
+    if (derived.positives.length > 0) {
+      return derived.positives[0].id;
     }
-
-    if (state.project.seed > 0) {
-      return 'Есть заметки и сырой каркас. Пока это больше импульс, чем продукт.';
-    }
-
-    return 'Проект ещё не оформился. Пока живёт как смутное ощущение, что надо делать что-то своё.';
+    return 'Цикл стабилизируется';
   }
 
-  function relationshipStatus(character, state) {
-    if (!character.introduced) {
-      return 'Пока линия не открыта.';
-    }
-
-    if (character.bond >= 4) {
-      return 'Контакт уже тёплый, можно говорить серьёзнее.';
-    }
-
-    if (state.calendar.day - (character.last_interaction_day || 0) >= 3) {
-      return 'Давно не писал. Связь надо подхватывать снова.';
-    }
-
-    return 'Связь живая, но пока хрупкая.';
-  }
-
-  function unlockStateChanges(state) {
-    if (!state.relationships.zhora.introduced && state.relationships.max.bond >= 2) {
-      state.relationships.zhora.introduced = true;
-      state.relationships.zhora.last_interaction_day = state.calendar.day;
-      pushFeed(state, 'Жора появился на радаре', 'Макс скинул контакт Жоры и предложил созвониться позже, когда идея станет плотнее.');
-    }
-
-    if (!state.relationships.zheka.introduced && state.project.clarity >= 4) {
-      state.relationships.zheka.introduced = true;
-      pushFeed(state, 'Открыт Жека', 'Идея стала достаточно внятной, чтобы показать её Жеке без ощущения полной кринжатины.');
-    }
-
-    if (!state.relationships.denis.introduced && state.resources.money >= 1200) {
-      state.relationships.denis.introduced = true;
-      pushFeed(state, 'Мимолётный след Дениса', 'На очередной подработке снова всплыло имя Дениса. Прошлое пока только мелькает, но уже не исчезает.');
-    }
-  }
-
-  function applyDailyPressure(state) {
-    const roomRecovery = Math.floor((state.room.comfort + state.room.order) / 24);
-    const stabilityBuffer = Math.floor(state.hero.stability / 12);
-    const nextWeekdayIndex = (WEEKDAYS.indexOf(state.calendar.weekday) + 1) % WEEKDAYS.length;
-    const nextWeekday = WEEKDAYS[nextWeekdayIndex];
-
-    state.calendar.day += 1;
-    state.calendar.weekday = nextWeekday;
-    state.calendar.phase = 'evening';
-    if (nextWeekday === 'monday') {
-      state.calendar.week += 1;
-    }
-
-    state.resources.time_evening = isWeekend(nextWeekday) ? 3 : 2;
-    state.resources.energy = clamp(state.resources.energy - (isWeekend(nextWeekday) ? 4 : 12) + roomRecovery, 0, 100);
-    state.resources.stress = clamp(state.resources.stress + (isWeekend(nextWeekday) ? -6 : 7) - stabilityBuffer, 0, 100);
-    state.resources.impulse = clamp(state.resources.impulse - 3 + Math.min(2, state.group.group_momentum), 0, 100);
-    state.resources.money = clamp(state.resources.money - (isWeekend(nextWeekday) ? 90 : 140), 0, 9999);
-    state.hero.burnout = clamp(state.hero.burnout + (state.resources.energy < 28 ? 5 : -2) + (state.resources.stress > 68 ? 4 : 0), 0, 100);
-
-    if (state.resources.money <= 180) {
-      state.resources.stress = clamp(state.resources.stress + 8, 0, 100);
-      pushFeed(state, 'Деньги впритык', 'Быт снова жрёт голову. Если ещё пару дней так, придётся уходить в подработку без вариантов.');
-    }
-
-    unlockStateChanges(state);
-  }
-
-  const actions = [
-    {
-      id: 'sleep_early',
-      title: 'Лечь пораньше',
-      effect: 'Восстановить силы и немного снять стресс.',
-      cost: 'Вечер уходит целиком, проект и люди стоят на месте.',
-      available: function () {
-        return { ok: true, reason: 'Иногда лучший ход - не героизм, а сон.' };
-      },
-      apply: function (state) {
-        state.resources.energy = clamp(state.resources.energy + 18, 0, 100);
-        state.resources.stress = clamp(state.resources.stress - 12, 0, 100);
-        state.hero.stability = clamp(state.hero.stability + 2, 0, 100);
-        state.hero.burnout = clamp(state.hero.burnout - 5, 0, 100);
-        pushFeed(state, 'Ранний отбой', PLAYER_NAME + ' выбрал не ломать себя об вечер. Иногда это и есть полезный ход.');
-      },
-    },
-    {
-      id: 'take_small_side_gig',
-      title: 'Взять мелкую подработку',
-      effect: 'Подлатать деньги ценой сил и нервов.',
-      cost: 'Минус энергия, плюс бытовая усталость.',
-      available: function (state) {
-        if (state.resources.energy < 24) {
-          return { ok: false, reason: 'С такой энергией подработка превратится в самоубийство.' };
-        }
-
-        return { ok: true, reason: 'Доступно почти всегда, пока держишься на ногах.' };
-      },
-      apply: function (state) {
-        state.resources.money = clamp(state.resources.money + 380, 0, 9999);
-        state.resources.energy = clamp(state.resources.energy - 14, 0, 100);
-        state.resources.stress = clamp(state.resources.stress + 9, 0, 100);
-        state.resources.impulse = clamp(state.resources.impulse - 4, 0, 100);
-        state.hero.burnout = clamp(state.hero.burnout + 4, 0, 100);
-        pushFeed(state, 'Подработка закрыла дыру', 'Деньги пришли, но вечер снова ушёл не в мечту, а в выживание.');
-      },
-    },
-    {
-      id: 'capture_project_notes',
-      title: 'Записать и собрать мысли',
-      effect: 'Подвинуть ясность проекта и укрепить рабочий угол.',
-      cost: 'Требует энергии и не решает денежную боль.',
-      available: function (state) {
-        if (state.resources.energy < 34) {
-          return { ok: false, reason: 'Голова уже не держит проектный вечер.' };
-        }
-
-        if (state.resources.stress > 82) {
-          return { ok: false, reason: 'Сначала снизь перегруз. Иначе вечер уйдёт в тупое залипание.' };
-        }
-
-        return { ok: true, reason: 'Безопасный проектный шаг, пока ещё нечего показывать.' };
-      },
-      apply: function (state) {
-        state.project.seed = clamp(state.project.seed + 1, 0, 100);
-        state.project.clarity = clamp(state.project.clarity + 2, 0, 100);
-        state.project.last_action = 'capture_project_notes';
-        state.resources.energy = clamp(state.resources.energy - 11, 0, 100);
-        state.resources.impulse = clamp(state.resources.impulse + 7, 0, 100);
-        state.resources.stress = clamp(state.resources.stress + 2, 0, 100);
-        state.room.project_corner = clamp(state.room.project_corner + 2, 0, 100);
-        state.hero.has_acknowledged_idea = true;
-        if (state.project.clarity >= 6) {
-          state.project.prototype_quality = clamp(state.project.prototype_quality + 1, 0, 100);
-        }
-        if (state.project.clarity >= 7) {
-          state.project.showable_build = true;
-        }
-        pushFeed(state, 'Собраны заметки', 'Идея стала плотнее. Это ещё не билд, но уже не просто тоска о несделанном.');
-      },
-    },
-    {
-      id: 'message_max',
-      title: 'Написать Максу',
-      effect: 'Подогреть связь и вернуть себе импульс.',
-      cost: 'Не даёт денег и требует социального ресурса.',
-      available: function (state) {
-        if (!state.relationships.max.introduced) {
-          return { ok: false, reason: 'Макс ещё не вошёл в этот цикл.' };
-        }
-
-        if (state.resources.energy < 28) {
-          return { ok: false, reason: 'На живой контакт сегодня уже не хватит внутренней батарейки.' };
-        }
-
-        return { ok: true, reason: 'Низкий порог входа в восстановление старой связи.' };
-      },
-      apply: function (state) {
-        state.relationships.max.bond = clamp(state.relationships.max.bond + 1, 0, 10);
-        state.relationships.max.last_interaction_day = state.calendar.day;
-        state.resources.energy = clamp(state.resources.energy - 6, 0, 100);
-        state.resources.impulse = clamp(state.resources.impulse + 8, 0, 100);
-        state.resources.stress = clamp(state.resources.stress - 5, 0, 100);
-        if (state.project.clarity >= 3) {
-          state.group.shared_context = clamp(state.group.shared_context + 1, 0, 10);
-        }
-        pushFeed(state, 'Макс ответил', 'Разговор короткий, но живой. Появилось ощущение, что это всё ещё можно делать не в одиночку.');
-      },
-    },
-    {
-      id: 'friday_hangout',
-      title: 'Пойти на пятничную посиделку',
-      effect: 'Сдвинуть круг друзей, а не только одного человека.',
-      cost: 'Доступно только по пятницам и требует приличного остатка сил.',
-      available: function (state) {
-        if (state.calendar.weekday !== 'friday') {
-          return { ok: false, reason: 'Сейчас не пятница. До живого ритуала круга ещё надо дожить.' };
-        }
-
-        if (state.resources.energy < 32) {
-          return { ok: false, reason: 'На посиделку надо прийти живым, а не пустой оболочкой.' };
-        }
-
-        if (state.resources.money < 120) {
-          return { ok: false, reason: 'Даже на такой вечер нужен небольшой бытовой запас.' };
-        }
-
-        return { ok: true, reason: 'Главный групповой шаг раннего slice.' };
-      },
-      apply: function (state) {
-        state.group.circle_trust = clamp(state.group.circle_trust + 2, 0, 10);
-        state.group.shared_context = clamp(state.group.shared_context + 2, 0, 10);
-        state.group.group_momentum = clamp(state.group.group_momentum + 1, 0, 10);
-        state.relationships.kostya.bond = clamp(state.relationships.kostya.bond + 1, 0, 10);
-        state.relationships.ilya.bond = clamp(state.relationships.ilya.bond + 1, 0, 10);
-        state.relationships.kostya.last_interaction_day = state.calendar.day;
-        state.relationships.ilya.last_interaction_day = state.calendar.day;
-        state.resources.energy = clamp(state.resources.energy - 10, 0, 100);
-        state.resources.money = clamp(state.resources.money - 140, 0, 9999);
-        state.resources.impulse = clamp(state.resources.impulse + 10, 0, 100);
-        state.resources.stress = clamp(state.resources.stress - 4, 0, 100);
-        state.room.comfort = clamp(state.room.comfort + 1, 0, 100);
-        pushFeed(state, 'Пятничный ритуал сработал', 'Костя и Илья снова стали не фоном, а настоящим кругом. Вечер не про продуктивность, а про "мы".');
-      },
-    },
-  ];
-
-  function renderStatus(state) {
-    elements.dayTitle.textContent = WEEKDAY_LABELS[state.calendar.weekday] + ', день ' + state.calendar.day;
-    elements.phaseBadge.textContent = 'Вечер';
-    elements.dayMood.textContent = describeDayMood(state);
-    elements.statusStats.innerHTML = [
-      statChip('Энергия', state.resources.energy),
-      statChip('Деньги', state.resources.money + ' ₽'),
-      statChip('Импульс', state.resources.impulse),
-      statChip('Стресс', state.resources.stress),
-      statChip('Вечер', state.resources.time_evening + ' окна'),
-      statChip('Выгорание', state.hero.burnout),
+  function renderHud(currentState) {
+    elements.hudDay.textContent = WEEKDAY_LABELS[currentState.calendar.weekday] + ', день ' + currentState.calendar.day;
+    elements.cycleStatus.textContent = describeCycleStatus(currentState);
+    elements.hudStats.innerHTML = [
+      statChip('life_mode', currentState.hero.life_mode),
+      statChip('Деньги', currentState.resources.money + ' ₽'),
+      statChip('Энергия', currentState.resources.energy),
+      statChip('Focus', currentState.resources.focus),
+      statChip('Mood', currentState.resources.mood),
+      statChip('Stress', currentState.resources.stress)
     ].join('');
   }
 
-  function renderRoom(state) {
-    elements.roomTitle.textContent = state.room.project_corner >= 26 ? 'Комната начинает работать на тебя' : 'Съёмная комната и шаткая стабильность';
-    elements.roomSummary.textContent = describeRoom(state);
+  function renderRoom(currentState) {
+    elements.roomTitle.textContent = currentState.room.order > 52 ? 'Комната начинает держать цикл' : 'Комната всё ещё спорит с жизнью героя';
+    elements.roomMoodTag.textContent = currentState.room.order < 28 ? 'decline' : (currentState.room.order > 52 ? 'stable' : 'шатко');
+    elements.roomSummary.textContent = describeRoom(currentState);
     elements.roomStats.innerHTML = [
-      '<span class="s1-tag">Уют: ' + state.room.comfort + '</span>',
-      '<span class="s1-tag">Порядок: ' + state.room.order + '</span>',
-      '<span class="s1-tag">Project corner: ' + state.room.project_corner + '</span>',
-      '<span class="s1-tag ' + (state.room.upgrades.desk_lamp ? 'is-good' : '') + '">Лампа: ' + (state.room.upgrades.desk_lamp ? 'есть' : 'нет') + '</span>',
-      '<span class="s1-tag ' + (state.room.upgrades.second_monitor ? 'is-good' : '') + '">2-й монитор: ' + (state.room.upgrades.second_monitor ? 'есть' : 'нет') + '</span>',
+      '<span class="s1-tag">Order: ' + currentState.room.order + '</span>',
+      '<span class="s1-tag">Comfort: ' + currentState.room.comfort + '</span>',
+      '<span class="s1-tag">Project corner: ' + currentState.room.project_corner + '</span>',
+      '<span class="s1-tag">Stability: ' + currentState.hero.stability + '</span>'
     ].join('');
+    elements.roomStage.dataset.mood = currentState.room.order < 28 ? 'decline' : (currentState.room.order > 52 ? 'stable' : 'mixed');
   }
 
-  function renderProject(state) {
-    elements.projectTitle.textContent = state.project.showable_build ? 'Есть что показать' : (state.project.clarity >= 4 ? 'Идея собирается' : 'Идея ещё сырая');
-    elements.projectSummary.textContent = describeProject(state);
+  function renderResults(currentState) {
+    elements.lastTickInfo.textContent = currentState.system.last_tick_label;
+    elements.resultsRail.innerHTML = [
+      { label: 'money_delta', value: formatDelta(currentState.results.money_delta, ' ₽') },
+      { label: 'energy_delta', value: formatDelta(currentState.results.energy_delta) },
+      { label: 'project_delta', value: formatDelta(currentState.results.project_delta) },
+      { label: 'bond_delta', value: formatDelta(currentState.results.bond_delta) },
+      { label: 'room_delta', value: formatDelta(currentState.results.room_delta) }
+    ].map(function (item) {
+      return '<article class="s1-result-card"><small>' + item.label + '</small><strong>' + item.value + '</strong></article>';
+    }).join('');
+  }
+
+  function renderControls(currentState) {
+    elements.lifeModeControl.innerHTML = LIFE_MODES.map(function (mode) {
+      return '<button class="s1-segment-button ' + (currentState.hero.life_mode === mode.id ? 'is-active' : '') + '" type="button" data-life-mode="' + mode.id + '">' + mode.label + '</button>';
+    }).join('');
+
+    elements.slotControls.innerHTML = [0, 1].map(function (slotIndex) {
+      const locked = slotIndex === 1 && !isSecondSlotUnlocked(currentState);
+      const options = SLOT_OPTIONS.map(function (option) {
+        return '<option value="' + option.id + '"' + (currentState.routine.evening_slots[slotIndex] === option.id ? ' selected' : '') + '>' + option.label + '</option>';
+      }).join('');
+      return '<label class="s1-slot-card ' + (locked ? 'is-locked' : '') + '"><span>Слот ' + (slotIndex + 1) + (locked ? ' · заблокирован состоянием' : '') + '</span><select data-slot-index="' + slotIndex + '"' + (locked ? ' disabled' : '') + '>' + options + '</select></label>';
+    }).join('');
+
+    elements.projectFocusControl.innerHTML = PROJECT_FOCUSES.map(function (focus) {
+      return '<button class="s1-segment-button ' + (currentState.routine.project_focus === focus.id ? 'is-active' : '') + '" type="button" data-project-focus="' + focus.id + '">' + focus.label + '</button>';
+    }).join('');
+
+    elements.socialPriorityControl.innerHTML = PEOPLE.map(function (person) {
+      const relation = currentState.relationships[person.id];
+      const introduced = relation && relation.introduced;
+      const active = currentState.routine.social_priority.indexOf(person.id) !== -1;
+      return '<button class="s1-priority-chip ' + (active ? 'is-active' : '') + '" type="button" data-priority-id="' + person.id + '"' + (introduced ? '' : ' disabled') + '>' + person.name + '</button>';
+    }).join('');
+  }
+
+  function renderProject(currentState) {
+    elements.projectTitle.textContent = (currentState.project.clarity + currentState.project.prototype + currentState.project.quality) > 18 ? 'Проект поехал как система' : 'Проект ещё требует ручной дисциплины';
+    elements.projectTag.textContent = currentState.routine.project_focus;
+    elements.projectSummary.textContent = describeProject(currentState);
     elements.projectStats.innerHTML = [
-      '<span class="s1-tag">Seed: ' + state.project.seed + '</span>',
-      '<span class="s1-tag">Clarity: ' + state.project.clarity + '</span>',
-      '<span class="s1-tag">Качество: ' + state.project.prototype_quality + '</span>',
-      '<span class="s1-tag ' + (state.project.showable_build ? 'is-good' : 'is-risk') + '">Показывать: ' + (state.project.showable_build ? 'можно' : 'рано') + '</span>',
+      '<span class="s1-tag">Clarity: ' + currentState.project.clarity + '</span>',
+      '<span class="s1-tag">Build: ' + currentState.project.prototype + '</span>',
+      '<span class="s1-tag">Polish: ' + currentState.project.quality + '</span>',
+      '<span class="s1-tag">Show: ' + currentState.project.showability + '</span>'
     ].join('');
   }
 
-  function renderPeople(state) {
-    const people = [
-      { id: 'max', name: 'Макс', role: 'Старый диджей и тёплый контакт' },
-      { id: 'kostya', name: 'Костя', role: 'Пятничная опора круга' },
-      { id: 'ilya', name: 'Илья', role: 'Живая связь старой тройки' },
-      { id: 'zhora', name: 'Жора', role: 'Внешний взгляд и память о старом безумии' },
-      { id: 'zheka', name: 'Жека', role: 'Потенциальный технический союзник' },
-    ];
-
-    elements.peopleList.innerHTML = people.map(function (person) {
-      const relation = state.relationships[person.id];
-      const unlocked = relation.introduced;
-      return '' +
-        '<article class="s1-person-card">' +
-          '<h3>' + person.name + '</h3>' +
-          '<p>' + person.role + '</p>' +
-          '<div class="s1-person-meta">' +
-            '<span class="s1-tag">' + (unlocked ? 'Связь: ' + relation.bond : 'Пока закрыт') + '</span>' +
-            '<span class="s1-tag ' + (unlocked ? 'is-good' : 'is-risk') + '">' + relationshipStatus(relation, state) + '</span>' +
-          '</div>' +
-        '</article>';
+  function renderPeople(currentState) {
+    elements.groupStats.innerHTML = [
+      '<span class="s1-tag">circle_trust: ' + currentState.group.circle_trust + '</span>',
+      '<span class="s1-tag">group_momentum: ' + currentState.group.group_momentum + '</span>'
+    ].join('');
+    elements.peopleList.innerHTML = PEOPLE.map(function (person) {
+      const relation = currentState.relationships[person.id];
+      const introduced = relation && relation.introduced;
+      const readyText = introduced ? 'readiness: ' + relation.readiness : 'пока не в цикле';
+      return '<article class="s1-person-card"><h3>' + person.name + '</h3><p>' + person.role + '</p><div class="s1-person-meta"><span class="s1-tag">' + (introduced ? 'bond: ' + relation.bond : 'locked') + '</span><span class="s1-tag ' + (introduced ? 'is-good' : 'is-risk') + '">' + readyText + '</span></div></article>';
     }).join('');
   }
 
-  function renderActions(state) {
-    elements.actionsList.innerHTML = actions.map(function (action) {
-      const availability = action.available(state);
-      return '' +
-        '<article class="s1-action-card ' + (availability.ok ? '' : 'is-locked') + '">' +
-          '<div>' +
-            '<h3>' + action.title + '</h3>' +
-            '<p>' + action.effect + '</p>' +
-            '<div class="s1-action-meta">' +
-              '<span class="s1-tag">Эффект</span>' +
-              '<span class="s1-tag">' + action.cost + '</span>' +
-              '<span class="s1-tag ' + (availability.ok ? 'is-good' : 'is-risk') + '">' + availability.reason + '</span>' +
-            '</div>' +
-          '</div>' +
-          '<button class="s1-action-button" type="button" data-action-id="' + action.id + '"' + (availability.ok ? '' : ' disabled') + '>Выбрать</button>' +
-        '</article>';
+  function renderAlerts(currentState) {
+    const derived = deriveAlerts(currentState);
+    elements.alertList.innerHTML = derived.alerts.length === 0
+      ? '<div class="s1-alert-card is-positive">Критических alerts нет. Это редкость, но пока держится.</div>'
+      : derived.alerts.map(function (item) { return '<div class="s1-alert-card is-alert">' + item.text + '</div>'; }).join('');
+    elements.positiveList.innerHTML = derived.positives.length === 0
+      ? '<div class="s1-alert-card">Положительные устойчивые состояния ещё не закрепились.</div>'
+      : derived.positives.map(function (item) { return '<div class="s1-alert-card is-positive">' + item.text + '</div>'; }).join('');
+  }
+
+  function renderFeed(currentState) {
+    elements.feedList.innerHTML = currentState.content.feed.map(function (item) {
+      return '<article class="s1-feed-item"><small>' + WEEKDAY_LABELS[item.weekday] + ' · день ' + item.day + '</small><h3>' + item.title + '</h3><p>' + item.text + '</p></article>';
     }).join('');
   }
 
-  function renderFeed(state) {
-    elements.feedList.innerHTML = state.content.feed.map(function (item) {
-      return '' +
-        '<article class="s1-feed-item">' +
-          '<small>' + WEEKDAY_LABELS[item.weekday] + ' · день ' + item.day + '</small>' +
-          '<h3>' + item.title + '</h3>' +
-          '<p>' + item.text + '</p>' +
-        '</article>';
-    }).join('');
+  function render(currentState) {
+    renderHud(currentState);
+    renderRoom(currentState);
+    renderResults(currentState);
+    renderControls(currentState);
+    renderProject(currentState);
+    renderPeople(currentState);
+    renderAlerts(currentState);
+    renderFeed(currentState);
   }
 
-  function render(state) {
-    renderStatus(state);
-    renderRoom(state);
-    renderProject(state);
-    renderPeople(state);
-    renderActions(state);
-    renderFeed(state);
-  }
-
-  function resolveAction(actionId) {
-    const action = actions.find(function (entry) {
-      return entry.id === actionId;
-    });
-    if (!action) {
-      return;
+  function togglePriority(currentState, personId) {
+    const current = currentState.routine.social_priority.slice();
+    const index = current.indexOf(personId);
+    if (index !== -1) {
+      current.splice(index, 1);
+    } else if (current.length < 2) {
+      current.push(personId);
+    } else {
+      current.shift();
+      current.push(personId);
     }
-
-    const availability = action.available(state);
-    if (!availability.ok) {
-      return;
-    }
-
-    const nextState = deepClone(state);
-    action.apply(nextState);
-    applyDailyPressure(nextState);
-    state = nextState;
-    saveState(state);
-    render(state);
+    currentState.routine.social_priority = current;
   }
 
   let state = loadState();
+  processAutoTicks(state, false);
   saveState(state);
   render(state);
 
-  elements.actionsList.addEventListener('click', function (event) {
-    const button = event.target.closest('[data-action-id]');
-    if (!button) {
-      return;
-    }
-
-    resolveAction(button.getAttribute('data-action-id'));
+  elements.runCycleNow.addEventListener('click', function () {
+    processAutoTicks(state, true);
+    saveState(state);
+    render(state);
   });
 
   elements.resetRun.addEventListener('click', function () {
@@ -535,4 +538,51 @@
     saveState(state);
     render(state);
   });
+
+  elements.lifeModeControl.addEventListener('click', function (event) {
+    const button = event.target.closest('[data-life-mode]');
+    if (!button) {
+      return;
+    }
+    state.hero.life_mode = button.getAttribute('data-life-mode');
+    saveState(state);
+    render(state);
+  });
+
+  elements.slotControls.addEventListener('change', function (event) {
+    const select = event.target.closest('[data-slot-index]');
+    if (!select) {
+      return;
+    }
+    state.routine.evening_slots[Number(select.getAttribute('data-slot-index'))] = select.value;
+    saveState(state);
+    render(state);
+  });
+
+  elements.projectFocusControl.addEventListener('click', function (event) {
+    const button = event.target.closest('[data-project-focus]');
+    if (!button) {
+      return;
+    }
+    state.routine.project_focus = button.getAttribute('data-project-focus');
+    saveState(state);
+    render(state);
+  });
+
+  elements.socialPriorityControl.addEventListener('click', function (event) {
+    const button = event.target.closest('[data-priority-id]');
+    if (!button) {
+      return;
+    }
+    togglePriority(state, button.getAttribute('data-priority-id'));
+    saveState(state);
+    render(state);
+  });
+
+  window.setInterval(function () {
+    if (processAutoTicks(state, false)) {
+      saveState(state);
+      render(state);
+    }
+  }, 5000);
 }());

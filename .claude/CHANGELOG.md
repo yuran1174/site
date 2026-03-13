@@ -1,3 +1,24 @@
+## 2026-03-13 — Закрыт TASK-076: `season1.php` переведён в первый рабочий idle-slice
+
+**Что сделано:**
+- `season1.php` и Laravel view для season 1 пересобраны из day-sim экрана в idle-first главный экран с `Top HUD`, `Room Stage`, `Idle Results Rail`, `Routine Controls Panel`, `Project Panel`, `People / Circle Panel`, `Cycle Alerts` и narrative feed
+- `season1.js` заменён на новый idle runtime с `life_mode`, двумя evening slots, `project_focus`, social priority, auto-tick loop, оффлайн-догоном циклов, локальным сохранением и character-driven modifiers
+- `season1.css` обновлён под новый layout и состояния room/results/alerts
+- Feature test на `/season1.php` обновлён под новый idle-contract
+
+**Файлы затронуты:**
+- `season1.php` (обновлён)
+- `laravel/resources/views/legacy/pages/season1.php` (обновлён)
+- `js/season1.js` (обновлён)
+- `public/js/season1.js` (обновлён)
+- `css/season1.css` (обновлён)
+- `public/css/season1.css` (обновлён)
+- `laravel/tests/Feature/LegacyGameplayPagesTest.php` (обновлён)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
 ## 2026-03-13 — Агент Game Developer пересобран под новую idle-логику season 1
 
 **Что сделано:**
@@ -11,48 +32,7 @@
 - `.claude/CHANGELOG.md` (обновлён)
 
 ---
-## 2026-03-13 — Закрыт TASK-075: собран idle main screen spec для season 1
 
-**Что сделано:**
-- Добавлен `docs/game/season-1-idle-main-screen-spec.md`, который переводит новый season 1 idle-вектор в конкретный экранный контракт главного экрана
-- Зафиксированы `Top HUD`, `Room Stage`, `Idle Results Rail`, `Routine Controls Panel`, `Project Panel`, `People / Circle Panel`, `Cycle Alerts` и пользовательский маршрут короткой сессии
-- Отдельно описаны visual pillar, desktop/mobile layout и MVP cut для первой экранной реализации
-- В `TODO.md` добавлена и закрыта задача `TASK-075`
-
-**Файлы затронуты:**
-- `docs/game/season-1-idle-main-screen-spec.md` (создан)
-- `TODO.md` (обновлён)
-- `.claude/CHANGELOG.md` (обновлён)
-
----
-## 2026-03-13 — Закрыт TASK-074: собран idle core loop spec для season 1
-
-**Что сделано:**
-- Добавлен `docs/game/season-1-idle-core-loop-spec.md`, который переводит новый season 1 idle-вектор в конкретный механический контракт
-- Зафиксированы фазы полного idle-цикла, `life_mode`, вечерние слоты, project/social priorities, auto-ticks, caps, аварийные состояния и positive states
-- Отдельно описан короткий возвратный цикл игрока и MVP-версия core loop для первого рабочего прототипа
-- В `TODO.md` добавлена и закрыта задача `TASK-074`
-
-**Файлы затронуты:**
-- `docs/game/season-1-idle-core-loop-spec.md` (создан)
-- `TODO.md` (обновлён)
-- `.claude/CHANGELOG.md` (обновлён)
-
----
-## 2026-03-13 — Закрыт TASK-073: зафиксирован idle redesign framework для season 1
-
-**Что сделано:**
-- Добавлен `docs/game/season-1-idle-redesign-framework.md`, который разворачивает season 1 обратно в сторону новой idle-игры вместо life-sim/hybrid модели
-- Зафиксированы новый product thesis, core idle loop, управляемые игроком рутины, авто-тикающие ресурсы и роль сценария как системного unlock-слоя поверх idle
-- Отдельно описан визуальный столп pixel-art life-management игры с референсной зоной в сторону `Punch Club`
-- В `TODO.md` добавлена и закрыта задача `TASK-073`
-
-**Файлы затронуты:**
-- `docs/game/season-1-idle-redesign-framework.md` (создан)
-- `TODO.md` (обновлён)
-- `.claude/CHANGELOG.md` (обновлён)
-
----
 ## 2026-03-13 — Исправлен прямой запуск `season1.php` без зависимости от Laravel routing
 
 **Что сделано:**
@@ -87,6 +67,51 @@
 - `public/css/season1.css` (создан)
 - `js/season1.js` (создан)
 - `public/js/season1.js` (создан)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
+## 2026-03-13 — Закрыт TASK-075: собран idle main screen spec для season 1
+
+**Что сделано:**
+- Добавлен `docs/game/season-1-idle-main-screen-spec.md`, который переводит новый season 1 idle-вектор в конкретный экранный контракт главного экрана
+- Зафиксированы `Top HUD`, `Room Stage`, `Idle Results Rail`, `Routine Controls Panel`, `Project Panel`, `People / Circle Panel`, `Cycle Alerts` и пользовательский маршрут короткой сессии
+- Отдельно описаны visual pillar, desktop/mobile layout и MVP cut для первой экранной реализации
+- В `TODO.md` добавлена и закрыта задача `TASK-075`
+
+**Файлы затронуты:**
+- `docs/game/season-1-idle-main-screen-spec.md` (создан)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
+## 2026-03-13 — Закрыт TASK-074: собран idle core loop spec для season 1
+
+**Что сделано:**
+- Добавлен `docs/game/season-1-idle-core-loop-spec.md`, который переводит новый season 1 idle-вектор в конкретный механический контракт
+- Зафиксированы фазы полного idle-цикла, `life_mode`, вечерние слоты, project/social priorities, auto-ticks, caps, аварийные состояния и positive states
+- Отдельно описан короткий возвратный цикл игрока и MVP-версия core loop для первого рабочего прототипа
+- В `TODO.md` добавлена и закрыта задача `TASK-074`
+
+**Файлы затронуты:**
+- `docs/game/season-1-idle-core-loop-spec.md` (создан)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
+## 2026-03-13 — Закрыт TASK-073: зафиксирован idle redesign framework для season 1
+
+**Что сделано:**
+- Добавлен `docs/game/season-1-idle-redesign-framework.md`, который разворачивает season 1 обратно в сторону новой idle-игры вместо life-sim/hybrid модели
+- Зафиксированы новый product thesis, core idle loop, управляемые игроком рутины, авто-тикающие ресурсы и роль сценария как системного unlock-слоя поверх idle
+- Отдельно описан визуальный столп pixel-art life-management игры с референсной зоной в сторону `Punch Club`
+- В `TODO.md` добавлена и закрыта задача `TASK-073`
+
+**Файлы затронуты:**
+- `docs/game/season-1-idle-redesign-framework.md` (создан)
 - `TODO.md` (обновлён)
 - `.claude/CHANGELOG.md` (обновлён)
 

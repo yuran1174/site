@@ -88,8 +88,9 @@ final class LegacyGameplayPagesTest extends TestCase
 
         $response
             ->assertOk()
-            ->assertSee('Season 1: Скуф-пати', false)
+            ->assertSee('Season 1: Скуф-пати Idle', false)
             ->assertSee('/season1.php', false)
-            ->assertSee('Выбери один главный шаг', false);
+            ->assertSee('Routine Controls Panel', false)
+            ->assertSee('Idle Results Rail', false);
     }
 }

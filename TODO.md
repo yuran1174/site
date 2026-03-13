@@ -924,7 +924,6 @@
   - каталог покрывает базовый вечерний выбор игрока
   - определён минимальный action set для ранней реализации
 
-### TASK-072 — Собрать первый playable vertical slice season 1
 ### TASK-073 — Зафиксировать idle redesign framework для season 1
 - Status: `done`
 - Note: создан `docs/game/season-1-idle-redesign-framework.md`; зафиксирован разворот от life-sim/hybrid в сторону character-driven idle-management игры под season 1 с референсом на атмосферу и продуктовую зону `Punch Club`.
@@ -942,7 +941,9 @@
   - `docs/game/season-1-idle-redesign-framework.md`
 - Acceptance Criteria:
   - ясно, что новая версия остаётся idle-игрой
-- Status: `done`
+  - описано, чем игрок управляет и что тикает само
+  - зафиксировано, как сценарий влияет на idle-loop, а не заменяет его
+
 ### TASK-074 — Собрать idle core loop spec для season 1
 - Status: `done`
 - Note: создан `docs/game/season-1-idle-core-loop-spec.md`; зафиксированы life modes, вечерние слоты, project/social priorities, auto-ticks, аварийные состояния, положительные устойчивые состояния и полный idle-цикл новой версии игры.
@@ -960,8 +961,9 @@
   - `docs/game/season-1-idle-core-loop-spec.md`
 - Acceptance Criteria:
   - ясно, из каких фаз состоит новый idle-loop
-- Note: добавлены отдельный entrypoint `/season1.php`, Laravel page adapter, изолированный UI/runtime vertical slice и feature test; реализованы 5 действий, day resolution loop, локальный state в `localStorage` и базовые unlock/guard conditions без вмешательства в `idle.php`.
-- Priority: `P1`
+  - описано, что тикает само и чем управляет игрок
+  - зафиксированы MVP caps, risks и positive states
+
 ### TASK-075 — Собрать idle main screen spec для season 1
 - Status: `done`
 - Note: создан `docs/game/season-1-idle-main-screen-spec.md`; зафиксирован главный экран новой idle-версии игры как pixel-life dashboard с `Room Stage`, `Routine Controls Panel`, `Idle Results Rail`, `Project Panel`, `People/Circle Panel` и `Cycle Alerts`.
@@ -979,6 +981,34 @@
   - `docs/game/season-1-idle-main-screen-spec.md`
 - Acceptance Criteria:
   - ясно, какие зоны есть на главном экране и зачем
+  - описано, что игрок видит первым и чем управляет
+  - зафиксирован MVP cut главного экрана новой idle-версии
+
+### TASK-076 — Собрать первый рабочий idle-slice season 1
+  - Status: `done`
+- Priority: `P1`
+- Agent: `Game Developer`
+- Goal: превратить `season1.php` в рабочий `character-driven life-management idle` vertical slice
+- Scope:
+  - безопасный entrypoint новой idle-версии
+  - Top HUD, Room Stage, Idle Results Rail, Routine Controls Panel, Project Panel, People/Circle Panel, Cycle Alerts
+  - life modes, evening slots, project focus, social priority
+  - auto-tick loop и result layer
+  - meaningful idle modifiers минимум через 2-3 персонажей
+- Deliverables:
+  - playable idle-slice новой версии season 1
+  - auto-tick runtime и локальное сохранение состояния
+  - smoke/regression проверка entrypoint
+- Acceptance Criteria:
+  - новая версия ощущается как idle-игра, а не ручной daily sim
+  - auto-ticks реально меняют состояние
+  - игрок перенастраивает цикл, а не проживает каждый шаг вручную
+  - старая игра и `idle.php` не сломаны
+
+### TASK-072 — Собрать первый playable vertical slice season 1
+- Status: `done`
+- Note: добавлены отдельный entrypoint `/season1.php`, Laravel page adapter, изолированный UI/runtime vertical slice и feature test; реализованы 5 действий, day resolution loop, локальный state в `localStorage` и базовые unlock/guard conditions без вмешательства в `idle.php`.
+- Priority: `P1`
 - Agent: `Game Developer`
 - Goal: поднять отдельный entrypoint новой игры и проверить day loop на реальном playable-срезе
 - Scope:
@@ -1369,7 +1399,7 @@
 7. `TASK-023` -> `TASK-024` -> `TASK-025` -> `TASK-026`
 8. `TASK-031` -> `TASK-032` -> `TASK-033` -> `TASK-034`
 9. `TASK-035` -> `TASK-036` -> `TASK-037`
-10. `TASK-038` -> `TASK-039` -> `TASK-040` -> `TASK-061` -> `TASK-062` -> `TASK-063` -> `TASK-064` -> `TASK-065` -> `TASK-066` -> `TASK-067` -> `TASK-068` -> `TASK-069` -> `TASK-070` -> `TASK-071` -> `TASK-072` -> `TASK-073`
+10. `TASK-038` -> `TASK-039` -> `TASK-040` -> `TASK-061` -> `TASK-062` -> `TASK-063` -> `TASK-064` -> `TASK-065` -> `TASK-066` -> `TASK-067` -> `TASK-068` -> `TASK-069` -> `TASK-070` -> `TASK-071` -> `TASK-072` -> `TASK-073` -> `TASK-074`
 11. `TASK-041` -> `TASK-042` -> `TASK-043`
 12. `TASK-044` -> `TASK-045` -> `TASK-046` -> `TASK-047` -> `TASK-048` -> `TASK-049` -> `TASK-050` -> `TASK-051`
 13. `TASK-053` -> `TASK-054` -> `TASK-055` -> `TASK-056` -> `TASK-057` -> `TASK-058` -> `TASK-059` -> `TASK-060` -> `TASK-052`

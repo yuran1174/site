@@ -1,3 +1,17 @@
+## 2026-03-13 — Исправлен прямой запуск `season1.php` без зависимости от Laravel routing
+
+**Что сделано:**
+- Корневой `season1.php` переведён на прямой PHP-render страницы через существующий project bootstrap и shared assets
+- `public/season1.php` теперь подключает корневой `season1.php`, чтобы новый slice открывался и при web root в корне, и при web root в `public/`
+- Убрана зависимость браузерного открытия нового vertical slice от локальной конфигурации Laravel route handling
+
+**Файлы затронуты:**
+- `season1.php` (обновлён)
+- `public/season1.php` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
 ## 2026-03-13 — Закрыт TASK-072: собран первый playable vertical slice season 1
 
 **Что сделано:**

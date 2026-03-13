@@ -1,3 +1,18 @@
+## 2026-03-13 — Закрыт TASK-070: зафиксирован legacy systems cut list для новой игры
+
+**Что сделано:**
+- Добавлен `docs/game/season-1-legacy-cut-list.md`, где legacy-страницы, валюты, режимы и прогресс-системы разобраны на статусы `удалить`, `не переносить в runtime`, `переиспользовать как технический слой` и `переосмыслить позже`
+- Явно зафиксировано, что old idle loop, LOC, OO, prestige, prestige shop, абстрактные юниты и production multipliers не являются частью новой игры сезона 1
+- Отдельно зафиксировано, что auth, save/load, security, analytics storage discipline и routing/Laravel work сохраняются как инфраструктурный слой
+- В `TODO.md` добавлена и закрыта задача `TASK-070`
+
+**Файлы затронуты:**
+- `docs/game/season-1-legacy-cut-list.md` (создан)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
 ## 2026-03-13 — Закрыт TASK-069: собрана information architecture главного экрана season 1
 
 **Что сделано:**

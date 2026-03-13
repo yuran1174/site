@@ -887,6 +887,23 @@
 - Acceptance Criteria:
   - user data notice
 - Deliverables:
+
+### TASK-070 — Зафиксировать legacy systems cut list для новой версии игры
+- Status: `done`
+- Note: создан `docs/game/season-1-legacy-cut-list.md`, где текущие системы, страницы, валюты и режимы проекта разобраны на категории `удалить`, `не переносить в runtime`, `переиспользовать как технический слой` и `переосмыслить позже` для перехода к новой игре сезона 1.
+- Priority: `P1`
+- Agent: `Game Systems`
+- Goal: убрать двусмысленность в переходе от старой idle-игры к новой системе сезона 1
+- Scope:
+  - current pages and modes
+  - currencies and progression systems
+  - UI surfaces
+  - backend/save layers
+  - reuse vs removal decisions
+- Deliverables:
+  - `docs/game/season-1-legacy-cut-list.md`
+- Acceptance Criteria:
+  - команде ясно, что больше не является частью новой игры
   - legal docs drafts
 - Acceptance Criteria:
   - есть минимальный набор документов для публичной эксплуатации

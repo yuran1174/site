@@ -779,6 +779,23 @@
 - Acceptance Criteria:
   - понятно, какая игра строится из сценария сезона
 
+
+### TASK-064 — Описать цикл одного внутриигрового дня для season 1
+- Status: `done`
+- Note: создан `docs/game/season-1-day-loop.md` с фазами дня, базовыми ресурсами, обязательными решениями, типами активностей, fail states и правилами открытия сцен акта 1 через повседневный ритм героя.
+- Priority: `P1`
+- Agent: `Game Systems`
+- Goal: превратить новый тезис сезона в playable daily loop
+- Scope:
+  - day phases
+  - resource flow
+  - player decisions per day
+  - social/project actions
+  - narrative trigger model для акта 1
+- Deliverables:
+  - `docs/game/season-1-day-loop.md`
+- Acceptance Criteria:
+  - понятно, что игрок делает в течение одного дня
 ### TASK-042 — Подготовить legal minimum
 - Priority: `P3`
 - Agent: `Operations`

@@ -1,3 +1,18 @@
+## 2026-03-13 — Закрыт TASK-068: зафиксирована MVP state schema для season 1
+
+**Что сделано:**
+- Добавлен `docs/game/season-1-mvp-state-schema.md` с минимально достаточной моделью состояния новой игры
+- Зафиксированы обязательные state slices: `calendar`, `resources`, `hero`, `project`, `relationships`, `group`, `room`, `progression`, `content`, `meta`
+- Описаны инварианты, критичные поля для progression акта 1, минимальный save shape и список того, что сознательно не входит в MVP
+- В `TODO.md` добавлена и закрыта задача `TASK-068`
+
+**Файлы затронуты:**
+- `docs/game/season-1-mvp-state-schema.md` (создан)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
 ## 2026-03-13 — Закрыт TASK-067: зафиксировано ядро игры для season 1
 
 **Что сделано:**

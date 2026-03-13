@@ -851,6 +851,22 @@
 - Acceptance Criteria:
 - Goal: снизить юридические риски при публичном запуске
 - Scope:
+
+### TASK-068 — Зафиксировать MVP game state schema для season 1
+- Status: `done`
+- Note: создан `docs/game/season-1-mvp-state-schema.md`, где описаны обязательные state-сущности, ресурсы дня, project/relationship/group/room блоки, progression flags, инварианты и минимальный save-shape для первой итерации новой игры.
+- Priority: `P1`
+- Agent: `Game Systems`
+- Goal: перевести ядро игры в конкретную модель состояния
+- Scope:
+  - state slices
+  - required fields
+  - invariants
+  - save/load shape
+  - MVP exclusions
+- Deliverables:
+  - `docs/game/season-1-mvp-state-schema.md`
+- Acceptance Criteria:
   - privacy policy
   - terms of use
   - user data notice

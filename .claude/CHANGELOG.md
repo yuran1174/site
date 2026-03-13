@@ -1,3 +1,17 @@
+## 2026-03-13 — Закрыт TASK-073: зафиксирован idle redesign framework для season 1
+
+**Что сделано:**
+- Добавлен `docs/game/season-1-idle-redesign-framework.md`, который разворачивает season 1 обратно в сторону новой idle-игры вместо life-sim/hybrid модели
+- Зафиксированы новый product thesis, core idle loop, управляемые игроком рутины, авто-тикающие ресурсы и роль сценария как системного unlock-слоя поверх idle
+- Отдельно описан визуальный столп pixel-art life-management игры с референсной зоной в сторону `Punch Club`
+- В `TODO.md` добавлена и закрыта задача `TASK-073`
+
+**Файлы затронуты:**
+- `docs/game/season-1-idle-redesign-framework.md` (создан)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
 ## 2026-03-13 — Исправлен прямой запуск `season1.php` без зависимости от Laravel routing
 
 **Что сделано:**

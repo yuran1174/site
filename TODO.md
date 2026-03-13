@@ -925,6 +925,23 @@
   - определён минимальный action set для ранней реализации
 
 ### TASK-072 — Собрать первый playable vertical slice season 1
+### TASK-073 — Зафиксировать idle redesign framework для season 1
+- Status: `done`
+- Note: создан `docs/game/season-1-idle-redesign-framework.md`; зафиксирован разворот от life-sim/hybrid в сторону character-driven idle-management игры под season 1 с референсом на атмосферу и продуктовую зону `Punch Club`.
+- Priority: `P1`
+- Agent: `Game Systems`
+- Goal: вернуть season 1 в формат новой idle-игры, а не отдельного life-sim продукта
+- Scope:
+  - новый idle-тезис проекта
+  - core idle loop
+  - управляемые игроком рутины и слоты
+  - авто-тикающие ресурсы и состояния
+  - роль сценария внутри idle-прогрессии
+  - визуальный столп pixel-life fantasy
+- Deliverables:
+  - `docs/game/season-1-idle-redesign-framework.md`
+- Acceptance Criteria:
+  - ясно, что новая версия остаётся idle-игрой
 - Status: `done`
 - Note: добавлены отдельный entrypoint `/season1.php`, Laravel page adapter, изолированный UI/runtime vertical slice и feature test; реализованы 5 действий, day resolution loop, локальный state в `localStorage` и базовые unlock/guard conditions без вмешательства в `idle.php`.
 - Priority: `P1`
@@ -1318,7 +1335,7 @@
 7. `TASK-023` -> `TASK-024` -> `TASK-025` -> `TASK-026`
 8. `TASK-031` -> `TASK-032` -> `TASK-033` -> `TASK-034`
 9. `TASK-035` -> `TASK-036` -> `TASK-037`
-10. `TASK-038` -> `TASK-039` -> `TASK-040` -> `TASK-061` -> `TASK-062` -> `TASK-063` -> `TASK-064` -> `TASK-065` -> `TASK-066` -> `TASK-067` -> `TASK-068` -> `TASK-069` -> `TASK-070` -> `TASK-071`
+10. `TASK-038` -> `TASK-039` -> `TASK-040` -> `TASK-061` -> `TASK-062` -> `TASK-063` -> `TASK-064` -> `TASK-065` -> `TASK-066` -> `TASK-067` -> `TASK-068` -> `TASK-069` -> `TASK-070` -> `TASK-071` -> `TASK-072` -> `TASK-073`
 11. `TASK-041` -> `TASK-042` -> `TASK-043`
 12. `TASK-044` -> `TASK-045` -> `TASK-046` -> `TASK-047` -> `TASK-048` -> `TASK-049` -> `TASK-050` -> `TASK-051`
 13. `TASK-053` -> `TASK-054` -> `TASK-055` -> `TASK-056` -> `TASK-057` -> `TASK-058` -> `TASK-059` -> `TASK-060` -> `TASK-052`

@@ -1,3 +1,18 @@
+## 2026-03-13 — Закрыт TASK-065: персонажи сезона 1 переведены в gameplay-roster
+
+**Что сделано:**
+- Добавлен `docs/game/season-1-character-roster.md`, где Кэш, Макс, Жора, Денис, Жека, Костя и Илья описаны как gameplay-юниты нового типа
+- Для каждого персонажа зафиксированы unlock-логика, системная роль, модификаторы, риски, payoff и потенциал локальной квестовой ветки
+- Введена общая логика roster-системы: relationship tracks, `circle_trust`, `group_momentum` и различие между emotional anchors, structure builders и atmosphere carriers
+- В `TODO.md` добавлена и закрыта задача `TASK-065`
+
+**Файлы затронуты:**
+- `docs/game/season-1-character-roster.md` (создан)
+- `TODO.md` (обновлён)
+- `.claude/CHANGELOG.md` (обновлён)
+
+---
+
 ## 2026-03-13 — Закрыт TASK-064: описан цикл одного внутриигрового дня для season 1
 
 **Что сделано:**

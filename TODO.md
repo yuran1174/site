@@ -797,6 +797,23 @@
 - Acceptance Criteria:
   - понятно, что игрок делает в течение одного дня
 ### TASK-042 — Подготовить legal minimum
+
+### TASK-065 — Описать roster персонажей как gameplay-юнитов season 1
+- Status: `done`
+- Note: создан `docs/game/season-1-character-roster.md`, где ключевые персонажи переведены в gameplay-юниты нового типа: для каждого зафиксированы unlock, системная роль, модификаторы, emotional hook, локальный риск и payoff для команды и проекта.
+- Priority: `P1`
+- Agent: `Game Systems`
+- Goal: сделать персонажей рабочими элементами прогрессии, а не только сценарием
+- Scope:
+  - gameplay role per character
+  - unlock and trigger model
+  - resource modifiers
+  - relationship payoff
+  - local quest potential
+- Deliverables:
+  - `docs/game/season-1-character-roster.md`
+- Acceptance Criteria:
+  - по каждому ключевому персонажу понятно, как он влияет на игру
 - Priority: `P3`
 - Agent: `Operations`
 - Goal: снизить юридические риски при публичном запуске

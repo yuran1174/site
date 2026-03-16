@@ -1,251 +1,392 @@
-import { ALERT_LABELS, CHARACTERS, LIFE_MODES, POSITIVE_LABELS, PROJECT_FOCUSES, SLOT_OPTIONS, WEEKDAY_LABELS, } from './content.js';
-import { getUnlockedSlotCount } from './state.js';
-export class SeasonOneUi {
+import { ACTIVITY_DATA, CHARACTER_DATA, GENRE_DATA, PLATFORM_DATA, SIZE_DATA } from './content.js';
+export class Season1UI {
     constructor(handlers) {
+        this.pendingGenre = 'arcade';
+        this.pendingPlatform = 'pc';
+        this.pendingSize = 'small';
         this.handlers = handlers;
-        this.elements = {
-            day: required('s1HudDay'),
-            weekday: required('s1HudWeekday'),
-            phase: required('s1HudPhase'),
-            mode: required('s1HudMode'),
-            money: required('s1HudMoney'),
-            energy: required('s1HudEnergy'),
-            focus: required('s1HudFocus'),
-            mood: required('s1HudMood'),
-            stress: required('s1HudStress'),
-            cycleStatus: required('s1CycleStatus'),
-            results: required('s1ResultsRail'),
-            alerts: required('s1AlertsList'),
-            lifeModes: required('s1LifeModeControls'),
-            projectFocus: required('s1ProjectFocusControls'),
-            slots: required('s1EveningSlots'),
-            social: required('s1SocialPriority'),
-            projectSummary: required('s1ProjectSummary'),
-            projectBars: required('s1ProjectBars'),
-            people: required('s1PeopleList'),
-            feed: required('s1FeedList'),
-            stageCaption: required('s1StageCaption'),
-            runCycle: required('s1RunCycleBtn'),
-            reset: required('s1ResetBtn'),
-            cycleHint: required('s1CycleHint'),
-            progressShelf: required('s1ProgressShelf'),
-        };
-        this.elements.runCycle.addEventListener('click', () => this.handlers.onRunCycle());
-        this.elements.reset.addEventListener('click', () => this.handlers.onReset());
     }
     render(state) {
-        this.renderHud(state);
-        this.renderResults(state);
-        this.renderAlerts(state);
-        this.renderLifeModes(state);
-        this.renderProjectFocus(state);
-        this.renderSlots(state);
-        this.renderSocial(state);
-        this.renderProject(state);
-        this.renderPeople(state);
-        this.renderFeed(state);
-        this.renderMeta(state);
+        this.renderBar(state);
+        this.renderDev(state);
+        this.renderStudio(state);
+        this.renderControls(state);
+        this.renderEvents(state);
     }
-    renderHud(state) {
-        this.elements.day.textContent = `День ${state.calendar.day}`;
-        this.elements.weekday.textContent = WEEKDAY_LABELS[state.calendar.weekday];
-        this.elements.phase.textContent = state.project.stageLabel;
-        this.elements.mode.textContent = LIFE_MODES.find((item) => item.id === state.routine.lifeMode)?.shortLabel ?? '';
-        this.elements.money.textContent = `${state.resources.money} ₽`;
-        this.elements.energy.textContent = `${state.resources.energy}`;
-        this.elements.focus.textContent = `${state.resources.focus}`;
-        this.elements.mood.textContent = `${state.resources.mood}`;
-        this.elements.stress.textContent = `${state.resources.stress}`;
-        const cycleStatus = state.alerts[0]
-            ? ALERT_LABELS[state.alerts[0]]
-            : state.positiveStates[0]
-                ? POSITIVE_LABELS[state.positiveStates[0]]
-                : 'Цикл стабилен';
-        this.elements.cycleStatus.textContent = cycleStatus;
-        this.elements.stageCaption.textContent = state.project.stageLabel;
-        this.elements.cycleHint.textContent = `Авто-цикл тикает сам. Следующая ручная правка: режим, слоты или люди. Всего циклов: ${state.meta.totalCycles}.`;
+    renderBar(state) {
+        setBarVal('s1Day', `День ${state.day}`);
+        setBarVal('s1Money', fmt(state.money) + ' ₽');
+        setBarVal('s1Fans', String(state.fans));
+        setBarVal('s1Rep', String(state.rep));
+        const statusEl = document.getElementById('s1TickStatus');
+        if (statusEl) {
+            if (state.pendingRelease) {
+                statusEl.textContent = '⏸ релиз';
+                statusEl.className = 's1-tick-status is-paused';
+            }
+            else if (state.stats.endurance < 20) {
+                statusEl.textContent = '⚠ усталость';
+                statusEl.className = 's1-tick-status is-warn';
+            }
+            else if (state.money < 300) {
+                statusEl.textContent = '⚠ деньги';
+                statusEl.className = 's1-tick-status is-warn';
+            }
+            else {
+                statusEl.textContent = '● авто';
+                statusEl.className = 's1-tick-status is-ok';
+            }
+        }
     }
-    renderResults(state) {
-        const lastResults = state.results.slice(0, 4);
-        this.elements.results.innerHTML = lastResults
-            .map((result) => {
-            const cards = [
-                metricCard('деньги', result.deltas.money),
-                metricCard('энергия', result.deltas.energy),
-                metricCard('проект', result.deltas.project),
-                metricCard('связь', result.deltas.bond),
-                metricCard('комната', result.deltas.room),
-            ].join('');
-            return `<article class="s1-result-card">
-                    <div class="s1-result-head">
-                        <strong>${escapeHtml(result.title)}</strong>
-                        <span>День ${result.day}</span>
+    renderDev(state) {
+        const s = state.stats;
+        const portraitEl = document.getElementById('s1DevPortrait');
+        if (portraitEl) {
+            const mood = s.endurance > 60 ? 'fresh' : s.endurance > 30 ? 'tired' : 'dead';
+            portraitEl.dataset.mood = mood;
+            portraitEl.querySelector('.s1-portrait-emoji').textContent =
+                mood === 'fresh' ? '🧑‍💻' : mood === 'tired' ? '😪' : '💀';
+            portraitEl.querySelector('.s1-portrait-state').textContent =
+                mood === 'fresh' ? 'в потоке' : mood === 'tired' ? 'устал' : 'мертвец';
+        }
+        renderStat('s1StatCoding', s.coding, 'coding');
+        renderStat('s1StatDesign', s.design, 'design');
+        renderStat('s1StatEndurance', s.endurance, 'endurance');
+        setText('s1PortfolioCount', `${state.completedProjects.length} проект${pluralRu(state.completedProjects.length)}`);
+        const studioNames = ['Спальня', 'Home Studio', 'Студия'];
+        setText('s1StudioTier', studioNames[state.studioTier - 1] ?? '');
+        this.renderPortfolio(state);
+    }
+    renderPortfolio(state) {
+        const el = document.getElementById('s1Portfolio');
+        if (!el)
+            return;
+        if (state.completedProjects.length === 0) {
+            el.innerHTML = `<p class="s1-empty-hint">Ни одного релиза. Пора начать.</p>`;
+            return;
+        }
+        el.innerHTML = state.completedProjects.slice().reverse().map(p => {
+            const genre = GENRE_DATA[p.genre];
+            const stars = ratingStars(p.rating);
+            return `<div class="s1-portfolio-item">
+                <span class="s1-pi-icon">${genre.icon}</span>
+                <div class="s1-pi-info">
+                    <span class="s1-pi-name">${esc(p.name)}</span>
+                    <span class="s1-pi-meta">${stars} ${p.rating.toFixed(1)}</span>
+                </div>
+                <span class="s1-pi-earn">${fmt(p.earnings)} ₽</span>
+            </div>`;
+        }).join('');
+    }
+    renderStudio(state) {
+        const studioEl = document.getElementById('s1StudioPanel');
+        if (!studioEl)
+            return;
+        if (state.pendingRelease) {
+            const r = state.pendingRelease;
+            const genre = GENRE_DATA[r.genre];
+            const platform = PLATFORM_DATA[r.platform];
+            studioEl.innerHTML = `
+                <div class="s1-release-screen" id="s1ReleaseScreen">
+                    <div class="s1-release-kicker">🚀 РЕЛИЗ!</div>
+                    <div class="s1-release-name">${esc(r.name)}</div>
+                    <div class="s1-release-meta">${genre.icon} ${genre.label} &nbsp;·&nbsp; ${platform.icon} ${platform.label}</div>
+                    <div class="s1-release-rating">
+                        <div class="s1-stars">${ratingStars(r.rating)}</div>
+                        <div class="s1-rating-num">${r.rating.toFixed(1)}<span> / 10</span></div>
                     </div>
-                    <p>${escapeHtml(result.summary)}</p>
-                    <div class="s1-result-metrics">${cards}</div>
-                </article>`;
-        })
-            .join('');
+                    <div class="s1-release-rewards">
+                        <div class="s1-reward-row is-money">💰 <strong>+${fmt(r.earnings)} ₽</strong></div>
+                        <div class="s1-reward-row is-fans">👥 <strong>+${r.fans} фанатов</strong></div>
+                        <div class="s1-reward-row is-rep">⭐ <strong>+${r.repGain} репутации</strong></div>
+                    </div>
+                    <blockquote class="s1-review-quote">"${esc(r.reviewQuote)}"</blockquote>
+                    <button class="s1-release-btn" id="s1DismissRelease">Принять релиз</button>
+                </div>`;
+            document.getElementById('s1DismissRelease')?.addEventListener('click', () => this.handlers.onDismissRelease());
+            return;
+        }
+        if (state.activeProject) {
+            const p = state.activeProject;
+            const genre = GENRE_DATA[p.genre];
+            const platform = PLATFORM_DATA[p.platform];
+            const size = SIZE_DATA[p.size];
+            const pct = Math.round(p.progress);
+            const estRating = estimateRating(state);
+            studioEl.innerHTML = `
+                <div class="s1-active-project">
+                    <div class="s1-ap-header">
+                        <div class="s1-ap-icon">${genre.icon}</div>
+                        <div class="s1-ap-info">
+                            <div class="s1-ap-name">${esc(p.name)}</div>
+                            <div class="s1-ap-meta">${genre.label} &nbsp;·&nbsp; ${platform.icon} ${platform.label} &nbsp;·&nbsp; ${size.label}</div>
+                        </div>
+                    </div>
+                    <div class="s1-progress-section">
+                        <div class="s1-progress-label">
+                            <span>Прогресс</span>
+                            <span>${pct}%</span>
+                        </div>
+                        <div class="s1-progress-track" role="progressbar" aria-valuenow="${pct}">
+                            <div class="s1-progress-fill" style="width:${pct}%"></div>
+                        </div>
+                    </div>
+                    <div class="s1-ap-quality">
+                        <div class="s1-quality-row">
+                            <span class="s1-ql-label">Качество кода</span>
+                            <div class="s1-ql-bar"><div class="s1-ql-fill is-code" style="width:${clampPct(p.daysSpent > 0 ? p.codingAccum / p.daysSpent : 0)}%"></div></div>
+                            <span class="s1-ql-val">${Math.round(p.daysSpent > 0 ? p.codingAccum / p.daysSpent : 0)}</span>
+                        </div>
+                        <div class="s1-quality-row">
+                            <span class="s1-ql-label">Дизайн</span>
+                            <div class="s1-ql-bar"><div class="s1-ql-fill is-design" style="width:${clampPct(p.daysSpent > 0 ? p.designAccum / p.daysSpent : 0)}%"></div></div>
+                            <span class="s1-ql-val">${Math.round(p.daysSpent > 0 ? p.designAccum / p.daysSpent : 0)}</span>
+                        </div>
+                    </div>
+                    <div class="s1-ap-footer">
+                        <span>День ${p.daysSpent} из ~${p.daysRequired}</span>
+                        <span class="s1-est-rating">Примерный рейтинг: <strong>${estRating}</strong></span>
+                    </div>
+                    <button class="s1-abandon-btn" id="s1AbandonProject">Бросить проект</button>
+                </div>`;
+            document.getElementById('s1AbandonProject')?.addEventListener('click', () => {
+                if (confirm('Бросить проект? Прогресс потеряется.'))
+                    this.handlers.onAbandonProject();
+            });
+            return;
+        }
+        // Project selector
+        studioEl.innerHTML = this.buildProjectSelector();
+        this.bindProjectSelector();
     }
-    renderAlerts(state) {
-        const items = state.alerts.length > 0
-            ? state.alerts.map((alert) => `<li class="is-bad">${escapeHtml(ALERT_LABELS[alert])}</li>`)
-            : state.positiveStates.length > 0
-                ? state.positiveStates.map((positive) => `<li class="is-good">${escapeHtml(POSITIVE_LABELS[positive])}</li>`)
-                : ['<li class="is-neutral">Система пока не трещит. Можно аккуратно ускоряться.</li>'];
-        this.elements.alerts.innerHTML = items.join('');
-    }
-    renderLifeModes(state) {
-        this.elements.lifeModes.innerHTML = LIFE_MODES.map((mode) => {
-            const active = mode.id === state.routine.lifeMode ? ' is-active' : '';
-            return `<button class="s1-option-card${active}" type="button" data-life-mode="${mode.id}">
-                <strong>${escapeHtml(mode.label)}</strong>
-                <p>${escapeHtml(mode.description)}</p>
-                <small>${escapeHtml(mode.bonus)} / ${escapeHtml(mode.risk)}</small>
+    buildProjectSelector() {
+        const genres = Object.keys(GENRE_DATA);
+        const platforms = Object.keys(PLATFORM_DATA);
+        const sizes = Object.keys(SIZE_DATA);
+        const genreButtons = genres.map(g => {
+            const d = GENRE_DATA[g];
+            const active = g === this.pendingGenre ? ' is-active' : '';
+            return `<button class="s1-sel-chip${active}" data-genre="${g}">${d.icon} ${d.label}</button>`;
+        }).join('');
+        const platformButtons = platforms.map(p => {
+            const d = PLATFORM_DATA[p];
+            const active = p === this.pendingPlatform ? ' is-active' : '';
+            return `<button class="s1-sel-chip${active}" data-platform="${p}">${d.icon} ${d.label}</button>`;
+        }).join('');
+        const sizeCards = sizes.map(s => {
+            const d = SIZE_DATA[s];
+            const active = s === this.pendingSize ? ' is-active' : '';
+            return `<button class="s1-size-card${active}" data-size="${s}">
+                <strong>${d.label}</strong>
+                <span>${d.days} дней</span>
+                <small>до ${fmt(d.baseEarnings)} ₽</small>
             </button>`;
         }).join('');
-        this.elements.lifeModes.querySelectorAll('[data-life-mode]').forEach((button) => {
-            button.onclick = () => this.handlers.onLifeModeChange(button.dataset.lifeMode ?? '');
-        });
+        const namePreview = generateProjectPreview(this.pendingGenre);
+        return `
+            <div class="s1-project-selector">
+                <div class="s1-sel-header">Новый проект</div>
+                <div class="s1-sel-section">
+                    <div class="s1-sel-label">Жанр</div>
+                    <div class="s1-sel-row" id="s1GenreRow">${genreButtons}</div>
+                </div>
+                <div class="s1-sel-section">
+                    <div class="s1-sel-label">Платформа</div>
+                    <div class="s1-sel-row" id="s1PlatformRow">${platformButtons}</div>
+                </div>
+                <div class="s1-sel-section">
+                    <div class="s1-sel-label">Масштаб</div>
+                    <div class="s1-size-row" id="s1SizeRow">${sizeCards}</div>
+                </div>
+                <div class="s1-sel-preview">
+                    <span class="s1-sel-preview-name" id="s1NamePreview">${esc(namePreview)}</span>
+                    <small>рабочее название</small>
+                </div>
+                <button class="s1-start-btn" id="s1StartProject">▶ Начать разработку</button>
+            </div>`;
     }
-    renderProjectFocus(state) {
-        this.elements.projectFocus.innerHTML = PROJECT_FOCUSES.map((focus) => {
-            const active = focus.id === state.routine.projectFocus ? ' is-active' : '';
-            return `<button class="s1-pill-button${active}" type="button" data-project-focus="${focus.id}">
-                <span>${escapeHtml(focus.label)}</span>
-                <small>${escapeHtml(focus.description)}</small>
-            </button>`;
-        }).join('');
-        this.elements.projectFocus.querySelectorAll('[data-project-focus]').forEach((button) => {
-            button.onclick = () => this.handlers.onProjectFocusChange(button.dataset.projectFocus ?? '');
-        });
-    }
-    renderSlots(state) {
-        const unlockedSlotCount = getUnlockedSlotCount(state);
-        this.elements.slots.innerHTML = [0, 1]
-            .map((index) => {
-            const selected = state.routine.eveningSlots[index];
-            const locked = index >= unlockedSlotCount;
-            const options = SLOT_OPTIONS.map((slot) => {
-                const active = slot.id === selected ? ' is-active' : '';
-                return `<button class="s1-mini-card${active}" type="button" data-slot-index="${index}" data-slot-value="${slot.id}" ${locked ? 'disabled' : ''}>
-                        <strong>${escapeHtml(slot.label)}</strong>
-                        <small>${escapeHtml(slot.description)}</small>
-                    </button>`;
-            }).join('');
-            return `<section class="s1-slot-card${locked ? ' is-locked' : ''}">
-                    <header>
-                        <strong>Вечерний слот ${index + 1}</strong>
-                        <span>${locked ? 'заблокирован состоянием героя' : 'активен'}</span>
-                    </header>
-                    <div class="s1-mini-grid">${options}</div>
-                </section>`;
-        })
-            .join('');
-        this.elements.slots.querySelectorAll('[data-slot-value]').forEach((button) => {
-            button.onclick = () => {
-                const slotIndex = Number(button.dataset.slotIndex ?? 0);
-                this.handlers.onSlotChange(slotIndex, button.dataset.slotValue ?? '');
+    bindProjectSelector() {
+        document.getElementById('s1GenreRow')?.querySelectorAll('[data-genre]').forEach(btn => {
+            btn.onclick = () => {
+                this.pendingGenre = btn.dataset.genre;
+                document.getElementById('s1GenreRow')?.querySelectorAll('.s1-sel-chip').forEach(b => b.classList.remove('is-active'));
+                btn.classList.add('is-active');
+                const preview = document.getElementById('s1NamePreview');
+                if (preview)
+                    preview.textContent = generateProjectPreview(this.pendingGenre);
             };
         });
-    }
-    renderSocial(state) {
-        this.elements.social.innerHTML = CHARACTERS.map((character) => {
-            const relationship = state.relationships[character.id];
-            const selected = state.routine.socialPriority.includes(character.id) ? ' is-active' : '';
-            const locked = relationship.unlocked ? '' : ' is-locked';
-            return `<button class="s1-person-card${selected}${locked}" type="button" data-social-priority="${character.id}" ${relationship.unlocked ? '' : 'disabled'}>
-                <div class="s1-person-head">
-                    <strong>${escapeHtml(character.name)}</strong>
-                    <span>${relationship.unlocked ? `bond ${relationship.bond}` : 'locked'}</span>
-                </div>
-                <p>${escapeHtml(character.role)}</p>
-                <small>${escapeHtml(relationship.unlocked ? character.modifierLabel : character.unlockHint)}</small>
-            </button>`;
-        }).join('');
-        this.elements.social.querySelectorAll('[data-social-priority]').forEach((button) => {
-            button.onclick = () => this.handlers.onSocialPriorityToggle(button.dataset.socialPriority ?? '');
+        document.getElementById('s1PlatformRow')?.querySelectorAll('[data-platform]').forEach(btn => {
+            btn.onclick = () => {
+                this.pendingPlatform = btn.dataset.platform;
+                document.getElementById('s1PlatformRow')?.querySelectorAll('.s1-sel-chip').forEach(b => b.classList.remove('is-active'));
+                btn.classList.add('is-active');
+            };
+        });
+        document.getElementById('s1SizeRow')?.querySelectorAll('[data-size]').forEach(btn => {
+            btn.onclick = () => {
+                this.pendingSize = btn.dataset.size;
+                document.getElementById('s1SizeRow')?.querySelectorAll('.s1-size-card').forEach(b => b.classList.remove('is-active'));
+                btn.classList.add('is-active');
+            };
+        });
+        document.getElementById('s1StartProject')?.addEventListener('click', () => {
+            this.handlers.onStartProject(this.pendingGenre, this.pendingPlatform, this.pendingSize);
         });
     }
-    renderProject(state) {
-        const bars = [
-            progressBar('clarity', state.project.clarity),
-            progressBar('prototype', state.project.prototype),
-            progressBar('quality', state.project.quality),
-            progressBar('showability', state.project.showability),
-        ].join('');
-        this.elements.projectSummary.innerHTML = `
-            <strong>${escapeHtml(state.project.stageLabel)}</strong>
-            <p>Игрок не проживает день руками: он подкручивает life mode, слоты и social priority, а результат приходит через auto-tick.</p>
-        `;
-        this.elements.projectBars.innerHTML = bars;
+    renderControls(state) {
+        this.renderActivity(state);
+        this.renderTeam(state);
     }
-    renderPeople(state) {
-        this.elements.people.innerHTML = CHARACTERS.filter((character) => state.relationships[character.id].unlocked)
-            .map((character) => {
-            const relationship = state.relationships[character.id];
-            const ready = relationship.readiness >= 70 ? 'готов к контакту' : relationship.readiness >= 40 ? 'есть повод выйти' : 'пока в фоне';
-            return `<article class="s1-relationship-card">
-                    <div class="s1-person-head">
-                        <strong>${escapeHtml(character.name)}</strong>
-                        <span>${ready}</span>
+    renderActivity(state) {
+        const el = document.getElementById('s1ActivityList');
+        if (!el)
+            return;
+        el.innerHTML = Object.keys(ACTIVITY_DATA).map(mode => {
+            const d = ACTIVITY_DATA[mode];
+            const active = mode === state.activity ? ' is-active' : '';
+            const disabled = mode === 'work' && !state.activeProject ? ' is-disabled' : '';
+            return `<button class="s1-activity-btn${active}${disabled}" data-mode="${mode}" ${disabled ? 'disabled' : ''}>
+                <span class="s1-act-icon">${d.icon}</span>
+                <span class="s1-act-label">${d.label}</span>
+                <span class="s1-act-hint">${d.hint}</span>
+            </button>`;
+        }).join('');
+        el.querySelectorAll('[data-mode]').forEach(btn => {
+            btn.onclick = () => this.handlers.onActivityChange(btn.dataset.mode);
+        });
+    }
+    renderTeam(state) {
+        const el = document.getElementById('s1TeamList');
+        if (!el)
+            return;
+        const characters = ['max', 'zheka', 'zhora'];
+        el.innerHTML = characters.map(id => {
+            const d = CHARACTER_DATA[id];
+            const c = state.characters[id];
+            if (!c.unlocked) {
+                return `<div class="s1-char-card is-locked">
+                    <div class="s1-char-avatar is-locked">?</div>
+                    <div class="s1-char-info">
+                        <span class="s1-char-unlock">${esc(d.unlockDesc)}</span>
+                        <span class="s1-char-bonus">${esc(d.bonus)}</span>
                     </div>
-                    <p>${escapeHtml(character.modifierLabel)}</p>
-                    <div class="s1-relationship-meta">
-                        <span>bond ${relationship.bond}</span>
-                        <span>readiness ${relationship.readiness}</span>
-                    </div>
-                </article>`;
-        })
-            .join('');
+                </div>`;
+            }
+            const isSocialTarget = state.socialTarget === id && state.activity === 'socialize';
+            const active = isSocialTarget ? ' is-selected' : '';
+            const bondBar = `<div class="s1-bond-bar"><div class="s1-bond-fill" style="width:${c.bond * 10}%"></div></div>`;
+            return `<button class="s1-char-card${active}" data-char="${id}">
+                <div class="s1-char-avatar">${charEmoji(id)}</div>
+                <div class="s1-char-info">
+                    <span class="s1-char-name">${esc(d.name)}</span>
+                    <span class="s1-char-role">${esc(d.role)}</span>
+                    <span class="s1-char-bonus">${esc(d.bonus)}</span>
+                    ${bondBar}
+                </div>
+            </button>`;
+        }).join('');
+        el.querySelectorAll('[data-char]').forEach(btn => {
+            btn.onclick = () => this.handlers.onSocialTargetChange(btn.dataset.char);
+        });
     }
-    renderFeed(state) {
-        this.elements.feed.innerHTML = state.feed.slice(0, 5)
-            .map((item) => `<article class="s1-feed-item">
-                <small>День ${item.day}</small>
-                <strong>${escapeHtml(item.title)}</strong>
-                <p>${escapeHtml(item.summary)}</p>
-            </article>`)
-            .join('');
-    }
-    renderMeta(state) {
-        this.elements.progressShelf.innerHTML = [
-            shelfMetric('Life stability', state.progression.lifeStability),
-            shelfMetric('Circle trust', state.circle.trust),
-            shelfMetric('Group momentum', state.circle.momentum),
-            shelfMetric('Room tier', state.room.tier),
-        ].join('');
+    renderEvents(state) {
+        const el = document.getElementById('s1EventLog');
+        if (!el)
+            return;
+        if (state.events.length === 0) {
+            el.innerHTML = `<p class="s1-empty-hint">Пока всё тихо.</p>`;
+            return;
+        }
+        el.innerHTML = state.events.map(e => `
+            <div class="s1-event is-${e.kind}">
+                <span class="s1-ev-day">День ${e.day}</span>
+                <span class="s1-ev-title">${esc(e.title)}</span>
+                <span class="s1-ev-body">${esc(e.body)}</span>
+            </div>`).join('');
     }
 }
-function required(id) {
-    const node = document.getElementById(id);
-    if (!node) {
-        throw new Error(`Missing required element: ${id}`);
-    }
-    return node;
+// ── helpers ───────────────────────────────────────────────────────────────────
+function setText(id, text) {
+    const el = document.getElementById(id);
+    if (el)
+        el.textContent = text;
 }
-function metricCard(label, value) {
-    const sign = value > 0 ? '+' : '';
-    const className = value > 0 ? 'is-good' : value < 0 ? 'is-bad' : 'is-neutral';
-    return `<span class="s1-metric-chip ${className}">${escapeHtml(label)} ${sign}${value}</span>`;
+function setBarVal(cellId, text) {
+    const el = document.getElementById(cellId)?.querySelector('.s1-bar-val');
+    if (el)
+        el.textContent = text;
 }
-function progressBar(label, value) {
-    return `<article class="s1-progress-card">
-        <div class="s1-progress-head">
-            <strong>${escapeHtml(label)}</strong>
-            <span>${value}/100</span>
-        </div>
-        <div class="s1-progress-track"><span style="width:${value}%"></span></div>
-    </article>`;
+function renderStat(id, value, type) {
+    const row = document.getElementById(id);
+    if (!row)
+        return;
+    const numEl = row.querySelector('.s1-stat-num');
+    const fillEl = row.querySelector('.s1-stat-fill');
+    if (numEl)
+        numEl.textContent = Math.round(value).toString();
+    if (fillEl)
+        fillEl.style.width = `${Math.round(value)}%`;
+    row.dataset.type = type;
 }
-function shelfMetric(label, value) {
-    return `<div class="s1-shelf-item"><span>${escapeHtml(label)}</span><strong>${value}</strong></div>`;
+function ratingStars(rating) {
+    const full = Math.round(rating);
+    return Array.from({ length: 10 }, (_, i) => i < full ? '★' : '☆').join('');
 }
-function escapeHtml(value) {
-    return value
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
+function fmt(n) {
+    return n.toLocaleString('ru-RU');
+}
+function esc(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+function clampPct(v) {
+    return Math.min(100, Math.max(0, v));
+}
+function pluralRu(n) {
+    const abs = Math.abs(n);
+    const mod10 = abs % 10;
+    const mod100 = abs % 100;
+    if (mod100 >= 11 && mod100 <= 19)
+        return 'ов';
+    if (mod10 === 1)
+        return '';
+    if (mod10 >= 2 && mod10 <= 4)
+        return 'а';
+    return 'ов';
+}
+function charEmoji(id) {
+    const map = { max: '🎨', zheka: '🔍', zhora: '📣' };
+    return map[id] ?? '👤';
+}
+function estimateRating(state) {
+    const p = state.activeProject;
+    if (!p || p.daysSpent === 0)
+        return '?';
+    const genre = GENRE_DATA[p.genre];
+    const avgC = p.codingAccum / p.daysSpent;
+    const avgD = p.designAccum / p.daysSpent;
+    const q = avgC * genre.codingW + avgD * genre.designW;
+    const raw = 1 + (q / 100) * 9;
+    if (raw >= 8)
+        return '😍 Отлично';
+    if (raw >= 6)
+        return '🙂 Неплохо';
+    if (raw >= 4)
+        return '😐 Средне';
+    return '😬 Слабо';
+}
+function generateProjectPreview(genre) {
+    const { generateProjectName } = { generateProjectName: (g) => {
+            const prefixes = ['Очередной', 'Амбициозный', 'Скромный', 'Дерзкий'];
+            const nouns = {
+                arcade: ['Флапи-клон', 'Раннер'],
+                rpg: ['Рогалик', 'JRPG'],
+                puzzle: ['Пазл', 'Матч-3'],
+                sim: ['Тайкун', 'Симулятор'],
+                platformer: ['Платформер', 'Метроидвания'],
+                visual_novel: ['Визуальная новелла', 'Дейтинг-сим'],
+            };
+            return `${prefixes[Math.floor(Math.random() * prefixes.length)]} ${(nouns[g] ?? ['Проект'])[Math.floor(Math.random() * 2)]}`;
+        } };
+    return generateProjectName(genre);
 }

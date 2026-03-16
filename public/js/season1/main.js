@@ -1,33 +1,33 @@
-import { CYCLE_MS, LIFE_MODES, PROJECT_FOCUSES } from './content.js';
-import { PhaserRoomStage } from './phaser-room-stage.js';
-import { getOfflineCycleCount, loadState, resetState, saveState, toggleSocialPriority } from './state.js';
-import { resolveCycles, resolveSingleCycle } from './ticks.js';
-import { SeasonOneUi } from './ui.js';
+import { MAX_OFFLINE_DAYS, TICK_MS } from './content.js';
+import { createProject, loadState, resetState, saveState } from './state.js';
+import { resolveDays } from './ticks.js';
+import { Season1UI } from './ui.js';
 const boot = window.SEASON1_BOOTSTRAP ?? { playerName: 'Герой', isLoggedIn: false };
 let state = loadState(boot);
-const ui = new SeasonOneUi({
-    onLifeModeChange(value) {
-        if (LIFE_MODES.some((mode) => mode.id === value)) {
-            state.routine.lifeMode = value;
-            persistAndRender();
-        }
-    },
-    onProjectFocusChange(value) {
-        if (PROJECT_FOCUSES.some((focus) => focus.id === value)) {
-            state.routine.projectFocus = value;
-            persistAndRender();
-        }
-    },
-    onSlotChange(index, value) {
-        state.routine.eveningSlots[index] = value;
+const ui = new Season1UI({
+    onActivityChange(mode) {
+        state.activity = mode;
         persistAndRender();
     },
-    onSocialPriorityToggle(value) {
-        toggleSocialPriority(state, value);
+    onSocialTargetChange(id) {
+        state.socialTarget = id;
+        if (state.activity !== 'socialize') {
+            state.activity = 'socialize';
+        }
         persistAndRender();
     },
-    onRunCycle() {
-        resolveSingleCycle(state);
+    onStartProject(genre, platform, size) {
+        state.activeProject = createProject(genre, platform, size);
+        if (state.activity !== 'work')
+            state.activity = 'work';
+        persistAndRender();
+    },
+    onDismissRelease() {
+        state.pendingRelease = null;
+        persistAndRender();
+    },
+    onAbandonProject() {
+        state.activeProject = null;
         persistAndRender();
     },
     onReset() {
@@ -35,37 +35,37 @@ const ui = new SeasonOneUi({
         persistAndRender();
     },
 });
-const roomStage = new PhaserRoomStage('s1PhaserStage');
-resolveCycles(state, getOfflineCycleCount(state));
-saveState(state);
-document.addEventListener('DOMContentLoaded', () => {
-    roomStage.mount(state);
-    bindLogout();
+// Catch up offline
+const elapsed = Date.now() - state.meta.lastTickAt;
+const offlineDays = Math.min(Math.floor(elapsed / TICK_MS), MAX_OFFLINE_DAYS);
+if (offlineDays > 0) {
+    resolveDays(state, offlineDays);
+    saveState(state);
+}
+ui.render(state);
+bindLogout();
+// Auto-tick
+window.setInterval(() => {
+    if (state.pendingRelease)
+        return; // pause while release screen open
+    resolveDays(state, 1);
     persistAndRender();
-    window.setInterval(() => {
-        resolveSingleCycle(state);
-        persistAndRender();
-    }, CYCLE_MS);
-});
+}, TICK_MS);
 function persistAndRender() {
-    state.meta.lastResolvedAt = Date.now();
+    state.meta.lastTickAt = Date.now();
     saveState(state);
     ui.render(state);
-    roomStage.render(state);
 }
 function bindLogout() {
-    const logoutButton = document.getElementById('logoutBtn');
-    if (!logoutButton) {
+    const btn = document.getElementById('logoutBtn');
+    if (!btn)
         return;
-    }
-    logoutButton.addEventListener('click', async (event) => {
-        event.preventDefault();
+    btn.addEventListener('click', async (e) => {
+        e.preventDefault();
         try {
             await fetch('ajax/auth.php', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-                },
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
                 body: 'action=logout',
                 credentials: 'same-origin',
             });

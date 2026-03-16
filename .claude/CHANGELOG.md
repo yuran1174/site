@@ -1,3 +1,31 @@
+## 2026-03-16 — Полный rebuild season 1: Инди-дев Тайкун
+
+**Что сделано:**
+- Season 1 полностью переработан из life-management idle в indie dev tycoon (Game Dev Tycoon + Punch Club DNA)
+- Новая игровая петля: выбор жанра/платформы/масштаба → разработка → релиз → рейтинг → деньги/фанаты
+- Система статов со спадом: Coding, Design, Endurance
+- 5 активностей: работать, учить код, учить дизайн, отдыхать, тусоваться
+- Команда (Макс, Жека, Жора) как разблокируемые коллаборации с реальными бонусами
+- Прогрессия студии: Спальня → Home Studio → Студия
+- Релиз-экран с рейтингом, звёздами, цитатой рецензента и анимацией
+- Новый CSS: game-style UI, chunky stat bars, release screen animation
+- Полный TypeScript rebuild: types / content / state / ticks / ui / main
+
+**Файлы изменены:**
+- `src/season1/types.ts` (переписан)
+- `src/season1/content.ts` (переписан)
+- `src/season1/state.ts` (переписан)
+- `src/season1/ticks.ts` (переписан)
+- `src/season1/ui.ts` (переписан)
+- `src/season1/main.ts` (переписан)
+- `src/season1/phaser-room-stage.ts` (заглушка — Phaser убран)
+- `css/season1.css` (переписан)
+- `season1.php` (переписан)
+- `js/season1/*.js` + `public/js/season1/*.js` (скомпилированы)
+- `public/css/season1.css` (синхронизирован)
+
+---
+
 ## 2026-03-13 — Закрыт TASK-078: добавлен воспроизводимый build-flow для season 1 runtime
 
 **Что сделано:**

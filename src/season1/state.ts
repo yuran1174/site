@@ -1,108 +1,48 @@
-import { CYCLE_MS, MAX_OFFLINE_CYCLES, STATE_VERSION, STORAGE_KEY, WEEKDAY_ORDER } from './content.js';
-import type { BootPayload, CharacterId, CycleResult, GameState, SlotAssignment } from './types.js';
+import { DAILY_COST, SIZE_DATA, STATE_VERSION, STORAGE_KEY, generateProjectName } from './content.js';
+import type { ActiveProject, BootPayload, CharacterId, GameState, ProjectGenre, ProjectPlatform, ProjectSize } from './types.js';
 
-const DEFAULT_SOCIAL_PRIORITY: CharacterId[] = ['max', 'cash'];
-const DEFAULT_SLOTS: [SlotAssignment, SlotAssignment] = ['project_slot', 'rest_slot'];
-
-export function clamp(value: number, min: number, max: number): number {
-    return Math.min(max, Math.max(min, value));
+export function clamp(v: number, min: number, max: number): number {
+    return Math.min(max, Math.max(min, v));
 }
 
-export function createInitialState(boot: BootPayload): GameState {
-    const playerName = boot.playerName || 'Герой';
-
+export function createInitialState(_boot: BootPayload): GameState {
     return {
-        calendar: {
+        day: 1,
+        money: 2500,
+        fans: 0,
+        rep: 0,
+        stats: { coding: 35, design: 18, endurance: 75 },
+        activity: 'rest',
+        socialTarget: 'max',
+        activeProject: null,
+        pendingRelease: null,
+        completedProjects: [],
+        studioTier: 1,
+        characters: {
+            max:   { unlocked: false, bond: 0 },
+            zheka: { unlocked: false, bond: 0 },
+            zhora: { unlocked: false, bond: 0 },
+        },
+        events: [{
             day: 1,
-            week: 1,
-            weekday: 'monday',
-        },
-        resources: {
-            money: 620,
-            energy: 64,
-            focus: 58,
-            mood: 52,
-            stress: 38,
-        },
-        routine: {
-            lifeMode: 'survival',
-            projectFocus: 'clarify',
-            socialPriority: [...DEFAULT_SOCIAL_PRIORITY],
-            eveningSlots: [...DEFAULT_SLOTS],
-        },
-        project: {
-            clarity: 16,
-            prototype: 8,
-            quality: 6,
-            showability: 4,
-            stageLabel: `${playerName} собирает первый внятный idle-срез`,
-        },
-        room: {
-            order: 48,
-            comfort: 42,
-            tier: 1,
-        },
-        circle: {
-            trust: 12,
-            momentum: 18,
-        },
-        progression: {
-            lifeStability: 28,
-        },
-        relationships: {
-            cash: { unlocked: true, bond: 3, readiness: 60 },
-            max: { unlocked: true, bond: 2, readiness: 44 },
-            kostya: { unlocked: false, bond: 0, readiness: 16 },
-            zheka: { unlocked: false, bond: 0, readiness: 12 },
-        },
-        alerts: [],
-        positiveStates: [],
-        results: [],
-        feed: [
-            {
-                cycleNumber: 0,
-                day: 1,
-                title: 'Старт нового idle-среза',
-                summary: 'Жизнь героя ещё не собрана, но комната, проект и люди уже начинают работать как одна система.',
-                deltas: { money: 0, energy: 0, focus: 0, mood: 0, stress: 0, project: 0, bond: 0, room: 0 },
-                alerts: [],
-                positives: [],
-            },
-        ],
-        meta: {
-            version: STATE_VERSION,
-            lastResolvedAt: Date.now(),
-            totalCycles: 0,
-        },
+            title: 'Начало',
+            body: 'Комната. Ноут. Кот. Кофе. Мечта сделать игру. Всё остальное — детали.',
+            kind: 'info',
+        }],
+        meta: { version: STATE_VERSION, totalDays: 0, lastTickAt: Date.now() },
     };
 }
 
 export function validateState(candidate: unknown): candidate is GameState {
-    if (!candidate || typeof candidate !== 'object') {
-        return false;
-    }
-
-    const state = candidate as Partial<GameState>;
-
-    return !!(
-        state.meta &&
-        state.meta.version === STATE_VERSION &&
-        state.calendar &&
-        state.resources &&
-        state.routine &&
-        state.project &&
-        state.room &&
-        state.relationships
-    );
+    if (!candidate || typeof candidate !== 'object') return false;
+    const s = candidate as Partial<GameState>;
+    return !!(s.meta && s.meta.version === STATE_VERSION && s.stats && typeof s.day === 'number');
 }
 
 export function loadState(boot: BootPayload): GameState {
     try {
         const raw = window.localStorage.getItem(STORAGE_KEY);
-        if (!raw) {
-            return createInitialState(boot);
-        }
-
+        if (!raw) return createInitialState(boot);
         const parsed = JSON.parse(raw) as unknown;
         return validateState(parsed) ? parsed : createInitialState(boot);
     } catch {
@@ -120,50 +60,21 @@ export function resetState(boot: BootPayload): GameState {
     return state;
 }
 
-export function getUnlockedSlotCount(state: GameState): number {
-    return state.resources.energy >= 34 && state.resources.stress <= 68 ? 2 : 1;
+export function createProject(genre: ProjectGenre, platform: ProjectPlatform, size: ProjectSize): ActiveProject {
+    return {
+        id: String(Date.now()),
+        name: generateProjectName(genre),
+        genre,
+        platform,
+        size,
+        progress: 0,
+        daysSpent: 0,
+        daysRequired: SIZE_DATA[size].days,
+        codingAccum: 0,
+        designAccum: 0,
+    };
 }
 
-export function toggleSocialPriority(state: GameState, characterId: CharacterId): void {
-    const relationship = state.relationships[characterId];
-    if (!relationship?.unlocked) {
-        return;
-    }
-
-    const alreadySelected = state.routine.socialPriority.includes(characterId);
-    if (alreadySelected) {
-        if (state.routine.socialPriority.length > 1) {
-            state.routine.socialPriority = state.routine.socialPriority.filter((id) => id !== characterId);
-        }
-        return;
-    }
-
-    state.routine.socialPriority = [...state.routine.socialPriority, characterId].slice(-2);
-}
-
-export function advanceCalendar(state: GameState): void {
-    const currentIndex = WEEKDAY_ORDER.indexOf(state.calendar.weekday);
-    const nextIndex = (currentIndex + 1) % WEEKDAY_ORDER.length;
-    state.calendar.day += 1;
-    state.calendar.weekday = WEEKDAY_ORDER[nextIndex];
-
-    if (state.calendar.weekday === 'monday') {
-        state.calendar.week += 1;
-    }
-}
-
-export function getOfflineCycleCount(state: GameState, now = Date.now()): number {
-    const elapsed = now - state.meta.lastResolvedAt;
-    if (elapsed <= 0) {
-        return 0;
-    }
-
-    return Math.min(Math.floor(elapsed / CYCLE_MS), MAX_OFFLINE_CYCLES);
-}
-
-export function pushResult(state: GameState, result: CycleResult): void {
-    state.results.unshift(result);
-    state.results = state.results.slice(0, 6);
-    state.feed.unshift(result);
-    state.feed = state.feed.slice(0, 8);
+export function getDailyCost(studioTier: number): number {
+    return DAILY_COST + (studioTier - 1) * 120;
 }
